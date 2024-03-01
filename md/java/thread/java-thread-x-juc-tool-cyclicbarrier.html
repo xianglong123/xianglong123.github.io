@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>JUC工具类:CyclicBarrier详解 | 个人主页</title>
+    <meta name="generator" content="VuePress 1.9.9">
+    <link rel="icon" href="/images/photo.jpg">
+    <link rel="manifest" href="/images/photo.jpg">
+    <link rel="apple-touch-icon" href="/images/photo.jpg">
+    <meta name="description" content="Personal Website">
+    <meta http-quiv="pragma" cotent="no-cache">
+    <meta http-quiv="pragma" cotent="no-cache,must-revalidate">
+    <meta http-quiv="expires" cotent="0">
+    
+    <link rel="preload" href="/assets/css/0.styles.cfd1e9a2.css" as="style"><link rel="preload" href="/assets/js/app.0d6df2e4.js" as="script"><link rel="preload" href="/assets/js/3.2c60df78.js" as="script"><link rel="preload" href="/assets/js/14.b7f6f87c.js" as="script"><link rel="prefetch" href="/assets/js/10.a675ef31.js"><link rel="prefetch" href="/assets/js/100.c1d0cb0f.js"><link rel="prefetch" href="/assets/js/101.c3caeaf7.js"><link rel="prefetch" href="/assets/js/102.c33f1aeb.js"><link rel="prefetch" href="/assets/js/103.eddf2e86.js"><link rel="prefetch" href="/assets/js/104.943ce33b.js"><link rel="prefetch" href="/assets/js/105.d04687f0.js"><link rel="prefetch" href="/assets/js/106.2dfd0540.js"><link rel="prefetch" href="/assets/js/107.d0139f1c.js"><link rel="prefetch" href="/assets/js/108.24c68d63.js"><link rel="prefetch" href="/assets/js/109.a88c2829.js"><link rel="prefetch" href="/assets/js/11.561f08ee.js"><link rel="prefetch" href="/assets/js/110.ec9d9c92.js"><link rel="prefetch" href="/assets/js/111.a37b7b9f.js"><link rel="prefetch" href="/assets/js/112.862950f9.js"><link rel="prefetch" href="/assets/js/113.bf489717.js"><link rel="prefetch" href="/assets/js/114.0569b17d.js"><link rel="prefetch" href="/assets/js/115.cf784dec.js"><link rel="prefetch" href="/assets/js/116.92c16b65.js"><link rel="prefetch" href="/assets/js/117.991782bd.js"><link rel="prefetch" href="/assets/js/12.e4c2aa4a.js"><link rel="prefetch" href="/assets/js/13.35f9ed5a.js"><link rel="prefetch" href="/assets/js/15.808b42c3.js"><link rel="prefetch" href="/assets/js/16.9a65883a.js"><link rel="prefetch" href="/assets/js/17.dbfc7bb2.js"><link rel="prefetch" href="/assets/js/18.c329e942.js"><link rel="prefetch" href="/assets/js/19.83deeff3.js"><link rel="prefetch" href="/assets/js/2.40aa7bb6.js"><link rel="prefetch" href="/assets/js/20.bdd777c1.js"><link rel="prefetch" href="/assets/js/21.b486bbf9.js"><link rel="prefetch" href="/assets/js/22.a25a903b.js"><link rel="prefetch" href="/assets/js/23.925ff4e0.js"><link rel="prefetch" href="/assets/js/24.ceff7a46.js"><link rel="prefetch" href="/assets/js/25.760d6451.js"><link rel="prefetch" href="/assets/js/26.66b0e693.js"><link rel="prefetch" href="/assets/js/27.79296467.js"><link rel="prefetch" href="/assets/js/28.6f5b92df.js"><link rel="prefetch" href="/assets/js/29.f2b1ce52.js"><link rel="prefetch" href="/assets/js/30.3bafedc7.js"><link rel="prefetch" href="/assets/js/31.b967adc4.js"><link rel="prefetch" href="/assets/js/32.bfcba426.js"><link rel="prefetch" href="/assets/js/33.c838af1a.js"><link rel="prefetch" href="/assets/js/34.6f70f963.js"><link rel="prefetch" href="/assets/js/35.40935f03.js"><link rel="prefetch" href="/assets/js/36.bcf1bbbf.js"><link rel="prefetch" href="/assets/js/37.48e1a430.js"><link rel="prefetch" href="/assets/js/38.82997478.js"><link rel="prefetch" href="/assets/js/39.77436fc0.js"><link rel="prefetch" href="/assets/js/4.7d10bedd.js"><link rel="prefetch" href="/assets/js/40.bc3182ae.js"><link rel="prefetch" href="/assets/js/41.71103288.js"><link rel="prefetch" href="/assets/js/42.7690245a.js"><link rel="prefetch" href="/assets/js/43.d2d3d553.js"><link rel="prefetch" href="/assets/js/44.3f350618.js"><link rel="prefetch" href="/assets/js/45.97083dfb.js"><link rel="prefetch" href="/assets/js/46.a41e95bb.js"><link rel="prefetch" href="/assets/js/47.8540ef07.js"><link rel="prefetch" href="/assets/js/48.54629455.js"><link rel="prefetch" href="/assets/js/49.5f90d180.js"><link rel="prefetch" href="/assets/js/5.b88ed74c.js"><link rel="prefetch" href="/assets/js/50.7fa4c3a4.js"><link rel="prefetch" href="/assets/js/51.6ebb146b.js"><link rel="prefetch" href="/assets/js/52.fe6e9396.js"><link rel="prefetch" href="/assets/js/53.fa23c041.js"><link rel="prefetch" href="/assets/js/54.90582436.js"><link rel="prefetch" href="/assets/js/55.b8844963.js"><link rel="prefetch" href="/assets/js/56.5fd08d82.js"><link rel="prefetch" href="/assets/js/57.d57125ff.js"><link rel="prefetch" href="/assets/js/58.0696d91e.js"><link rel="prefetch" href="/assets/js/59.cf936091.js"><link rel="prefetch" href="/assets/js/6.d4fec8b7.js"><link rel="prefetch" href="/assets/js/60.e0404bbf.js"><link rel="prefetch" href="/assets/js/61.fd7b24c0.js"><link rel="prefetch" href="/assets/js/62.bab35282.js"><link rel="prefetch" href="/assets/js/63.bc3aab78.js"><link rel="prefetch" href="/assets/js/64.5f1bfff1.js"><link rel="prefetch" href="/assets/js/65.c431a11a.js"><link rel="prefetch" href="/assets/js/66.e2d06bb1.js"><link rel="prefetch" href="/assets/js/67.32853338.js"><link rel="prefetch" href="/assets/js/68.342b04c0.js"><link rel="prefetch" href="/assets/js/69.a1ce55b6.js"><link rel="prefetch" href="/assets/js/7.3197ebba.js"><link rel="prefetch" href="/assets/js/70.496c0997.js"><link rel="prefetch" href="/assets/js/71.31b35f4d.js"><link rel="prefetch" href="/assets/js/72.62ea27e4.js"><link rel="prefetch" href="/assets/js/73.2c961c77.js"><link rel="prefetch" href="/assets/js/74.8dbb42b8.js"><link rel="prefetch" href="/assets/js/75.f80b5005.js"><link rel="prefetch" href="/assets/js/76.07020749.js"><link rel="prefetch" href="/assets/js/77.930e3bad.js"><link rel="prefetch" href="/assets/js/78.fc6f0094.js"><link rel="prefetch" href="/assets/js/79.c72fd757.js"><link rel="prefetch" href="/assets/js/8.6e794918.js"><link rel="prefetch" href="/assets/js/80.8c9694ec.js"><link rel="prefetch" href="/assets/js/81.383d5cfc.js"><link rel="prefetch" href="/assets/js/82.1253ca4a.js"><link rel="prefetch" href="/assets/js/83.f0ff7a4d.js"><link rel="prefetch" href="/assets/js/84.5910af60.js"><link rel="prefetch" href="/assets/js/85.a9330cf0.js"><link rel="prefetch" href="/assets/js/86.e4b0497e.js"><link rel="prefetch" href="/assets/js/87.664f4a10.js"><link rel="prefetch" href="/assets/js/88.69b05471.js"><link rel="prefetch" href="/assets/js/89.4f1a869b.js"><link rel="prefetch" href="/assets/js/9.94dfd66d.js"><link rel="prefetch" href="/assets/js/90.91a54f02.js"><link rel="prefetch" href="/assets/js/91.cfe61516.js"><link rel="prefetch" href="/assets/js/92.99f20c42.js"><link rel="prefetch" href="/assets/js/93.dea260f7.js"><link rel="prefetch" href="/assets/js/94.4d34f33a.js"><link rel="prefetch" href="/assets/js/95.1977d5c8.js"><link rel="prefetch" href="/assets/js/96.07bc7add.js"><link rel="prefetch" href="/assets/js/97.548d05ca.js"><link rel="prefetch" href="/assets/js/98.3e689473.js"><link rel="prefetch" href="/assets/js/99.3382c108.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.cfd1e9a2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">个人主页</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Java" class="dropdown-title"><span class="title">Java</span> <span class="arrow down"></span></button> <button type="button" aria-label="Java" class="mobile-dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          Java面向对象和基础
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-oop.html" class="nav-link">
+  Java基础-面向对象
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-basic.html" class="nav-link">
+  Java基础-知识点
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-sum.html" class="nav-link">
+  Java 基础 - 图谱 &amp; Q/A
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java集合框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/collection/java-collection-all.html" class="nav-link">
+  Java 集合框架详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 并发框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-overview.html" class="nav-link">
+  Java 并发知识体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-theorty.html" class="nav-link">
+  Java 并发理论基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-thread-basic.html" class="nav-link">
+  Java 并发线程基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-juc-overview.html" class="nav-link">
+  J.U.C 知识体系与详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - IO框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/io/java-io-overview.html" class="nav-link">
+  Java IO/NIO/AIO详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 新版本特性
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/java8/java8.html" class="nav-link">
+  Java 8 特性详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java-8-up-overview.html" class="nav-link">
+  Java 8 以上版本特性体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java9-11.html" class="nav-link">
+  Java 8 升Java 11特性必读
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - JVM相关
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-classload.html" class="nav-link">
+  Java 类加载机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-class.html" class="nav-link">
+  Java 字节码和增强技术
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-struct.html" class="nav-link">
+  JVM 内存结构详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-gc.html" class="nav-link">
+  JVM 垃圾回收机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="nav-link">
+  Java 调试排错相关
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据库" class="dropdown-title"><span class="title">数据库</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据库" class="mobile-dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          数据库相关介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/info/mysql.html" class="nav-link">
+  mysql
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/oracle.html" class="nav-link">
+  oracle
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/h2.html" class="nav-link">
+  h2
+</a></li></ul></li><li class="dropdown-item"><h4>
+          框架介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/frame/mybatis/mybatis-base-overview.html" class="nav-link">
+  mybatis
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/mp/mp-base-overview.html" class="nav-link">
+  mybatis-plus
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/jpa/jpa-base-overview.html" class="nav-link">
+  jpa
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="中间件" class="dropdown-title"><span class="title">中间件</span> <span class="arrow down"></span></button> <button type="button" aria-label="中间件" class="mobile-dropdown-title"><span class="title">中间件</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          redis
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/middleware/redis/redis-overview.html" class="nav-link">
+  redis各大版本
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="个人记录" class="dropdown-title"><span class="title">个人记录</span> <span class="arrow down"></span></button> <button type="button" aria-label="个人记录" class="mobile-dropdown-title"><span class="title">个人记录</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          2024
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/owner/2024/229-1.html" class="nav-link">
+  vuepress打包报unsupported
+</a></li><li class="dropdown-subitem"><a href="/md/owner/2024/229-2.html" class="nav-link">
+  待定
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="https://github.com/xianglong123/cas-blog" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Java" class="dropdown-title"><span class="title">Java</span> <span class="arrow down"></span></button> <button type="button" aria-label="Java" class="mobile-dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          Java面向对象和基础
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-oop.html" class="nav-link">
+  Java基础-面向对象
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-basic.html" class="nav-link">
+  Java基础-知识点
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-sum.html" class="nav-link">
+  Java 基础 - 图谱 &amp; Q/A
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java集合框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/collection/java-collection-all.html" class="nav-link">
+  Java 集合框架详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 并发框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-overview.html" class="nav-link">
+  Java 并发知识体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-theorty.html" class="nav-link">
+  Java 并发理论基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-thread-basic.html" class="nav-link">
+  Java 并发线程基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-juc-overview.html" class="nav-link">
+  J.U.C 知识体系与详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - IO框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/io/java-io-overview.html" class="nav-link">
+  Java IO/NIO/AIO详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 新版本特性
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/java8/java8.html" class="nav-link">
+  Java 8 特性详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java-8-up-overview.html" class="nav-link">
+  Java 8 以上版本特性体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java9-11.html" class="nav-link">
+  Java 8 升Java 11特性必读
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - JVM相关
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-classload.html" class="nav-link">
+  Java 类加载机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-class.html" class="nav-link">
+  Java 字节码和增强技术
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-struct.html" class="nav-link">
+  JVM 内存结构详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-gc.html" class="nav-link">
+  JVM 垃圾回收机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="nav-link">
+  Java 调试排错相关
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据库" class="dropdown-title"><span class="title">数据库</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据库" class="mobile-dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          数据库相关介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/info/mysql.html" class="nav-link">
+  mysql
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/oracle.html" class="nav-link">
+  oracle
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/h2.html" class="nav-link">
+  h2
+</a></li></ul></li><li class="dropdown-item"><h4>
+          框架介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/frame/mybatis/mybatis-base-overview.html" class="nav-link">
+  mybatis
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/mp/mp-base-overview.html" class="nav-link">
+  mybatis-plus
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/jpa/jpa-base-overview.html" class="nav-link">
+  jpa
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="中间件" class="dropdown-title"><span class="title">中间件</span> <span class="arrow down"></span></button> <button type="button" aria-label="中间件" class="mobile-dropdown-title"><span class="title">中间件</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          redis
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/middleware/redis/redis-overview.html" class="nav-link">
+  redis各大版本
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="个人记录" class="dropdown-title"><span class="title">个人记录</span> <span class="arrow down"></span></button> <button type="button" aria-label="个人记录" class="mobile-dropdown-title"><span class="title">个人记录</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          2024
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/owner/2024/229-1.html" class="nav-link">
+  vuepress打包报unsupported
+</a></li><li class="dropdown-subitem"><a href="/md/owner/2024/229-2.html" class="nav-link">
+  待定
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="https://github.com/xianglong123/cas-blog" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/basic/java-basic-oop.html" class="sidebar-link">Java 基础 - 面向对象</a></li><li><a href="/md/java/basic/java-basic-lan-basic.html" class="sidebar-link">Java 基础 - 知识点</a></li><li><a href="/md/java/basic/java-basic-lan-sum.html" class="sidebar-link">Java 基础 - 图谱 &amp; Q/A</a></li><li><a href="/md/java/basic/java-basic-x-generic.html" class="sidebar-link">Java 基础 - 泛型机制详解</a></li><li><a href="/md/java/basic/java-basic-x-exception.html" class="sidebar-link">Java 基础 - 异常机制详解</a></li><li><a href="/md/java/basic/java-basic-x-reflection.html" class="sidebar-link">Java 基础 - 反射机制详解</a></li><li><a href="/md/java/advanced/java-advanced-spi.html" class="sidebar-link">Java常用机制 - SPI机制详解</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 集合框架</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/collection/java-collection-all.html" class="sidebar-link">Collection 类关系图</a></li><li><a href="/md/java/collection/java-collection-ArrayList.html" class="sidebar-link">Collection - ArrayList 源码解析</a></li><li><a href="/md/java/collection/java-collection-LinkedList.html" class="sidebar-link">Collection - LinkedList源码解析</a></li><li><a href="/md/java/collection/java-collection-Queue&amp;Stack.html" class="sidebar-link">Collection - Stack &amp; Queue 源码解析</a></li><li><a href="/md/java/collection/java-collection-PriorityQueue.html" class="sidebar-link">Collection - PriorityQueue源码解析</a></li><li><a href="/md/java/collection/java-map-HashMap&amp;HashSet.html" class="sidebar-link">Map - HashSet &amp; HashMap 源码解析</a></li><li><a href="/md/java/collection/java-map-LinkedHashMap&amp;LinkedHashSet.html" class="sidebar-link">Map - LinkedHashSet&amp;Map源码解析</a></li><li><a href="/md/java/collection/java-map-TreeMap&amp;TreeSet.html" class="sidebar-link">Map - TreeSet &amp; TreeMap 源码解析</a></li><li><a href="/md/java/collection/java-map-WeakHashMap.html" class="sidebar-link">Map - WeakHashMap源码解析</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Java 多线程与并发</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/thread/java-thread-x-overview.html" class="sidebar-link">♥Java并发知识体系详解♥</a></li><li><a href="/md/java/thread/java-thread-x-theorty.html" class="sidebar-link">Java 并发 - 理论基础</a></li><li><a href="/md/java/thread/java-thread-x-thread-basic.html" class="sidebar-link">Java 并发 - 线程基础</a></li><li><a href="/md/java/thread/java-thread-x-lock-all.html" class="sidebar-link">Java并发 - Java中所有的锁</a></li><li><a href="/md/java/thread/java-thread-x-key-synchronized.html" class="sidebar-link">关键字:synchronized详解</a></li><li><a href="/md/java/thread/java-thread-x-key-volatile.html" class="sidebar-link">关键字:volatile详解</a></li><li><a href="/md/java/thread/java-thread-x-key-final.html" class="sidebar-link">关键字:final详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-overview.html" class="sidebar-link">JUC - 类汇总和学习指南</a></li><li><a href="/md/java/thread/java-thread-x-juc-AtomicInteger.html" class="sidebar-link">JUC原子类CAS, Unsafe和原子类详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-LockSupport.html" class="sidebar-link">JUC锁:LockSupport详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-AbstractQueuedSynchronizer.html" class="sidebar-link">JUC锁:锁核心类AQS详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-ReentrantLock.html" class="sidebar-link">JUC锁:ReentrantLock详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-ReentrantReadWriteLock.html" class="sidebar-link">JUC锁:ReentrantReadWriteLock详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-ConcurrentHashMap.html" class="sidebar-link">JUC集合:ConcurrentHashMap详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-CopyOnWriteArrayList.html" class="sidebar-link">JUC集合:CopyOnWriteArrayList详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-ConcurrentLinkedQueue.html" class="sidebar-link">JUC集合:ConcurrentLinkedQueue详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-BlockingQueue.html" class="sidebar-link">JUC集合:BlockingQueue详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-FutureTask.html" class="sidebar-link">JUC线程池:FutureTask详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ThreadPoolExecutor.html" class="sidebar-link">JUC线程池:ThreadPoolExecutor详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ScheduledThreadPoolExecutor.html" class="sidebar-link">JUC线程池:ScheduledThreadPoolExecutor详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ForkJoinPool.html" class="sidebar-link">JUC线程池:Fork/Join框架详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-countdownlatch.html" class="sidebar-link">JUC工具类:CountDownLatch详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-cyclicbarrier.html" aria-current="page" class="active sidebar-link">JUC工具类:CyclicBarrier详解</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/md/java/thread/java-thread-x-juc-tool-semaphore.html" class="sidebar-link">JUC工具类:Semaphore详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-phaser.html" class="sidebar-link">JUC工具类:Phaser详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-exchanger.html" class="sidebar-link">JUC工具类:Exchanger详解</a></li><li><a href="/md/java/thread/java-thread-x-threadlocal.html" class="sidebar-link">Java 并发 - ThreadLocal详解</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java IO/NIO/AIO</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/io/java-io-overview.html" class="sidebar-link">♥Java IO知识体系详解♥</a></li><li><a href="/md/java/io/java-io-basic-category.html" class="sidebar-link">Java IO - 分类(传输，操作)</a></li><li><a href="/md/java/io/java-io-basic-design-pattern.html" class="sidebar-link">Java IO - 设计模式(装饰者模式)</a></li><li><a href="/md/java/io/java-io-basic-code-inputstream.html" class="sidebar-link">Java IO - 源码:InputStream</a></li><li><a href="/md/java/io/java-io-basic-code-outputstream.html" class="sidebar-link">Java IO - 源码:OutputStream</a></li><li><a href="/md/java/io/java-io-basic-usage.html" class="sidebar-link">Java IO - 常见类使用</a></li><li><a href="/md/java/io/java-io-model.html" class="sidebar-link">IO 模型 - Unix IO 模型</a></li><li><a href="/md/java/io/java-io-bio.html" class="sidebar-link">Java IO - BIO 详解</a></li><li><a href="/md/java/io/java-io-nio.html" class="sidebar-link">Java NIO - 基础详解</a></li><li><a href="/md/java/io/java-io-nio-select-epoll.html" class="sidebar-link">Java NIO - IO多路复用详解</a></li><li><a href="/md/java/io/java-io-aio.html" class="sidebar-link">Java AIO - 异步IO详解</a></li><li><a href="/md/java/io/java-io-nio-netty.html" class="sidebar-link">Java N(A)IO - 框架:Netty</a></li><li><a href="/md/java/io/java-io-nio-zerocopy.html" class="sidebar-link">Java NIO - 零拷贝实现</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java8 特性详解</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/java8/java8.html" class="sidebar-link">♥Java8特性知识体系详解♥</a></li><li><a href="/md/java/java8/java8-stream.html" class="sidebar-link">Java 8 - 函数编程(lambda表达式)</a></li><li><a href="/md/java/java8/java8-optional.html" class="sidebar-link">Java 8 - Optional类深度解析</a></li><li><a href="/md/java/java8/java8-default.html" class="sidebar-link">Java 8 - 默认方法</a></li><li><a href="/md/java/java8/java8-type-anno.html" class="sidebar-link">Java 8 - 类型注解</a></li><li><a href="/md/java/java8/java8-anno-repeat.html" class="sidebar-link">Java 8 - 重复注解</a></li><li><a href="/md/java/java8/java8-type.html" class="sidebar-link">Java 8 - 类型推断优化</a></li><li><a href="/md/java/java8/java8-jre.html" class="sidebar-link">Java 8 - JRE精简</a></li><li><a href="/md/java/java8/java8-permgen.html" class="sidebar-link">Java 8 - 移除Permgen</a></li><li><a href="/md/java/java8/java8-stampedlock.html" class="sidebar-link">Java 8 - StampedLock</a></li><li><a href="/md/java/java8/java8-localdatetime.html" class="sidebar-link">Java 8 - LocalDate/LocalDateTime</a></li><li><a href="/md/java/java8/java8-javafx.html" class="sidebar-link">Java 8 - JavaFx 2.0</a></li><li><a href="/md/java/java8/java8-others.html" class="sidebar-link">Java 8 - 其它更新:字符串base64,...</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java8 以上特性概述</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/java8up/java-8-up-overview.html" class="sidebar-link">♥Java8+特性知识体系详解♥</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>JVM相关</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/jvm/java-jvm-x-overview.html" class="sidebar-link">♥JVM相关知识体系详解♥</a></li><li><a href="/md/java/jvm/java-jvm-class.html" class="sidebar-link">JVM 基础 - 类字节码详解</a></li><li><a href="/md/java/jvm/java-jvm-class-enhancer.html" class="sidebar-link">JVM 基础 - 字节码的增强技术</a></li><li><a href="/md/java/jvm/java-jvm-classload.html" class="sidebar-link">JVM 基础 - Java 类加载机制</a></li><li><a href="/md/java/jvm/java-jvm-struct.html" class="sidebar-link">JVM 基础 - JVM 内存结构</a></li><li><a href="/md/java/jvm/java-jvm-x-introduce.html" class="sidebar-link">JVM 基础 - Java 内存模型引入</a></li><li><a href="/md/java/jvm/java-jvm-jmm.html" class="sidebar-link">JVM 基础 - Java 内存模型详解</a></li><li><a href="/md/java/jvm/java-jvm-gc.html" class="sidebar-link">GC - Java 垃圾回收基础知识</a></li><li><a href="/md/java/jvm/java-jvm-gc-g1.html" class="sidebar-link">GC - Java 垃圾回收器之G1详解</a></li><li><a href="/md/java/jvm/java-jvm-gc-zgc.html" class="sidebar-link">GC - Java 垃圾回收器之ZGC详解</a></li><li><a href="/md/java/jvm/java-jvm-cms-gc.html" class="sidebar-link">GC - Java 垃圾回收器之CMS GC问题分析与解决</a></li><li><a href="/md/java/jvm/java-jvm-param.html" class="sidebar-link">调试排错 - JVM 调优参数</a></li><li><a href="/md/java/jvm/java-jvm-oom.html" class="sidebar-link">调试排错 - Java 内存分析之堆内存和MetaSpace内存</a></li><li><a href="/md/java/jvm/java-jvm-oom-offheap.html" class="sidebar-link">调试排错 - Java 内存分析之堆外内存</a></li><li><a href="/md/java/jvm/java-jvm-thread-dump.html" class="sidebar-link">调试排错 - Java 线程分析之线程Dump分析</a></li><li><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="sidebar-link">调试排错 - Java 问题排查之Linux命令</a></li><li><a href="/md/java/jvm/java-jvm-debug-tools-list.html" class="sidebar-link">调试排错 - Java 问题排查之工具单</a></li><li><a href="/md/java/jvm/java-jvm-oom-tool.html" class="sidebar-link">调试排错 - Java 问题排查之JVM可视化工具</a></li><li><a href="/md/java/jvm/java-jvm-agent-arthas.html" class="sidebar-link">调试排错 - Java 问题排查之应用在线调试Arthas</a></li><li><a href="/md/java/jvm/java-jvm-debug-idea.html" class="sidebar-link">调试排错 - Java 问题排查之使用IDEA本地调试和远程调试</a></li><li><a href="/md/java/jvm/java-jvm-agent-usage.html" class="sidebar-link">调试排错 - Java动态调试技术原理</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="juc工具类-cyclicbarrier详解"><a href="#juc工具类-cyclicbarrier详解" class="header-anchor">#</a> JUC工具类:CyclicBarrier详解</h1> <div class="custom-block tip"><p class="custom-block-title">提示</p> <p>CyclicBarrier底层是基于ReentrantLock和AbstractQueuedSynchronizer来实现的, 在理解的时候最好和CountDownLatch放在一起理解(相见本文分析)。 @123</p></div> <ul><li>JUC工具类: CyclicBarrier详解
+<ul><li>带着BAT大厂的面试问题去理解</li> <li>CyclicBarrier简介</li> <li>CyclicBarrier源码分析
+<ul><li>类的继承关系</li> <li>类的属性</li> <li>类的构造函数</li> <li>核心函数 - dowait函数</li> <li>核心函数 - nextGeneration函数</li> <li>breakBarrier函数</li></ul></li> <li>CyclicBarrier示例</li> <li>和CountDonwLatch再对比</li> <li>参考文章</li></ul></li></ul> <h3 id="带着bat大厂的面试问题去理解"><a href="#带着bat大厂的面试问题去理解" class="header-anchor">#</a> # 带着BAT大厂的面试问题去理解</h3> <blockquote><p>提示</p></blockquote> <blockquote><p>请带着这些问题继续后文，会很大程度上帮助你更好的理解相关知识点。@pdai</p></blockquote> <ul><li>什么是CyclicBarrier?</li> <li>CyclicBarrier底层实现原理?</li> <li>CountDownLatch和CyclicBarrier对比?</li> <li>CyclicBarrier的核心函数有哪些?</li> <li>CyclicBarrier适用于什么场景?</li></ul> <h3 id="cyclicbarrier简介"><a href="#cyclicbarrier简介" class="header-anchor">#</a> # CyclicBarrier简介</h3> <ul><li><blockquote><p>对于CountDownLatch，其他线程为游戏玩家，比如英雄联盟，主线程为控制游戏开始的线程。在所有的玩家都准备好之前，主线程是处于等待状态的，也就是游戏不能开始。当所有的玩家准备好之后，下一步的动作实施者为主线程，即开始游戏。</p></blockquote></li> <li><blockquote><p>对于CyclicBarrier，假设有一家公司要全体员工进行团建活动，活动内容为翻越三个障碍物，每一个人翻越障碍物所用的时间是不一样的。但是公司要求所有人在翻越当前障碍物之后再开始翻越下一个障碍物，也就是所有人翻越第一个障碍物之后，才开始翻越第二个，以此类推。类比地，每一个员工都是一个其他线程。当所有人都翻越的所有的障碍物之后，程序才结束。而主线程可能早就结束了，这里我们不用管主线程。</p></blockquote></li></ul> <h3 id="cyclicbarrier源码分析"><a href="#cyclicbarrier源码分析" class="header-anchor">#</a> # CyclicBarrier源码分析</h3> <h3 id="类的继承关系"><a href="#类的继承关系" class="header-anchor">#</a> # 类的继承关系</h3> <blockquote><p>CyclicBarrier没有显示继承哪个父类或者实现哪个父接口, 所有AQS和重入锁不是通过继承实现的，而是通过组合实现的。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>public class CyclicBarrier {}
+```　　
+
+### 类的内部类
+
+CyclicBarrier类存在一个内部类Generation，每一次使用的CycBarrier可以当成Generation的实例，其源代码如下
+
+```java
+private static class Generation {
+    boolean broken = false;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><blockquote><p>说明: Generation类有一个属性broken，用来表示当前屏障是否被损坏。</p></blockquote> <h3 id="类的属性"><a href="#类的属性" class="header-anchor">#</a> # 类的属性</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>public class CyclicBarrier {
+
+    /** The lock for guarding barrier entry */
+    // 可重入锁
+    private final ReentrantLock lock = new ReentrantLock();
+    /** Condition to wait on until tripped */
+    // 条件队列
+    private final Condition trip = lock.newCondition();
+    /** The number of parties */
+    // 参与的线程数量
+    private final int parties;
+    /* The command to run when tripped */
+    // 由最后一个进入 barrier 的线程执行的操作
+    private final Runnable barrierCommand;
+    /** The current generation */
+    // 当前代
+    private Generation generation = new Generation();
+    // 正在等待进入屏障的线程数量
+    private int count;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br></div></div><blockquote><p>说明: 该属性有一个为ReentrantLock对象，有一个为Condition对象，而Condition对象又是基于AQS的，所以，归根到底，底层还是由AQS提供支持。</p></blockquote> <h3 id="类的构造函数"><a href="#类的构造函数" class="header-anchor">#</a> # 类的构造函数</h3> <ul><li>CyclicBarrier(int, Runnable)型构造函数</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>public CyclicBarrier(int parties, Runnable barrierAction) {
+    // 参与的线程数量小于等于0，抛出异常
+    if (parties &lt;= 0) throw new IllegalArgumentException();
+    // 设置parties
+    this.parties = parties;
+    // 设置count
+    this.count = parties;
+    // 设置barrierCommand
+    this.barrierCommand = barrierAction;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><blockquote><p>说明: 该构造函数可以指定关联该CyclicBarrier的线程数量，并且可以指定在所有线程都进入屏障后的执行动作，该执行动作由最后一个进行屏障的线程执行。</p></blockquote> <ul><li>CyclicBarrier(int)型构造函数</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>public CyclicBarrier(int parties) {
+    // 调用含有两个参数的构造函数
+    this(parties, null);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><blockquote><p>说明: 该构造函数仅仅执行了关联该CyclicBarrier的线程数量，没有设置执行动作。</p></blockquote> <h3 id="核心函数-dowait函数"><a href="#核心函数-dowait函数" class="header-anchor">#</a> # 核心函数 - dowait函数</h3> <blockquote><p>此函数为CyclicBarrier类的核心函数，CyclicBarrier类对外提供的await函数在底层都是调用该了doawait函数，其源代码如下。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>private int dowait(boolean timed, long nanos)
+    throws InterruptedException, BrokenBarrierException,
+            TimeoutException {
+    // 保存当前锁
+    final ReentrantLock lock = this.lock;
+    // 锁定
+    lock.lock();
+    try {
+        // 保存当前代
+        final Generation g = generation;
+
+        if (g.broken) // 屏障被破坏，抛出异常
+            throw new BrokenBarrierException();
+
+        if (Thread.interrupted()) { // 线程被中断
+            // 损坏当前屏障，并且唤醒所有的线程，只有拥有锁的时候才会调用
+            breakBarrier();
+            // 抛出异常
+            throw new InterruptedException();
+        }
+
+        // 减少正在等待进入屏障的线程数量
+        int index = --count;
+        if (index == 0) {  // 正在等待进入屏障的线程数量为0，所有线程都已经进入
+            // 运行的动作标识
+            boolean ranAction = false;
+            try {
+                // 保存运行动作
+                final Runnable command = barrierCommand;
+                if (command != null) // 动作不为空
+                    // 运行
+                    command.run();
+                // 设置ranAction状态
+                ranAction = true;
+                // 进入下一代
+                nextGeneration();
+                return 0;
+            } finally {
+                if (!ranAction) // 没有运行的动作
+                    // 损坏当前屏障
+                    breakBarrier();
+            }
+        }
+
+        // loop until tripped, broken, interrupted, or timed out
+        // 无限循环
+        for (;;) {
+            try {
+                if (!timed) // 没有设置等待时间
+                    // 等待
+                    trip.await(); 
+                else if (nanos &gt; 0L) // 设置了等待时间，并且等待时间大于0
+                    // 等待指定时长
+                    nanos = trip.awaitNanos(nanos);
+            } catch (InterruptedException ie) { 
+                if (g == generation &amp;&amp; ! g.broken) { // 等于当前代并且屏障没有被损坏
+                    // 损坏当前屏障
+                    breakBarrier();
+                    // 抛出异常
+                    throw ie;
+                } else { // 不等于当前带后者是屏障被损坏
+                    // We're about to finish waiting even if we had not
+                    // been interrupted, so this interrupt is deemed to
+                    // &quot;belong&quot; to subsequent execution.
+                    // 中断当前线程
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            if (g.broken) // 屏障被损坏，抛出异常
+                throw new BrokenBarrierException();
+
+            if (g != generation) // 不等于当前代
+                // 返回索引
+                return index;
+
+            if (timed &amp;&amp; nanos &lt;= 0L) { // 设置了等待时间，并且等待时间小于0
+                // 损坏屏障
+                breakBarrier();
+                // 抛出异常
+                throw new TimeoutException();
+            }
+        }
+    } finally {
+        // 释放锁
+        lock.unlock();
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br></div></div><blockquote><p>说明: dowait方法的逻辑会进行一系列的判断，大致流程如下:</p></blockquote> <blockquote><p><img src="data:image/png;base64,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" alt=""></p></blockquote> <h3 id="核心函数-nextgeneration函数"><a href="#核心函数-nextgeneration函数" class="header-anchor">#</a> # 核心函数 - nextGeneration函数</h3> <blockquote><p>此函数在所有线程进入屏障后会被调用，即生成下一个版本，所有线程又可以重新进入到屏障中，其源代码如下</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>private void nextGeneration() {
+    // signal completion of last generation
+    // 唤醒所有线程
+    trip.signalAll();
+    // set up next generation
+    // 恢复正在等待进入屏障的线程数量
+    count = parties;
+    // 新生一代
+    generation = new Generation();
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><blockquote><p>在此函数中会调用AQS的signalAll方法，即唤醒所有等待线程。如果所有的线程都在等待此条件，则唤醒所有线程。其源代码如下</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>public final void signalAll() {
+    if (!isHeldExclusively()) // 不被当前线程独占，抛出异常
+        throw new IllegalMonitorStateException();
+    // 保存condition队列头节点
+    Node first = firstWaiter;
+    if (first != null) // 头节点不为空
+        // 唤醒所有等待线程
+        doSignalAll(first);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><blockquote><p>说明: 此函数判断头节点是否为空，即条件队列是否为空，然后会调用doSignalAll函数，doSignalAll函数源码如下</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>private void doSignalAll(Node first) {
+    // condition队列的头节点尾结点都设置为空
+    lastWaiter = firstWaiter = null;
+    // 循环
+    do {
+        // 获取first结点的nextWaiter域结点
+        Node next = first.nextWaiter;
+        // 设置first结点的nextWaiter域为空
+        first.nextWaiter = null;
+        // 将first结点从condition队列转移到sync队列
+        transferForSignal(first);
+        // 重新设置first
+        first = next;
+    } while (first != null);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br></div></div><blockquote><p>说明: 此函数会依次将条件队列中的节点转移到同步队列中，会调用到transferForSignal函数，其源码如下</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>final boolean transferForSignal(Node node) {
+    /*
+        * If cannot change waitStatus, the node has been cancelled.
+        */
+    if (!compareAndSetWaitStatus(node, Node.CONDITION, 0))
+        return false;
+
+    /*
+        * Splice onto queue and try to set waitStatus of predecessor to
+        * indicate that thread is (probably) waiting. If cancelled or
+        * attempt to set waitStatus fails, wake up to resync (in which
+        * case the waitStatus can be transiently and harmlessly wrong).
+        */
+    Node p = enq(node);
+    int ws = p.waitStatus;
+    if (ws &gt; 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL))
+        LockSupport.unpark(node.thread);
+    return true;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br></div></div><blockquote><p>说明: 此函数的作用就是将处于条件队列中的节点转移到同步队列中，并设置结点的状态信息，其中会调用到enq函数，其源代码如下。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>private Node enq(final Node node) {
+    for (;;) { // 无限循环，确保结点能够成功入队列
+        // 保存尾结点
+        Node t = tail;
+        if (t == null) { // 尾结点为空，即还没被初始化
+            if (compareAndSetHead(new Node())) // 头节点为空，并设置头节点为新生成的结点
+                tail = head; // 头节点与尾结点都指向同一个新生结点
+        } else { // 尾结点不为空，即已经被初始化过
+            // 将node结点的prev域连接到尾结点
+            node.prev = t; 
+            if (compareAndSetTail(t, node)) { // 比较结点t是否为尾结点，若是则将尾结点设置为node
+                // 设置尾结点的next域为node
+                t.next = node; 
+                return t; // 返回尾结点
+            }
+        }
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br></div></div><blockquote><p>说明: 此函数完成了结点插入同步队列的过程，也很好理解。</p></blockquote> <blockquote><p>综合上面的分析可知，newGeneration函数的主要方法的调用如下，之后会通过一个例子详细讲解:</p></blockquote> <blockquote><p><img src="data:image/png;base64,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" alt=""></p></blockquote> <h3 id="breakbarrier函数"><a href="#breakbarrier函数" class="header-anchor">#</a> # breakBarrier函数</h3> <blockquote><p>此函数的作用是损坏当前屏障，会唤醒所有在屏障中的线程。源代码如下:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>private void breakBarrier() {
+    // 设置状态
+    generation.broken = true;
+    // 恢复正在等待进入屏障的线程数量
+    count = parties;
+    // 唤醒所有线程
+    trip.signalAll();
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><blockquote><p>说明: 可以看到，此函数也调用了AQS的signalAll函数，由signal函数提供支持。</p></blockquote> <h3 id="cyclicbarrier示例"><a href="#cyclicbarrier示例" class="header-anchor">#</a> # CyclicBarrier示例</h3> <blockquote><p>下面通过一个例子来详解CyclicBarrier的使用和内部工作机制，源代码如下</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
+class MyThread extends Thread {
+    private CyclicBarrier cb;
+    public MyThread(String name, CyclicBarrier cb) {
+        super(name);
+        this.cb = cb;
+    }
+
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + &quot; going to await&quot;);
+        try {
+            cb.await();
+            System.out.println(Thread.currentThread().getName() + &quot; continue&quot;);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+public class CyclicBarrierDemo {
+    public static void main(String[] args) throws InterruptedException, BrokenBarrierException {
+        CyclicBarrier cb = new CyclicBarrier(3, new Thread(&quot;barrierAction&quot;) {
+            public void run() {
+                System.out.println(Thread.currentThread().getName() + &quot; barrier action&quot;);
+
+            }
+        });
+        MyThread t1 = new MyThread(&quot;t1&quot;, cb);
+        MyThread t2 = new MyThread(&quot;t2&quot;, cb);
+        tstart();
+        tstart();
+        System.out.println(Thread.currentThread().getName() + &quot; going to await&quot;);
+        cb.await();
+        System.out.println(Thread.currentThread().getName() + &quot; continue&quot;);
+
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br></div></div><blockquote><p>运行结果(某一次):</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>t1 going to await
+main going to await
+t2 going to await
+t2 barrier action
+t2 continue
+t1 continue
+main continue
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><blockquote><p>说明: 根据结果可知，可能会存在如下的调用时序。</p></blockquote> <blockquote><p><img src="data:image/png;base64,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" alt=""></p></blockquote> <blockquote><p>说明: 由上图可知，假设t1线程的cb.await是在main线程的cb.barrierAction动作是由最后一个进入屏障的线程执行的。根据时序图，进一步分析出其内部工作流程。</p></blockquote> <ul><li>main(主)线程执行cb.await操作，主要调用的函数如下。</li></ul> <blockquote><p><img src="/assets/img/java-thread-x-cyclicbarrier-4.604f2ea5.png" alt=""></p></blockquote> <blockquote><p>说明: 由于ReentrantLock的默认采用非公平策略，所以在dowait函数中调用的是ReentrantLock.NonfairSync的lock函数，由于此时AQS的状态是0，表示还没有被任何线程占用，故main线程可以占用，之后在dowait中会调用trip.await函数，最终的结果是条件队列中存放了一个包含main线程的结点，并且被禁止运行了，同时，main线程所拥有的资源也被释放了，可以供其他线程获取。</p></blockquote> <ul><li>t1线程执行cb.await操作，其中假设t1线程的lock.lock操作在main线程释放了资源之后，则其主要调用的函数如下。</li></ul> <blockquote><p><img src="/assets/img/java-thread-x-cyclicbarrier-5.fc69f8bb.png" alt=""></p></blockquote> <blockquote><p>说明: 可以看到，之后condition queue(条件队列)里面有两个节点，包含t1线程的结点插入在队列的尾部，并且t1线程也被禁止了，因为执行了park操作，此时两个线程都被禁止了。</p></blockquote> <ul><li>t2线程执行cb.await操作，其中假设t2线程的lock.lock操作在t1线程释放了资源之后，则其主要调用的函数如下。</li></ul> <blockquote><p><img src="/assets/img/java-thread-x-cyclicbarrier-6.a5064c92.png" alt=""></p></blockquote> <blockquote><p>说明: 由上图可知，在t2线程执行await操作后，会直接执行command.run方法，不是重新开启一个线程，而是最后进入屏障的线程执行。同时，会将Condition queue中的所有节点都转移到Sync queue中，并且最后main线程会被unpark，可以继续运行。main线程获取cpu资源，继续运行。</p></blockquote> <ul><li>main线程获取cpu资源，继续运行，下图给出了主要的方法调用:</li></ul> <blockquote><p><img src="/assets/img/java-thread-x-cyclicbarrier-7.4451cd0a.png" alt=""></p></blockquote> <blockquote><p>说明: 其中，由于main线程是在AQS.CO的wait中被park的，所以恢复时，会继续在该方法中运行。运行过后，t1线程被unpark，它获得cpu资源可以继续运行。</p></blockquote> <ul><li>t1线程获取cpu资源，继续运行，下图给出了主要的方法调用。</li></ul> <blockquote><p><img src="data:image/png;base64,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" alt=""></p></blockquote> <blockquote><p>说明: 其中，由于t1线程是在AQS.CO的wait方法中被park，所以恢复时，会继续在该方法中运行。运行过后，Sync queue中保持着一个空节点。头节点与尾节点均指向它。</p></blockquote> <blockquote><p>注意: 在线程await过程中中断线程会抛出异常，所有进入屏障的线程都将被释放。至于CyclicBarrier的其他用法，读者可以自行查阅API，不再累赘。</p></blockquote> <h3 id="和countdonwlatch再对比"><a href="#和countdonwlatch再对比" class="header-anchor">#</a> # 和CountDonwLatch再对比</h3> <ul><li>CountDownLatch减计数，CyclicBarrier加计数。</li> <li>CountDownLatch是一次性的，CyclicBarrier可以重用。</li> <li>CountDownLatch和CyclicBarrier都有让多个线程等待同步然后再开始下一步动作的意思，但是CountDownLatch的下一步的动作实施者是主线程，具有不可重复性；而CyclicBarrier的下一步动作实施者还是“其他线程”本身，具有往复多次实施动作的特点。</li></ul> <h3 id="参考文章"><a href="#参考文章" class="header-anchor">#</a> # 参考文章</h3> <ul><li>文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5392816.html，在此基础上做了增改。</li></ul></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">5/13/2023, 11:19:20 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/md/java/thread/java-thread-x-juc-tool-countdownlatch.html" class="prev">
+        JUC工具类:CountDownLatch详解
+      </a></span> <span class="next"><a href="/md/java/thread/java-thread-x-juc-tool-semaphore.html">
+        JUC工具类:Semaphore详解
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:290px;display:none;" data-v-5775ee02>
+      欢迎来到我的博客
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="260px" height="320" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----><div class="RibbonAnimation"></div><!----><div class="Sakura" data-v-248d85d6><canvas id="canvas_sakura" style="z-index:2;" data-v-248d85d6></canvas></div></div></div>
+    <script src="/assets/js/app.0d6df2e4.js" defer></script><script src="/assets/js/3.2c60df78.js" defer></script><script src="/assets/js/14.b7f6f87c.js" defer></script>
+  </body>
+</html>

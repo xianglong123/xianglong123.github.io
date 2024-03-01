@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Java 8 - 函数编程(lambda表达式) | 个人主页</title>
+    <meta name="generator" content="VuePress 1.9.9">
+    <link rel="icon" href="/images/photo.jpg">
+    <link rel="manifest" href="/images/photo.jpg">
+    <link rel="apple-touch-icon" href="/images/photo.jpg">
+    <meta name="description" content="Personal Website">
+    <meta http-quiv="pragma" cotent="no-cache">
+    <meta http-quiv="pragma" cotent="no-cache,must-revalidate">
+    <meta http-quiv="expires" cotent="0">
+    
+    <link rel="preload" href="/assets/css/0.styles.cfd1e9a2.css" as="style"><link rel="preload" href="/assets/js/app.0d6df2e4.js" as="script"><link rel="preload" href="/assets/js/3.2c60df78.js" as="script"><link rel="preload" href="/assets/js/71.31b35f4d.js" as="script"><link rel="prefetch" href="/assets/js/10.a675ef31.js"><link rel="prefetch" href="/assets/js/100.c1d0cb0f.js"><link rel="prefetch" href="/assets/js/101.c3caeaf7.js"><link rel="prefetch" href="/assets/js/102.c33f1aeb.js"><link rel="prefetch" href="/assets/js/103.eddf2e86.js"><link rel="prefetch" href="/assets/js/104.943ce33b.js"><link rel="prefetch" href="/assets/js/105.d04687f0.js"><link rel="prefetch" href="/assets/js/106.2dfd0540.js"><link rel="prefetch" href="/assets/js/107.d0139f1c.js"><link rel="prefetch" href="/assets/js/108.24c68d63.js"><link rel="prefetch" href="/assets/js/109.a88c2829.js"><link rel="prefetch" href="/assets/js/11.561f08ee.js"><link rel="prefetch" href="/assets/js/110.ec9d9c92.js"><link rel="prefetch" href="/assets/js/111.a37b7b9f.js"><link rel="prefetch" href="/assets/js/112.862950f9.js"><link rel="prefetch" href="/assets/js/113.bf489717.js"><link rel="prefetch" href="/assets/js/114.0569b17d.js"><link rel="prefetch" href="/assets/js/115.cf784dec.js"><link rel="prefetch" href="/assets/js/116.92c16b65.js"><link rel="prefetch" href="/assets/js/117.991782bd.js"><link rel="prefetch" href="/assets/js/12.e4c2aa4a.js"><link rel="prefetch" href="/assets/js/13.35f9ed5a.js"><link rel="prefetch" href="/assets/js/14.b7f6f87c.js"><link rel="prefetch" href="/assets/js/15.808b42c3.js"><link rel="prefetch" href="/assets/js/16.9a65883a.js"><link rel="prefetch" href="/assets/js/17.dbfc7bb2.js"><link rel="prefetch" href="/assets/js/18.c329e942.js"><link rel="prefetch" href="/assets/js/19.83deeff3.js"><link rel="prefetch" href="/assets/js/2.40aa7bb6.js"><link rel="prefetch" href="/assets/js/20.bdd777c1.js"><link rel="prefetch" href="/assets/js/21.b486bbf9.js"><link rel="prefetch" href="/assets/js/22.a25a903b.js"><link rel="prefetch" href="/assets/js/23.925ff4e0.js"><link rel="prefetch" href="/assets/js/24.ceff7a46.js"><link rel="prefetch" href="/assets/js/25.760d6451.js"><link rel="prefetch" href="/assets/js/26.66b0e693.js"><link rel="prefetch" href="/assets/js/27.79296467.js"><link rel="prefetch" href="/assets/js/28.6f5b92df.js"><link rel="prefetch" href="/assets/js/29.f2b1ce52.js"><link rel="prefetch" href="/assets/js/30.3bafedc7.js"><link rel="prefetch" href="/assets/js/31.b967adc4.js"><link rel="prefetch" href="/assets/js/32.bfcba426.js"><link rel="prefetch" href="/assets/js/33.c838af1a.js"><link rel="prefetch" href="/assets/js/34.6f70f963.js"><link rel="prefetch" href="/assets/js/35.40935f03.js"><link rel="prefetch" href="/assets/js/36.bcf1bbbf.js"><link rel="prefetch" href="/assets/js/37.48e1a430.js"><link rel="prefetch" href="/assets/js/38.82997478.js"><link rel="prefetch" href="/assets/js/39.77436fc0.js"><link rel="prefetch" href="/assets/js/4.7d10bedd.js"><link rel="prefetch" href="/assets/js/40.bc3182ae.js"><link rel="prefetch" href="/assets/js/41.71103288.js"><link rel="prefetch" href="/assets/js/42.7690245a.js"><link rel="prefetch" href="/assets/js/43.d2d3d553.js"><link rel="prefetch" href="/assets/js/44.3f350618.js"><link rel="prefetch" href="/assets/js/45.97083dfb.js"><link rel="prefetch" href="/assets/js/46.a41e95bb.js"><link rel="prefetch" href="/assets/js/47.8540ef07.js"><link rel="prefetch" href="/assets/js/48.54629455.js"><link rel="prefetch" href="/assets/js/49.5f90d180.js"><link rel="prefetch" href="/assets/js/5.b88ed74c.js"><link rel="prefetch" href="/assets/js/50.7fa4c3a4.js"><link rel="prefetch" href="/assets/js/51.6ebb146b.js"><link rel="prefetch" href="/assets/js/52.fe6e9396.js"><link rel="prefetch" href="/assets/js/53.fa23c041.js"><link rel="prefetch" href="/assets/js/54.90582436.js"><link rel="prefetch" href="/assets/js/55.b8844963.js"><link rel="prefetch" href="/assets/js/56.5fd08d82.js"><link rel="prefetch" href="/assets/js/57.d57125ff.js"><link rel="prefetch" href="/assets/js/58.0696d91e.js"><link rel="prefetch" href="/assets/js/59.cf936091.js"><link rel="prefetch" href="/assets/js/6.d4fec8b7.js"><link rel="prefetch" href="/assets/js/60.e0404bbf.js"><link rel="prefetch" href="/assets/js/61.fd7b24c0.js"><link rel="prefetch" href="/assets/js/62.bab35282.js"><link rel="prefetch" href="/assets/js/63.bc3aab78.js"><link rel="prefetch" href="/assets/js/64.5f1bfff1.js"><link rel="prefetch" href="/assets/js/65.c431a11a.js"><link rel="prefetch" href="/assets/js/66.e2d06bb1.js"><link rel="prefetch" href="/assets/js/67.32853338.js"><link rel="prefetch" href="/assets/js/68.342b04c0.js"><link rel="prefetch" href="/assets/js/69.a1ce55b6.js"><link rel="prefetch" href="/assets/js/7.3197ebba.js"><link rel="prefetch" href="/assets/js/70.496c0997.js"><link rel="prefetch" href="/assets/js/72.62ea27e4.js"><link rel="prefetch" href="/assets/js/73.2c961c77.js"><link rel="prefetch" href="/assets/js/74.8dbb42b8.js"><link rel="prefetch" href="/assets/js/75.f80b5005.js"><link rel="prefetch" href="/assets/js/76.07020749.js"><link rel="prefetch" href="/assets/js/77.930e3bad.js"><link rel="prefetch" href="/assets/js/78.fc6f0094.js"><link rel="prefetch" href="/assets/js/79.c72fd757.js"><link rel="prefetch" href="/assets/js/8.6e794918.js"><link rel="prefetch" href="/assets/js/80.8c9694ec.js"><link rel="prefetch" href="/assets/js/81.383d5cfc.js"><link rel="prefetch" href="/assets/js/82.1253ca4a.js"><link rel="prefetch" href="/assets/js/83.f0ff7a4d.js"><link rel="prefetch" href="/assets/js/84.5910af60.js"><link rel="prefetch" href="/assets/js/85.a9330cf0.js"><link rel="prefetch" href="/assets/js/86.e4b0497e.js"><link rel="prefetch" href="/assets/js/87.664f4a10.js"><link rel="prefetch" href="/assets/js/88.69b05471.js"><link rel="prefetch" href="/assets/js/89.4f1a869b.js"><link rel="prefetch" href="/assets/js/9.94dfd66d.js"><link rel="prefetch" href="/assets/js/90.91a54f02.js"><link rel="prefetch" href="/assets/js/91.cfe61516.js"><link rel="prefetch" href="/assets/js/92.99f20c42.js"><link rel="prefetch" href="/assets/js/93.dea260f7.js"><link rel="prefetch" href="/assets/js/94.4d34f33a.js"><link rel="prefetch" href="/assets/js/95.1977d5c8.js"><link rel="prefetch" href="/assets/js/96.07bc7add.js"><link rel="prefetch" href="/assets/js/97.548d05ca.js"><link rel="prefetch" href="/assets/js/98.3e689473.js"><link rel="prefetch" href="/assets/js/99.3382c108.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.cfd1e9a2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">个人主页</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Java" class="dropdown-title"><span class="title">Java</span> <span class="arrow down"></span></button> <button type="button" aria-label="Java" class="mobile-dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          Java面向对象和基础
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-oop.html" class="nav-link">
+  Java基础-面向对象
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-basic.html" class="nav-link">
+  Java基础-知识点
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-sum.html" class="nav-link">
+  Java 基础 - 图谱 &amp; Q/A
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java集合框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/collection/java-collection-all.html" class="nav-link">
+  Java 集合框架详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 并发框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-overview.html" class="nav-link">
+  Java 并发知识体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-theorty.html" class="nav-link">
+  Java 并发理论基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-thread-basic.html" class="nav-link">
+  Java 并发线程基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-juc-overview.html" class="nav-link">
+  J.U.C 知识体系与详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - IO框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/io/java-io-overview.html" class="nav-link">
+  Java IO/NIO/AIO详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 新版本特性
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/java8/java8.html" class="nav-link">
+  Java 8 特性详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java-8-up-overview.html" class="nav-link">
+  Java 8 以上版本特性体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java9-11.html" class="nav-link">
+  Java 8 升Java 11特性必读
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - JVM相关
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-classload.html" class="nav-link">
+  Java 类加载机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-class.html" class="nav-link">
+  Java 字节码和增强技术
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-struct.html" class="nav-link">
+  JVM 内存结构详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-gc.html" class="nav-link">
+  JVM 垃圾回收机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="nav-link">
+  Java 调试排错相关
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据库" class="dropdown-title"><span class="title">数据库</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据库" class="mobile-dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          数据库相关介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/info/mysql.html" class="nav-link">
+  mysql
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/oracle.html" class="nav-link">
+  oracle
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/h2.html" class="nav-link">
+  h2
+</a></li></ul></li><li class="dropdown-item"><h4>
+          框架介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/frame/mybatis/mybatis-base-overview.html" class="nav-link">
+  mybatis
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/mp/mp-base-overview.html" class="nav-link">
+  mybatis-plus
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/jpa/jpa-base-overview.html" class="nav-link">
+  jpa
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="中间件" class="dropdown-title"><span class="title">中间件</span> <span class="arrow down"></span></button> <button type="button" aria-label="中间件" class="mobile-dropdown-title"><span class="title">中间件</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          redis
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/middleware/redis/redis-overview.html" class="nav-link">
+  redis各大版本
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="个人记录" class="dropdown-title"><span class="title">个人记录</span> <span class="arrow down"></span></button> <button type="button" aria-label="个人记录" class="mobile-dropdown-title"><span class="title">个人记录</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          2024
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/owner/2024/229-1.html" class="nav-link">
+  vuepress打包报unsupported
+</a></li><li class="dropdown-subitem"><a href="/md/owner/2024/229-2.html" class="nav-link">
+  待定
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="https://github.com/xianglong123/cas-blog" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Java" class="dropdown-title"><span class="title">Java</span> <span class="arrow down"></span></button> <button type="button" aria-label="Java" class="mobile-dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          Java面向对象和基础
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-oop.html" class="nav-link">
+  Java基础-面向对象
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-basic.html" class="nav-link">
+  Java基础-知识点
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-sum.html" class="nav-link">
+  Java 基础 - 图谱 &amp; Q/A
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java集合框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/collection/java-collection-all.html" class="nav-link">
+  Java 集合框架详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 并发框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-overview.html" class="nav-link">
+  Java 并发知识体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-theorty.html" class="nav-link">
+  Java 并发理论基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-thread-basic.html" class="nav-link">
+  Java 并发线程基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-juc-overview.html" class="nav-link">
+  J.U.C 知识体系与详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - IO框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/io/java-io-overview.html" class="nav-link">
+  Java IO/NIO/AIO详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 新版本特性
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/java8/java8.html" class="nav-link">
+  Java 8 特性详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java-8-up-overview.html" class="nav-link">
+  Java 8 以上版本特性体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java9-11.html" class="nav-link">
+  Java 8 升Java 11特性必读
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - JVM相关
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-classload.html" class="nav-link">
+  Java 类加载机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-class.html" class="nav-link">
+  Java 字节码和增强技术
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-struct.html" class="nav-link">
+  JVM 内存结构详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-gc.html" class="nav-link">
+  JVM 垃圾回收机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="nav-link">
+  Java 调试排错相关
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据库" class="dropdown-title"><span class="title">数据库</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据库" class="mobile-dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          数据库相关介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/info/mysql.html" class="nav-link">
+  mysql
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/oracle.html" class="nav-link">
+  oracle
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/h2.html" class="nav-link">
+  h2
+</a></li></ul></li><li class="dropdown-item"><h4>
+          框架介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/frame/mybatis/mybatis-base-overview.html" class="nav-link">
+  mybatis
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/mp/mp-base-overview.html" class="nav-link">
+  mybatis-plus
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/jpa/jpa-base-overview.html" class="nav-link">
+  jpa
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="中间件" class="dropdown-title"><span class="title">中间件</span> <span class="arrow down"></span></button> <button type="button" aria-label="中间件" class="mobile-dropdown-title"><span class="title">中间件</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          redis
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/middleware/redis/redis-overview.html" class="nav-link">
+  redis各大版本
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="个人记录" class="dropdown-title"><span class="title">个人记录</span> <span class="arrow down"></span></button> <button type="button" aria-label="个人记录" class="mobile-dropdown-title"><span class="title">个人记录</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          2024
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/owner/2024/229-1.html" class="nav-link">
+  vuepress打包报unsupported
+</a></li><li class="dropdown-subitem"><a href="/md/owner/2024/229-2.html" class="nav-link">
+  待定
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="https://github.com/xianglong123/cas-blog" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/basic/java-basic-oop.html" class="sidebar-link">Java 基础 - 面向对象</a></li><li><a href="/md/java/basic/java-basic-lan-basic.html" class="sidebar-link">Java 基础 - 知识点</a></li><li><a href="/md/java/basic/java-basic-lan-sum.html" class="sidebar-link">Java 基础 - 图谱 &amp; Q/A</a></li><li><a href="/md/java/basic/java-basic-x-generic.html" class="sidebar-link">Java 基础 - 泛型机制详解</a></li><li><a href="/md/java/basic/java-basic-x-exception.html" class="sidebar-link">Java 基础 - 异常机制详解</a></li><li><a href="/md/java/basic/java-basic-x-reflection.html" class="sidebar-link">Java 基础 - 反射机制详解</a></li><li><a href="/md/java/advanced/java-advanced-spi.html" class="sidebar-link">Java常用机制 - SPI机制详解</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 集合框架</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/collection/java-collection-all.html" class="sidebar-link">Collection 类关系图</a></li><li><a href="/md/java/collection/java-collection-ArrayList.html" class="sidebar-link">Collection - ArrayList 源码解析</a></li><li><a href="/md/java/collection/java-collection-LinkedList.html" class="sidebar-link">Collection - LinkedList源码解析</a></li><li><a href="/md/java/collection/java-collection-Queue&amp;Stack.html" class="sidebar-link">Collection - Stack &amp; Queue 源码解析</a></li><li><a href="/md/java/collection/java-collection-PriorityQueue.html" class="sidebar-link">Collection - PriorityQueue源码解析</a></li><li><a href="/md/java/collection/java-map-HashMap&amp;HashSet.html" class="sidebar-link">Map - HashSet &amp; HashMap 源码解析</a></li><li><a href="/md/java/collection/java-map-LinkedHashMap&amp;LinkedHashSet.html" class="sidebar-link">Map - LinkedHashSet&amp;Map源码解析</a></li><li><a href="/md/java/collection/java-map-TreeMap&amp;TreeSet.html" class="sidebar-link">Map - TreeSet &amp; TreeMap 源码解析</a></li><li><a href="/md/java/collection/java-map-WeakHashMap.html" class="sidebar-link">Map - WeakHashMap源码解析</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 多线程与并发</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/thread/java-thread-x-overview.html" class="sidebar-link">♥Java并发知识体系详解♥</a></li><li><a href="/md/java/thread/java-thread-x-theorty.html" class="sidebar-link">Java 并发 - 理论基础</a></li><li><a href="/md/java/thread/java-thread-x-thread-basic.html" class="sidebar-link">Java 并发 - 线程基础</a></li><li><a href="/md/java/thread/java-thread-x-lock-all.html" class="sidebar-link">Java并发 - Java中所有的锁</a></li><li><a href="/md/java/thread/java-thread-x-key-synchronized.html" class="sidebar-link">关键字:synchronized详解</a></li><li><a href="/md/java/thread/java-thread-x-key-volatile.html" class="sidebar-link">关键字:volatile详解</a></li><li><a href="/md/java/thread/java-thread-x-key-final.html" class="sidebar-link">关键字:final详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-overview.html" class="sidebar-link">JUC - 类汇总和学习指南</a></li><li><a href="/md/java/thread/java-thread-x-juc-AtomicInteger.html" class="sidebar-link">JUC原子类CAS, Unsafe和原子类详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-LockSupport.html" class="sidebar-link">JUC锁:LockSupport详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-AbstractQueuedSynchronizer.html" class="sidebar-link">JUC锁:锁核心类AQS详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-ReentrantLock.html" class="sidebar-link">JUC锁:ReentrantLock详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-ReentrantReadWriteLock.html" class="sidebar-link">JUC锁:ReentrantReadWriteLock详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-ConcurrentHashMap.html" class="sidebar-link">JUC集合:ConcurrentHashMap详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-CopyOnWriteArrayList.html" class="sidebar-link">JUC集合:CopyOnWriteArrayList详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-ConcurrentLinkedQueue.html" class="sidebar-link">JUC集合:ConcurrentLinkedQueue详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-BlockingQueue.html" class="sidebar-link">JUC集合:BlockingQueue详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-FutureTask.html" class="sidebar-link">JUC线程池:FutureTask详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ThreadPoolExecutor.html" class="sidebar-link">JUC线程池:ThreadPoolExecutor详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ScheduledThreadPoolExecutor.html" class="sidebar-link">JUC线程池:ScheduledThreadPoolExecutor详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ForkJoinPool.html" class="sidebar-link">JUC线程池:Fork/Join框架详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-countdownlatch.html" class="sidebar-link">JUC工具类:CountDownLatch详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-cyclicbarrier.html" class="sidebar-link">JUC工具类:CyclicBarrier详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-semaphore.html" class="sidebar-link">JUC工具类:Semaphore详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-phaser.html" class="sidebar-link">JUC工具类:Phaser详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-exchanger.html" class="sidebar-link">JUC工具类:Exchanger详解</a></li><li><a href="/md/java/thread/java-thread-x-threadlocal.html" class="sidebar-link">Java 并发 - ThreadLocal详解</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java IO/NIO/AIO</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/io/java-io-overview.html" class="sidebar-link">♥Java IO知识体系详解♥</a></li><li><a href="/md/java/io/java-io-basic-category.html" class="sidebar-link">Java IO - 分类(传输，操作)</a></li><li><a href="/md/java/io/java-io-basic-design-pattern.html" class="sidebar-link">Java IO - 设计模式(装饰者模式)</a></li><li><a href="/md/java/io/java-io-basic-code-inputstream.html" class="sidebar-link">Java IO - 源码:InputStream</a></li><li><a href="/md/java/io/java-io-basic-code-outputstream.html" class="sidebar-link">Java IO - 源码:OutputStream</a></li><li><a href="/md/java/io/java-io-basic-usage.html" class="sidebar-link">Java IO - 常见类使用</a></li><li><a href="/md/java/io/java-io-model.html" class="sidebar-link">IO 模型 - Unix IO 模型</a></li><li><a href="/md/java/io/java-io-bio.html" class="sidebar-link">Java IO - BIO 详解</a></li><li><a href="/md/java/io/java-io-nio.html" class="sidebar-link">Java NIO - 基础详解</a></li><li><a href="/md/java/io/java-io-nio-select-epoll.html" class="sidebar-link">Java NIO - IO多路复用详解</a></li><li><a href="/md/java/io/java-io-aio.html" class="sidebar-link">Java AIO - 异步IO详解</a></li><li><a href="/md/java/io/java-io-nio-netty.html" class="sidebar-link">Java N(A)IO - 框架:Netty</a></li><li><a href="/md/java/io/java-io-nio-zerocopy.html" class="sidebar-link">Java NIO - 零拷贝实现</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Java8 特性详解</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/java8/java8.html" class="sidebar-link">♥Java8特性知识体系详解♥</a></li><li><a href="/md/java/java8/java8-stream.html" aria-current="page" class="active sidebar-link">Java 8 - 函数编程(lambda表达式)</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/md/java/java8/java8-optional.html" class="sidebar-link">Java 8 - Optional类深度解析</a></li><li><a href="/md/java/java8/java8-default.html" class="sidebar-link">Java 8 - 默认方法</a></li><li><a href="/md/java/java8/java8-type-anno.html" class="sidebar-link">Java 8 - 类型注解</a></li><li><a href="/md/java/java8/java8-anno-repeat.html" class="sidebar-link">Java 8 - 重复注解</a></li><li><a href="/md/java/java8/java8-type.html" class="sidebar-link">Java 8 - 类型推断优化</a></li><li><a href="/md/java/java8/java8-jre.html" class="sidebar-link">Java 8 - JRE精简</a></li><li><a href="/md/java/java8/java8-permgen.html" class="sidebar-link">Java 8 - 移除Permgen</a></li><li><a href="/md/java/java8/java8-stampedlock.html" class="sidebar-link">Java 8 - StampedLock</a></li><li><a href="/md/java/java8/java8-localdatetime.html" class="sidebar-link">Java 8 - LocalDate/LocalDateTime</a></li><li><a href="/md/java/java8/java8-javafx.html" class="sidebar-link">Java 8 - JavaFx 2.0</a></li><li><a href="/md/java/java8/java8-others.html" class="sidebar-link">Java 8 - 其它更新:字符串base64,...</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java8 以上特性概述</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/java8up/java-8-up-overview.html" class="sidebar-link">♥Java8+特性知识体系详解♥</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>JVM相关</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/jvm/java-jvm-x-overview.html" class="sidebar-link">♥JVM相关知识体系详解♥</a></li><li><a href="/md/java/jvm/java-jvm-class.html" class="sidebar-link">JVM 基础 - 类字节码详解</a></li><li><a href="/md/java/jvm/java-jvm-class-enhancer.html" class="sidebar-link">JVM 基础 - 字节码的增强技术</a></li><li><a href="/md/java/jvm/java-jvm-classload.html" class="sidebar-link">JVM 基础 - Java 类加载机制</a></li><li><a href="/md/java/jvm/java-jvm-struct.html" class="sidebar-link">JVM 基础 - JVM 内存结构</a></li><li><a href="/md/java/jvm/java-jvm-x-introduce.html" class="sidebar-link">JVM 基础 - Java 内存模型引入</a></li><li><a href="/md/java/jvm/java-jvm-jmm.html" class="sidebar-link">JVM 基础 - Java 内存模型详解</a></li><li><a href="/md/java/jvm/java-jvm-gc.html" class="sidebar-link">GC - Java 垃圾回收基础知识</a></li><li><a href="/md/java/jvm/java-jvm-gc-g1.html" class="sidebar-link">GC - Java 垃圾回收器之G1详解</a></li><li><a href="/md/java/jvm/java-jvm-gc-zgc.html" class="sidebar-link">GC - Java 垃圾回收器之ZGC详解</a></li><li><a href="/md/java/jvm/java-jvm-cms-gc.html" class="sidebar-link">GC - Java 垃圾回收器之CMS GC问题分析与解决</a></li><li><a href="/md/java/jvm/java-jvm-param.html" class="sidebar-link">调试排错 - JVM 调优参数</a></li><li><a href="/md/java/jvm/java-jvm-oom.html" class="sidebar-link">调试排错 - Java 内存分析之堆内存和MetaSpace内存</a></li><li><a href="/md/java/jvm/java-jvm-oom-offheap.html" class="sidebar-link">调试排错 - Java 内存分析之堆外内存</a></li><li><a href="/md/java/jvm/java-jvm-thread-dump.html" class="sidebar-link">调试排错 - Java 线程分析之线程Dump分析</a></li><li><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="sidebar-link">调试排错 - Java 问题排查之Linux命令</a></li><li><a href="/md/java/jvm/java-jvm-debug-tools-list.html" class="sidebar-link">调试排错 - Java 问题排查之工具单</a></li><li><a href="/md/java/jvm/java-jvm-oom-tool.html" class="sidebar-link">调试排错 - Java 问题排查之JVM可视化工具</a></li><li><a href="/md/java/jvm/java-jvm-agent-arthas.html" class="sidebar-link">调试排错 - Java 问题排查之应用在线调试Arthas</a></li><li><a href="/md/java/jvm/java-jvm-debug-idea.html" class="sidebar-link">调试排错 - Java 问题排查之使用IDEA本地调试和远程调试</a></li><li><a href="/md/java/jvm/java-jvm-agent-usage.html" class="sidebar-link">调试排错 - Java动态调试技术原理</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="java-8-函数编程-lambda表达式"><a href="#java-8-函数编程-lambda表达式" class="header-anchor">#</a> Java 8 - 函数编程(lambda表达式)</h1> <div class="custom-block tip"><p class="custom-block-title">提示</p> <p>我们关心的是如何写出好代码，而不是符合函数编程风格的代码。 @123</p></div> <ul><li>Java 8 - 函数编程(lambda表达式)
+<ul><li>简介</li> <li>lambda表达式</li> <li>分类
+<ul><li>惰性求值方法</li> <li>及早求值方法</li></ul></li> <li>stream &amp; parallelStream
+<ul><li>stream &amp; parallelStream</li> <li>parallelStream原理:</li> <li>stream与parallelStream性能测试对比</li> <li>Stream中常用方法如下:</li></ul></li> <li>常用例子
+<ul><li>匿名类简写</li> <li>forEach</li> <li>方法引用</li> <li>Filter &amp; Predicate</li> <li>Map&amp;Reduce</li> <li>Collectors</li> <li>flatMap</li> <li>distinct</li> <li>count</li> <li>Match</li> <li>min,max,summaryStatistics</li> <li>peek</li></ul></li> <li>FunctionalInterface
+<ul><li>理解注解 @FunctionInterface</li> <li>自定义函数接口</li> <li>内置四大函数接口</li></ul></li> <li>一些例子</li> <li>参考资料</li></ul></li></ul> <h3 id="简介"><a href="#简介" class="header-anchor">#</a> # 简介</h3> <blockquote><blockquote><p>在Java世界里面，面向对象还是主流思想，对于习惯了面向对象编程的开发者来说，抽象的概念并不陌生。面向对象编程是对数据进行抽象，而函数式编程是对行为进行抽象。现实世界中，数据和行为并存，程序也是如此，因此这两种编程方式我们都得学。</p></blockquote></blockquote> <blockquote><blockquote><p>这种新的抽象方式还有其他好处。很多人不总是在编写性能优先的代码，对于这些人来说，函数式编程带来的好处尤为明显。程序员能编写出更容易阅读的代码——这种代码更多地表达了业务逻辑，而不是从机制上如何实现。易读的代码也易于维护、更可靠、更不容易出错。</p></blockquote></blockquote> <blockquote><blockquote><p>在写回调函数和事件处理器时，程序员不必再纠缠于匿名内部类的冗繁和可读性，函数式编程让事件处理系统变得更加简单。能将函数方便地传递也让编写惰性代码变得容易，只有在真正需要的时候，才初始化变量的值。</p></blockquote></blockquote> <blockquote><p>面向对象编程是对数据进行抽象；函数式编程是对行为进行抽象。</p></blockquote> <blockquote><p>核心思想: 使用不可变值和函数，函数对一个值进行处理，映射成另一个值。</p></blockquote> <blockquote><p>对核心类库的改进主要包括集合类的API和新引入的流Stream。流使程序员可以站在更高的抽象层次上对集合进行操作。</p></blockquote> <h3 id="lambda表达式"><a href="#lambda表达式" class="header-anchor">#</a> # lambda表达式</h3> <ul><li><blockquote><p>lambda表达式仅能放入如下代码: 预定义使用了 @Functional 注释的函数式接口，自带一个抽象函数的方法，或者SAM(Single Abstract Method 单个抽象方法)类型。这些称为lambda表达式的目标类型，可以用作返回类型，或lambda目标代码的参数。例如，若一个方法接收Runnable、Comparable或者 Callable 接口，都有单个抽象方法，可以传入lambda表达式。类似的，如果一个方法接受声明于 java.util.function 包内的接口，例如 Predicate、Function、Consumer 或 Supplier，那么可以向其传lambda表达式。</p></blockquote></li> <li><blockquote><p>lambda表达式内可以使用<code>方法引用</code>，仅当该方法不修改lambda表达式提供的参数。本例中的lambda表达式可以换为方法引用，因为这仅是一个参数相同的简单方法调用。</p></blockquote></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>list.forEach(n -&gt; System.out.println(n)); 
+list.forEach(System.out::println);  // 使用方法引用
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><blockquote><p>然而，若对参数有任何修改，则不能使用方法引用，而需键入完整地lambda表达式，如下所示:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>list.forEach((String s) -&gt; System.out.println(&quot;*&quot; + s + &quot;*&quot;));
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><blockquote><p>事实上，可以省略这里的lambda参数的类型声明，编译器可以从列表的类属性推测出来。</p></blockquote> <ul><li><blockquote><p>lambda内部可以使用静态、非静态和局部变量，这称为lambda内的变量捕获。</p></blockquote></li> <li><blockquote><p>Lambda表达式在Java中又称为闭包或匿名函数，所以如果有同事把它叫闭包的时候，不用惊讶。</p></blockquote></li> <li><blockquote><p>Lambda方法在编译器内部被翻译成私有方法，并派发 invokedynamic 字节码指令来进行调用。可以使用JDK中的 javap 工具来反编译class文件。使用 javap -p 或 javap -c -v 命令来看一看lambda表达式生成的字节码。大致应该长这样:</p></blockquote></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>private static java.lang.Object lambda$0(java.lang.String);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><ul><li>lambda表达式有个限制，那就是只能引用 final 或 final 局部变量，这就是说不能在lambda内部修改定义在域外的变量。</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;Integer&gt; primes = Arrays.asList(new Integer[]{2, 3,5,7});
+int factor = 2;
+primes.forEach(element -&gt; { factor++; });
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><blockquote><p>Compile time error : &quot;local variables referenced from a lambda expression must be final or effectively final&quot; 另外，只是访问它而不作修改是可以的，如下所示:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;Integer&gt; primes = Arrays.asList(new Integer[]{2, 3,5,7});
+int factor = 2;
+primes.forEach(element -&gt; { System.out.println(factor*element); });
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><h3 id="分类"><a href="#分类" class="header-anchor">#</a> # 分类</h3> <h3 id="惰性求值方法"><a href="#惰性求值方法" class="header-anchor">#</a> # 惰性求值方法</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>lists.stream().filter(f -&gt; f.getName().equals(&quot;p1&quot;))
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><blockquote><p>如上示例，这行代码并未做什么实际性的工作，filter只是<code>描述</code>了Stream，<code>没有产生新的集合</code>。</p></blockquote> <blockquote><p>如果是多个条件组合，可以通过代码块{}</p></blockquote> <h3 id="及早求值方法"><a href="#及早求值方法" class="header-anchor">#</a> # 及早求值方法</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;Person&gt; list2 = lists.stream().filter(f -&gt; f.getName().equals(&quot;p1&quot;)).collect(Collectors.toList());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><blockquote><p>如上示例，collect最终会从Stream产生新值，拥有终止操作。</p></blockquote> <blockquote><p>理想方式是形成一个惰性求值的链，最后用一个及早求值的操作返回想要的结果。与建造者模式相似，建造者模式先是使用一系列操作设置属性和配置，最后调用build方法，创建对象。</p></blockquote> <h3 id="stream-parallelstream"><a href="#stream-parallelstream" class="header-anchor">#</a> # stream &amp; parallelStream</h3> <h3 id="stream-parallelstream-2"><a href="#stream-parallelstream-2" class="header-anchor">#</a> # stream &amp; parallelStream</h3> <blockquote><p>每个Stream都有两种模式: 顺序执行和并行执行。</p></blockquote> <blockquote><p>顺序流:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>List &lt;Person&gt; people = list.getStream.collect(Collectors.toList());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><blockquote><p>并行流:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>List &lt;Person&gt; people = list.getStream.parallel().collect(Collectors.toList());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><blockquote><p>顾名思义，当使用顺序方式去遍历时，每个item读完后再读下一个item。而使用并行去遍历时，数组会被分成多个段，其中每一个都在不同的线程中处理，然后将结果一起输出。</p></blockquote> <h3 id="parallelstream原理"><a href="#parallelstream原理" class="header-anchor">#</a> # parallelStream原理:</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>List originalList = someData;
+split1 = originalList(0, mid);//将数据分小部分
+split2 = originalList(mid,end);
+new Runnable(splitprocess());//小部分执行操作
+new Runnable(splitprocess());
+List revisedList = split1 + split2;//将结果合并
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><blockquote><p>大家对hadoop有稍微了解就知道，里面的 MapReduce 本身就是用于并行处理大数据集的软件框架，其 处理大数据的核心思想就是大而化小，分配到不同机器去运行map，最终通过reduce将所有机器的结果结合起来得到一个最终结果，与MapReduce不同，Stream则是利用多核技术可将大数据通过多核并行处理，而MapReduce则可以分布式的。</p></blockquote> <h3 id="stream与parallelstream性能测试对比"><a href="#stream与parallelstream性能测试对比" class="header-anchor">#</a> # stream与parallelStream性能测试对比</h3> <blockquote><p>如果是多核机器，理论上并行流则会比顺序流快上一倍，下面是测试代码</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>long t0 = System.nanoTime();
+
+//初始化一个范围100万整数流,求能被2整除的数字，toArray()是终点方法
+
+int a[]=IntStream.range(0, 1_000_000).filter(p -&gt; p % 2==0).toArray();
+
+long t1 = System.nanoTime();
+
+//和上面功能一样，这里是用并行流来计算
+
+int b[]=IntStream.range(0, 1_000_000).parallel().filter(p -&gt; p % 2==0).toArray();
+
+long t2 = System.nanoTime();
+
+//我本机的结果是serial: 06s, parallel 02s，证明并行流确实比顺序流快
+
+System.out.printf(&quot;serial: %.2fs, parallel %.2fs%n&quot;, (t1 - t0) * 1e-9, (t2 - t1) * 1e-9);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><h3 id="stream中常用方法如下"><a href="#stream中常用方法如下" class="header-anchor">#</a> # Stream中常用方法如下:</h3> <ul><li><p><code>stream()</code>, <code>parallelStream()</code></p></li> <li><p><code>filter()</code></p></li> <li><p><code>findAny()</code> <code>findFirst()</code></p></li> <li><p><code>sort</code></p></li> <li><p><code>forEach</code> void</p></li> <li><p><code>map(), reduce()</code></p></li> <li><p><code>flatMap()</code> - 将多个Stream连接成一个Stream</p></li> <li><div class="language- line-numbers-mode"><pre class="language-text"><code>collect(Collectors.toList())
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div></li> <li><p><code>distinct</code>, <code>limit</code></p></li> <li><p><code>count</code></p></li> <li><p><code>min</code>, <code>max</code>, <code>summaryStatistics</code></p></li></ul> <blockquote><p>看下所有API:</p></blockquote> <blockquote><p><img src="/assets/img/java-stream-functions.d46a084c.png" alt=""></p></blockquote> <h3 id="常用例子"><a href="#常用例子" class="header-anchor">#</a> # 常用例子</h3> <h3 id="匿名类简写"><a href="#匿名类简写" class="header-anchor">#</a> # 匿名类简写</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>new Thread( () -&gt; System.out.println(&quot;In Java8, Lambda expression rocks !!&quot;) ).start();
+
+// 用法
+(params) -&gt; expression
+(params) -&gt; statement
+(params) -&gt; { statements }
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><h3 id="foreach"><a href="#foreach" class="header-anchor">#</a> # forEach</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>// forEach
+List features = Arrays.asList(&quot;Lambdas&quot;, &quot;Default Method&quot;, &quot;Stream API&quot;, &quot;Date and Time API&quot;);
+features.forEach(n -&gt; System.out.println(n));
+ 
+// 使用Java 8的方法引用更方便，方法引用由::双冒号操作符标示，
+features.forEach(System.out::println);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><h3 id="方法引用"><a href="#方法引用" class="header-anchor">#</a> # 方法引用</h3> <blockquote><p><em>构造引用</em></p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>// Supplier&lt;Student&gt; s = () -&gt; new Student();
+Supplier&lt;Student&gt; s = Student::new;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><blockquote><p><em>对象::实例方法</em> Lambda表达式的(形参列表)与实例方法的(实参列表)类型，个数是对应</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>// set.forEach(t -&gt; System.out.println(t));
+set.forEach(System.out::println);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><blockquote><p><em>类名::静态方法</em></p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>// Stream&lt;Double&gt; stream = Stream.generate(() -&gt; Math.random());
+Stream&lt;Double&gt; stream = Stream.generate(Math::random);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><blockquote><p><em>类名::实例方法</em></p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>//  TreeSet&lt;String&gt; set = new TreeSet&lt;&gt;((s1,s2) -&gt; scompareTo(s2));
+/*  这里如果使用第一句话，编译器会有提示: Can be replaced with Comparator.naturalOrder，这句话告诉我们
+  String已经重写了compareTo()方法，在这里写是多此一举，这里为什么这么写，是因为为了体现下面
+  这句编译器的提示: Lambda can be replaced with method reference。好了，下面的这句就是改写成方法引用之后: 
+*/
+TreeSet&lt;String&gt; set = new TreeSet&lt;&gt;(String::compareTo);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><h3 id="filter-predicate"><a href="#filter-predicate" class="header-anchor">#</a> # Filter &amp; Predicate</h3> <blockquote><p>常规用法</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>public static void main(args[]){
+    List languages = Arrays.asList(&quot;Java&quot;, &quot;Scala&quot;, &quot;C++&quot;, &quot;Haskell&quot;, &quot;Lisp&quot;);
+ 
+    System.out.println(&quot;Languages which starts with J :&quot;);
+    filter(languages, (str)-&gt;str.startsWith(&quot;J&quot;));
+ 
+    System.out.println(&quot;Languages which ends with a &quot;);
+    filter(languages, (str)-&gt;str.endsWith(&quot;a&quot;));
+ 
+    System.out.println(&quot;Print all languages :&quot;);
+    filter(languages, (str)-&gt;true);
+ 
+    System.out.println(&quot;Print no language : &quot;);
+    filter(languages, (str)-&gt;false);
+ 
+    System.out.println(&quot;Print language whose length greater than 4:&quot;);
+    filter(languages, (str)-&gt;str.length() &gt; 4);
+}
+ 
+public static void filter(List names, Predicate condition) {
+    names.stream().filter((name) -&gt; (condition.test(name))).forEach((name) -&gt; {
+        System.out.println(name + &quot; &quot;);
+    });
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br></div></div><blockquote><p>多个Predicate组合filter</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>// 可以用and()、or()和xor()逻辑函数来合并Predicate，
+// 例如要找到所有以J开始，长度为四个字母的名字，你可以合并两个Predicate并传入
+Predicate&lt;String&gt; startsWithJ = (n) -&gt; n.startsWith(&quot;J&quot;);
+Predicate&lt;String&gt; fourLetterLong = (n) -&gt; n.length() == 4;
+names.stream()
+    .filter(startsWithJ.and(fourLetterLong))
+    .forEach((n) -&gt; System.out.print(&quot;nName, which starts with 'J' and four letter long is : &quot; + n));
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><h3 id="map-reduce"><a href="#map-reduce" class="header-anchor">#</a> # Map&amp;Reduce</h3> <blockquote><p>map将集合类(例如列表)元素进行转换的。还有一个 reduce() 函数可以将所有值合并成一个</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>List costBeforeTax = Arrays.asList(100, 200, 300, 400, 500);
+double bill = costBeforeTax.stream().map((cost) -&gt; cost + .12*cost).reduce((sum, cost) -&gt; sum + cost).get();
+System.out.println(&quot;Total : &quot; + bill);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><h3 id="collectors"><a href="#collectors" class="header-anchor">#</a> # Collectors</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>// 将字符串换成大写并用逗号链接起来
+List&lt;String&gt; G7 = Arrays.asList(&quot;USA&quot;, &quot;Japan&quot;, &quot;France&quot;, &quot;Germany&quot;, &quot;Italy&quot;, &quot;U.K.&quot;,&quot;Canada&quot;);
+String G7Countries = Gstream().map(x -&gt; x.toUpperCase()).collect(Collectors.joining(&quot;, &quot;));
+System.out.println(G7Countries);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><ul><li>Collectors.joining(&quot;, &quot;)</li> <li>Collectors.toList()</li> <li>Collectors.toSet() ，生成set集合</li> <li>Collectors.toMap(MemberModel::getUid, Function.identity())</li> <li>Collectors.toMap(ImageModel::getAid, o -&gt; IMAGE_ADDRESS_PREFIX + o.getUrl())</li></ul> <h3 id="flatmap"><a href="#flatmap" class="header-anchor">#</a> # flatMap</h3> <blockquote><p>将多个Stream连接成一个Stream</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;Integer&gt; result= Stream.of(Arrays.asList(1,3),Arrays.asList(5,6)).flatMap(a-&gt;a.stream()).collect(Collectors.toList());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><blockquote><p>结果: [1, 3, 5, 6]</p></blockquote> <h3 id="distinct"><a href="#distinct" class="header-anchor">#</a> # distinct</h3> <blockquote><p>去重</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;LikeDO&gt; likeDOs=new ArrayList&lt;LikeDO&gt;();
+List&lt;Long&gt; likeTidList = likeDOs.stream().map(LikeDO::getTid)
+                .distinct().collect(Collectors.toList());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><h3 id="count"><a href="#count" class="header-anchor">#</a> # count</h3> <blockquote><p>计总数</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>int countOfAdult=persons.stream()
+                       .filter(p -&gt; p.getAge() &gt; 18)
+                       .map(person -&gt; new Adult(person))
+                       .count();
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><h3 id="match"><a href="#match" class="header-anchor">#</a> # Match</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>boolean anyStartsWithA =
+    stringCollection
+        .stream()
+        .anyMatch((s) -&gt; s.startsWith(&quot;a&quot;));
+
+System.out.println(anyStartsWithA);      // true
+
+boolean allStartsWithA =
+    stringCollection
+        .stream()
+        .allMatch((s) -&gt; s.startsWith(&quot;a&quot;));
+
+System.out.println(allStartsWithA);      // false
+
+boolean noneStartsWithZ =
+    stringCollection
+        .stream()
+        .noneMatch((s) -&gt; s.startsWith(&quot;z&quot;));
+
+System.out.println(noneStartsWithZ);      // true
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br></div></div><h3 id="min-max-summarystatistics"><a href="#min-max-summarystatistics" class="header-anchor">#</a> # min,max,summaryStatistics</h3> <blockquote><p>最小值，最大值</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;Person&gt; lists = new ArrayList&lt;Person&gt;();
+lists.add(new Person(1L, &quot;p1&quot;));
+lists.add(new Person(2L, &quot;p2&quot;));
+lists.add(new Person(3L, &quot;p3&quot;));
+lists.add(new Person(4L, &quot;p4&quot;));
+Person a = lists.stream().max(Comparator.comparing(t -&gt; t.getId())).get();
+System.out.println(a.getId());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><blockquote><p>如果比较器涉及多个条件，比较复杂，可以定制</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>Person a = lists.stream().min(new Comparator&lt;Person&gt;() {
+
+      @Override
+      public int compare(Person o1, Person o2) {
+           if (ogetId() &gt; ogetId()) return -1;
+           if (ogetId() &lt; ogetId()) return 1;
+           return 0;
+       }
+ }).get();
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><blockquote><p>summaryStatistics</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>//获取数字的个数、最小值、最大值、总和以及平均值
+List&lt;Integer&gt; primes = Arrays.asList(2, 3, 5, 7, 11, 13, 17, 19, 23, 29);
+IntSummaryStatistics stats = primes.stream().mapToInt((x) -&gt; x).summaryStatistics();
+System.out.println(&quot;Highest prime number in List : &quot; + stats.getMax());
+System.out.println(&quot;Lowest prime number in List : &quot; + stats.getMin());
+System.out.println(&quot;Sum of all prime numbers : &quot; + stats.getSum());
+System.out.println(&quot;Average of all prime numbers : &quot; + stats.getAverage());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><h3 id="peek"><a href="#peek" class="header-anchor">#</a> # peek</h3> <blockquote><p>可以使用peek方法，peek方法可只包含一个空的方法体，只要能设置断点即可，但有些IDE不允许空，可以如下文示例，简单写一个打印逻辑。</p></blockquote> <blockquote><p>注意，调试完后要删掉。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;Person&gt; lists = new ArrayList&lt;Person&gt;();
+lists.add(new Person(1L, &quot;p1&quot;));
+lists.add(new Person(2L, &quot;p2&quot;));
+lists.add(new Person(3L, &quot;p3&quot;));
+lists.add(new Person(4L, &quot;p4&quot;));
+System.out.println(lists);
+
+List&lt;Person&gt; list2 = lists.stream()
+				 .filter(f -&gt; f.getName().startsWith(&quot;p&quot;))
+                .peek(t -&gt; {
+                    System.out.println(t.getName());
+                })
+                .collect(Collectors.toList());
+System.out.println(list2);
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br></div></div><h3 id="functionalinterface"><a href="#functionalinterface" class="header-anchor">#</a> # FunctionalInterface</h3> <h3 id="理解注解-functioninterface"><a href="#理解注解-functioninterface" class="header-anchor">#</a> # 理解注解 @FunctionInterface</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>/**
+ * An informative annotation type used to indicate that an interface
+ * type declaration is intended to be a &lt;i&gt;functional interface&lt;/i&gt; as
+ * defined by the Java Language Specification.
+ *
+ * Conceptually, a functional interface has exactly one abstract
+ * method.  Since {@linkplain java.lang.reflect.Method#isDefault()
+ * default methods} have an implementation, they are not abstract.  If
+ * an interface declares an abstract method overriding one of the
+ * public methods of {@code java.lang.Object}, that also does
+ * &lt;em&gt;not&lt;/em&gt; count toward the interface's abstract method count
+ * since any implementation of the interface will have an
+ * implementation from {@code java.lang.Object} or elsewhere.
+ *
+ * &lt;p&gt;Note that instances of functional interfaces can be created with
+ * lambda expressions, method references, or constructor references.
+ *
+ * &lt;p&gt;If a type is annotated with this annotation type, compilers are
+ * required to generate an error message unless:
+ *
+ * &lt;ul&gt;
+ * &lt;li&gt; The type is an interface type and not an annotation type, enum, or class.
+ * &lt;li&gt; The annotated type satisfies the requirements of a functional interface.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;However, the compiler will treat any interface meeting the
+ * definition of a functional interface as a functional interface
+ * regardless of whether or not a {@code FunctionalInterface}
+ * annotation is present on the interface declaration.
+ *
+ * @jls  The Class Object
+ * @jls 8 Functional Interfaces
+ * @jls 3 Interface Method Body
+ * @since 8
+ */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface FunctionalInterface{}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br></div></div><ul><li><blockquote><p>interface做注解的注解类型，被定义成java语言规范</p></blockquote></li> <li><blockquote><p>一个被它注解的接口只能有一个抽象方法，有两种例外</p></blockquote></li> <li><blockquote><p>第一是接口允许有实现的方法，这种实现的方法是用default关键字来标记的(java反射中java.lang.reflect.Method#isDefault()方法用来判断是否是default方法)</p></blockquote></li> <li><blockquote><p>第二如果声明的方法和java.lang.Object中的某个方法一样，它可以不当做未实现的方法，不违背这个原则: 一个被它注解的接口只能有一个抽象方法, 比如:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>java public interface Comparator&lt;T&gt; { int compare(T o1, T o2); boolean equals(Object obj); }
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div></li> <li><blockquote><p>如果一个类型被这个注解修饰，那么编译器会要求这个类型必须满足如下条件:</p></blockquote> <ul><li>这个类型必须是一个interface，而不是其他的注解类型、枚举enum或者类class</li> <li>这个类型必须满足function interface的所有要求，如你个包含两个抽象方法的接口增加这个注解，会有编译错误。</li></ul></li> <li><blockquote><p>编译器会自动把满足function interface要求的接口自动识别为function interface，所以你才不需要对上面示例中的 ITest接口增加@FunctionInterface注解。</p></blockquote></li></ul> <h3 id="自定义函数接口"><a href="#自定义函数接口" class="header-anchor">#</a> # 自定义函数接口</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>@FunctionalInterface
+public interface IMyInterface {
+    void study();
+}
+
+package com.isea.java;
+public class TestIMyInterface {
+    public static void main(String[] args) {
+        IMyInterface iMyInterface = () -&gt; System.out.println(&quot;I like study&quot;);
+        iMyInterface.study();
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><h3 id="内置四大函数接口"><a href="#内置四大函数接口" class="header-anchor">#</a> # 内置四大函数接口</h3> <ul><li>消费型接口: Consumer&lt; T&gt; void accept(T t)有参数，无返回值的抽象方法；</li></ul> <blockquote><blockquote><p>比如: map.forEach(BiConsumer&lt;A, T&gt;)</p></blockquote></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>Consumer&lt;Person&gt; greeter = (p) -&gt; System.out.println(&quot;Hello, &quot; + p.firstName);
+greeter.accept(new Person(&quot;Luke&quot;, &quot;Skywalker&quot;));
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><ul><li>供给型接口: Supplier &lt; T&gt; T get() 无参有返回值的抽象方法；</li></ul> <blockquote><blockquote><p>以stream().collect(Collector&lt;? super T, A, R&gt; collector)为例:</p></blockquote></blockquote> <blockquote><p>比如:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>Supplier&lt;Person&gt; personSupplier = Person::new;
+personSupplier.get();   // new Person
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><blockquote><p>再如:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>// 调用方法
+&lt;R, A&gt; R collect(Collector&lt;? super T, A, R&gt; collector)
+
+// Collectors.toSet
+public static &lt;T&gt;
+	Collector&lt;T, ?, Set&lt;T&gt;&gt; toSet() {
+    	return new CollectorImpl&lt;&gt;((Supplier&lt;Set&lt;T&gt;&gt;) HashSet::new, Set::add,
+                               (left, right) -&gt; { left.addAll(right); return left; },
+                               CH_UNORDERED_ID);
+}
+
+// CollectorImpl
+private final Supplier&lt;A&gt; supplier;
+private final BiConsumer&lt;A, T&gt; accumulator;
+private final BinaryOperator&lt;A&gt; combiner;
+private final Function&lt;A, R&gt; finisher;
+private final Set&lt;Characteristics&gt; characteristics;
+
+CollectorImpl(Supplier&lt;A&gt; supplier,
+              BiConsumer&lt;A, T&gt; accumulator,
+              BinaryOperator&lt;A&gt; combiner,
+              Function&lt;A,R&gt; finisher,
+              Set&lt;Characteristics&gt; characteristics) {
+    this.supplier = supplier;
+    this.accumulator = accumulator;
+    this.combiner = combiner;
+    this.finisher = finisher;
+    this.characteristics = characteristics;
+}
+
+CollectorImpl(Supplier&lt;A&gt; supplier,
+              BiConsumer&lt;A, T&gt; accumulator,
+              BinaryOperator&lt;A&gt; combiner,
+              Set&lt;Characteristics&gt; characteristics) {
+    this(supplier, accumulator, combiner, castingIdentity(), characteristics);
+}
+
+// collect()方法实现
+public final &lt;R, A&gt; R collect(Collector&lt;? super P_OUT, A, R&gt; collector) {
+    A container;
+    if (isParallel()
+            &amp;&amp; (collector.characteristics().contains(Collector.Characteristics.CONCURRENT))
+            &amp;&amp; (!isOrdered() || collector.characteristics().contains(Collector.Characteristics.UNORDERED))) {
+        container = collector.supplier().get();
+        BiConsumer&lt;A, ? super P_OUT&gt; accumulator = collector.accumulator();
+        forEach(u -&gt; accumulator.accept(container, u));
+    }
+    else {
+        container = evaluate(ReduceOps.makeRef(collector));
+    }
+    return collector.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)
+           ? (R) container
+           : collector.finisher().apply(container);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br></div></div><ul><li>断定型接口: Predicate<T> boolean test(T t):有参，但是返回值类型是固定的boolean</T></li></ul> <blockquote><blockquote><p>比如: steam().filter()中参数就是Predicate</p></blockquote></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>Predicate&lt;String&gt; predicate = (s) -&gt; s.length() &gt; 0;
+
+predicate.test(&quot;foo&quot;);              // true
+predicate.negate().test(&quot;foo&quot;);     // false
+
+Predicate&lt;Boolean&gt; nonNull = Objects::nonNull;
+Predicate&lt;Boolean&gt; isNull = Objects::isNull;
+
+Predicate&lt;String&gt; isEmpty = String::isEmpty;
+Predicate&lt;String&gt; isNotEmpty = isEmpty.negate();
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><ul><li>函数型接口: Function&lt;T,R&gt; R apply(T t)有参有返回值的抽象方法；</li></ul> <blockquote><blockquote><p>比如: steam().map() 中参数就是Function&lt;? super T, ? extends R&gt;；reduce()中参数BinaryOperator<T> (ps: BinaryOperator<T> extends BiFunction&lt;T,T,T&gt;)</T></T></p></blockquote></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>Function&lt;String, Integer&gt; toInteger = Integer::valueOf;
+Function&lt;String, String&gt; backToString = toInteger.andThen(String::valueOf);
+
+backToString.apply(&quot;123&quot;);     // &quot;123&quot;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><h3 id="一些例子"><a href="#一些例子" class="header-anchor">#</a> # 一些例子</h3> <ul><li>输出 年龄&gt;25的女程序员中名字排名前3位的姓名</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>javaProgrammers.stream()
+          .filter((p) -&gt; (p.getAge() &gt; 25))
+          .filter((p) -&gt; (&quot;female&quot;.equals(p.getGender())))
+          .sorted((p, p2) -&gt; (p.getFirstName().compareTo(pgetFirstName())))
+          .limit(3)
+          //.forEach(e -&gt; e.setSalary(e.getSalary() / 100 * 5 + e.getSalary()))//涨工资
+          .forEach((p) -&gt; System.out.printf(&quot;%s %s; &quot;, p.getFirstName(), p.getLastName()));
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><ul><li>工资最高的 Java programmer</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>Person person = javaProgrammers
+          .stream()
+          .max((p, p2) -&gt; (p.getSalary() - pgetSalary()))
+          .get()
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><ul><li>将 Java programmers 的 first name 存放到 TreeSet</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>TreeSet&lt;String&gt; javaDevLastName = javaProgrammers
+          .stream()
+          .map(Person::getLastName)
+          .collect(toCollection(TreeSet::new))
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><ul><li>计算付给 Java programmers 的所有money</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>int totalSalary = javaProgrammers
+          .parallelStream()
+          .mapToInt(p -&gt; p.getSalary())
+          .sum();
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><ul><li>Comparator多属性排序: 先按名字不分大小写排，再按GID倒序排，最后按年龄正序排</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>public static void main(String[] args) {
+	List&lt;Person&gt; personList = getTestList();
+	personList.sort(Comparator.comparing(Person::getName, String.CASE_INSENSITIVE_ORDER)
+			.thenComparing(Person::getGid, (a, b) -&gt; b.compareTo(a))
+			.thenComparingInt(Person::getAge));
+	personList.stream().forEach(System.out::println);
+}
+
+public static List&lt;Person&gt; getTestList() {
+	return Lists.newArrayList(new Person(&quot;dai&quot;, &quot;301&quot;, 10), new Person(&quot;dai&quot;, &quot;303&quot;, 10),
+			new Person(&quot;dai&quot;, &quot;303&quot;, 8), new Person(&quot;dai&quot;, &quot;303&quot;, 6), new Person(&quot;dai&quot;, &quot;303&quot;, 11),
+			new Person(&quot;dai&quot;, &quot;302&quot;, 9), new Person(&quot;zhang&quot;, &quot;302&quot;, 9), new Person(&quot;zhang&quot;, &quot;301&quot;, 9),
+			new Person(&quot;Li&quot;, &quot;301&quot;, 8));
+}
+
+// 输出结果
+// Person [name=dai, gid=303, age=6]
+// Person [name=dai, gid=303, age=8]
+// Person [name=dai, gid=303, age=10]
+// Person [name=dai, gid=303, age=11]
+// Person [name=dai, gid=302, age=9]
+// Person [name=dai, gid=301, age=10]
+// Person [name=Li, gid=301, age=8]
+// Person [name=zhang, gid=302, age=9]
+// Person [name=zhang, gid=301, age=9]
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br></div></div><ul><li>处理字符串</li></ul> <blockquote><p>两个新的方法可在字符串类上使用: join和chars。第一个方法使用指定的分隔符，将任何数量的字符串连接为一个字符串。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>String.join(&quot;:&quot;, &quot;foobar&quot;, &quot;foo&quot;, &quot;bar&quot;);
+// =&gt; foobar:foo:bar
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><blockquote><p>第二个方法chars从字符串所有字符创建数据流，所以你可以在这些字符上使用流式操作。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>&quot;foobar:foo:bar&quot;
+    .chars()
+    .distinct()
+    .mapToObj(c -&gt; String.valueOf((char)c))
+    .sorted()
+    .collect(Collectors.joining());
+// =&gt; :abfor
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><blockquote><p>不仅仅是字符串，正则表达式模式串也能受益于数据流。我们可以分割任何模式串，并创建数据流来处理它们，而不是将字符串分割为单个字符的数据流，像下面这样:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>Pattern.compile(&quot;:&quot;)
+    .splitAsStream(&quot;foobar:foo:bar&quot;)
+    .filter(s -&gt; s.contains(&quot;bar&quot;))
+    .sorted()
+    .collect(Collectors.joining(&quot;:&quot;));
+// =&gt; bar:foobar
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><blockquote><p>此外，正则模式串可以转换为谓词。这些谓词可以像下面那样用于过滤字符串流:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>Pattern pattern = Pattern.compile(&quot;.*@gmail\\\.com&quot;);
+Stream.of(&quot;bob@gmail.com&quot;, &quot;alice@hotmail.com&quot;)
+    .filter(pattern.asPredicate())
+    .count();
+// =&gt; 1
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><blockquote><p>上面的模式串接受任何以@gmail.com结尾的字符串，并且之后用作Java8的Predicate来过滤电子邮件地址流。</p></blockquote> <ul><li>Local Cache实现</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>public class TestLocalCache {
+
+	private static ConcurrentHashMap&lt;Integer, Long&gt; cache = new ConcurrentHashMap&lt;&gt;();
+
+	static long fibonacci(int i) {
+		if (i == 0)
+			return i;
+
+		if (i == 1)
+			return 1;
+
+		return cache.computeIfAbsent(i, (key) -&gt; {
+			System.out.println(&quot;Slow calculation of &quot; + key);
+
+			return fibonacci(i - 2) + fibonacci(i - 1);
+		});
+	}
+	
+	public static void main(String[] args) {
+		// warm up
+		for (int i = 0; i &lt; 101; i++)
+	        System.out.println(
+	            &quot;f(&quot; + i + &quot;) = &quot; + fibonacci(i));
+
+		// read -&gt; cal
+		long current = System.currentTimeMillis();
+		System.out.println(fibonacci(100));
+		System.out.println(System.currentTimeMillis()-current);
+	}
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br></div></div><ul><li>集合--》取元素的一个属性--》去重---》组装成List--》返回</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;LikeDO&gt; likeDOs=new ArrayList&lt;LikeDO&gt;();
+List&lt;Long&gt; likeTidList = likeDOs.stream().map(LikeDO::getTid)
+                .distinct().collect(Collectors.toList());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><ul><li>集合--》按表达式过滤--》遍历、每个元系处理--》放入预先定义的集合中</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>Map&lt;String, StkProduct&gt; newStockName2Product = Maps.newConcurrentMap();
+        stockProducts.stream().filter(stkProduct -&gt; stkProduct.enabled).forEach(stkProduct -&gt; {
+            String newName = BCConvert.bj2qj(StringUtils.replace(stkProduct.name, &quot; &quot;, &quot;&quot;));
+            newStockName2Product.put(newName, stkProduct);
+        });
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><div class="language- line-numbers-mode"><pre class="language-text"><code>Set&lt;String&gt; qjStockNames;
+ qjStockNames.stream().filter(name -&gt; !acAutomaton.getKey2link().containsKey(name)).forEach(name -&gt; {
+            String value = &quot;&quot;;
+            StkProduct stkProduct = stockNameQj2Product.get(name);
+            if (stkProduct != null) {
+                value = stkProduct.name;
+            }
+            acAutomaton.getKey2link().put(name, value);
+        });
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><ul><li>集合--》map</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;ImageModel&gt; imageModelList = null;
+Map&lt;Long, String&gt; imagesMap = null;
+imagesMap = imageModelList.stream().collect(Collectors.toMap(ImageModel::getAid, o -&gt; IMAGE_ADDRESS_PREFIX + o.getUrl()));
+
+Map&lt;String, String&gt; kvMap = postDetailCacheList.stream().collect(Collectors.toMap((detailCache) -&gt;
+                getBbsSimplePostKey(detailCache.getTid()), JSON::toJSONString));
+
+Map&lt;Long, Long&gt; pidToTid；
+List&lt;String&gt; pidKeyList = pidToTid.entrySet().stream().map((o) -&gt; getKeyBbsReplyPid(o.getValue(), o.getKey())).collect(Collectors.toList());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><ul><li>DO模型---》Model模型</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;AdDO&gt; adDOList;
+adDOList.stream().map(adDo -&gt; convertAdModel(adDo))
+                .collect(Collectors.toList());
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><ul><li>phones 是一个List<String>，将相同的元素分组、归类</String></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>List&lt;String&gt; phones=new ArrayList&lt;String&gt;();
+        phones.add(&quot;a&quot;);
+        phones.add(&quot;b&quot;);
+        phones.add(&quot;a&quot;);
+        phones.add(&quot;a&quot;);
+        phones.add(&quot;c&quot;);
+        phones.add(&quot;b&quot;);
+        Map&lt;String, List&lt;String&gt;&gt; phoneClassify = phones.stream().collect(Collectors.groupingBy(item -&gt; item));
+        System.out.println(phoneClassify);
+返回结果: 
+{a=[a, a, a], b=[b, b], c=[c]}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><h3 id="参考资料"><a href="#参考资料" class="header-anchor">#</a> # 参考资料</h3> <ul><li>Lambda 表达式的 10 个示例在新窗口打开</li> <li>learn-java8在新窗口打开</li> <li>java8-tutorial在新窗口打开</li> <li>一文让你明白lambda用法与源码分析在新窗口打开</li> <li>http://blog.csdn.net/renfufei/article/details/24600507在新窗口打开</li> <li>http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html在新窗口打开</li> <li>Java8 Lambda表达式教程 https://blog.csdn.net/ioriogami/article/details/12782141</li> <li>Java8 6个问题 https://wizardforcel.gitbooks.io/java8-tutorials/content/Java%208%20%E7%9A%846%E4%B8%AA%E9%97%AE%E9%A2%98.html</li></ul></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">5/13/2023, 11:51:30 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/md/java/java8/java8.html" class="prev">
+        ♥Java8特性知识体系详解♥
+      </a></span> <span class="next"><a href="/md/java/java8/java8-optional.html">
+        Java 8 - Optional类深度解析
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:290px;display:none;" data-v-5775ee02>
+      欢迎来到我的博客
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="260px" height="320" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----><div class="RibbonAnimation"></div><!----><div class="Sakura" data-v-248d85d6><canvas id="canvas_sakura" style="z-index:2;" data-v-248d85d6></canvas></div></div></div>
+    <script src="/assets/js/app.0d6df2e4.js" defer></script><script src="/assets/js/3.2c60df78.js" defer></script><script src="/assets/js/71.31b35f4d.js" defer></script>
+  </body>
+</html>

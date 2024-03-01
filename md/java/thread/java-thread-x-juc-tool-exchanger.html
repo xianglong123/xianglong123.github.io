@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>JUC工具类:Exchanger详解 | 个人主页</title>
+    <meta name="generator" content="VuePress 1.9.9">
+    <link rel="icon" href="/images/photo.jpg">
+    <link rel="manifest" href="/images/photo.jpg">
+    <link rel="apple-touch-icon" href="/images/photo.jpg">
+    <meta name="description" content="Personal Website">
+    <meta http-quiv="pragma" cotent="no-cache">
+    <meta http-quiv="pragma" cotent="no-cache,must-revalidate">
+    <meta http-quiv="expires" cotent="0">
+    
+    <link rel="preload" href="/assets/css/0.styles.cfd1e9a2.css" as="style"><link rel="preload" href="/assets/js/app.0d6df2e4.js" as="script"><link rel="preload" href="/assets/js/3.2c60df78.js" as="script"><link rel="preload" href="/assets/js/112.862950f9.js" as="script"><link rel="prefetch" href="/assets/js/10.a675ef31.js"><link rel="prefetch" href="/assets/js/100.c1d0cb0f.js"><link rel="prefetch" href="/assets/js/101.c3caeaf7.js"><link rel="prefetch" href="/assets/js/102.c33f1aeb.js"><link rel="prefetch" href="/assets/js/103.eddf2e86.js"><link rel="prefetch" href="/assets/js/104.943ce33b.js"><link rel="prefetch" href="/assets/js/105.d04687f0.js"><link rel="prefetch" href="/assets/js/106.2dfd0540.js"><link rel="prefetch" href="/assets/js/107.d0139f1c.js"><link rel="prefetch" href="/assets/js/108.24c68d63.js"><link rel="prefetch" href="/assets/js/109.a88c2829.js"><link rel="prefetch" href="/assets/js/11.561f08ee.js"><link rel="prefetch" href="/assets/js/110.ec9d9c92.js"><link rel="prefetch" href="/assets/js/111.a37b7b9f.js"><link rel="prefetch" href="/assets/js/113.bf489717.js"><link rel="prefetch" href="/assets/js/114.0569b17d.js"><link rel="prefetch" href="/assets/js/115.cf784dec.js"><link rel="prefetch" href="/assets/js/116.92c16b65.js"><link rel="prefetch" href="/assets/js/117.991782bd.js"><link rel="prefetch" href="/assets/js/12.e4c2aa4a.js"><link rel="prefetch" href="/assets/js/13.35f9ed5a.js"><link rel="prefetch" href="/assets/js/14.b7f6f87c.js"><link rel="prefetch" href="/assets/js/15.808b42c3.js"><link rel="prefetch" href="/assets/js/16.9a65883a.js"><link rel="prefetch" href="/assets/js/17.dbfc7bb2.js"><link rel="prefetch" href="/assets/js/18.c329e942.js"><link rel="prefetch" href="/assets/js/19.83deeff3.js"><link rel="prefetch" href="/assets/js/2.40aa7bb6.js"><link rel="prefetch" href="/assets/js/20.bdd777c1.js"><link rel="prefetch" href="/assets/js/21.b486bbf9.js"><link rel="prefetch" href="/assets/js/22.a25a903b.js"><link rel="prefetch" href="/assets/js/23.925ff4e0.js"><link rel="prefetch" href="/assets/js/24.ceff7a46.js"><link rel="prefetch" href="/assets/js/25.760d6451.js"><link rel="prefetch" href="/assets/js/26.66b0e693.js"><link rel="prefetch" href="/assets/js/27.79296467.js"><link rel="prefetch" href="/assets/js/28.6f5b92df.js"><link rel="prefetch" href="/assets/js/29.f2b1ce52.js"><link rel="prefetch" href="/assets/js/30.3bafedc7.js"><link rel="prefetch" href="/assets/js/31.b967adc4.js"><link rel="prefetch" href="/assets/js/32.bfcba426.js"><link rel="prefetch" href="/assets/js/33.c838af1a.js"><link rel="prefetch" href="/assets/js/34.6f70f963.js"><link rel="prefetch" href="/assets/js/35.40935f03.js"><link rel="prefetch" href="/assets/js/36.bcf1bbbf.js"><link rel="prefetch" href="/assets/js/37.48e1a430.js"><link rel="prefetch" href="/assets/js/38.82997478.js"><link rel="prefetch" href="/assets/js/39.77436fc0.js"><link rel="prefetch" href="/assets/js/4.7d10bedd.js"><link rel="prefetch" href="/assets/js/40.bc3182ae.js"><link rel="prefetch" href="/assets/js/41.71103288.js"><link rel="prefetch" href="/assets/js/42.7690245a.js"><link rel="prefetch" href="/assets/js/43.d2d3d553.js"><link rel="prefetch" href="/assets/js/44.3f350618.js"><link rel="prefetch" href="/assets/js/45.97083dfb.js"><link rel="prefetch" href="/assets/js/46.a41e95bb.js"><link rel="prefetch" href="/assets/js/47.8540ef07.js"><link rel="prefetch" href="/assets/js/48.54629455.js"><link rel="prefetch" href="/assets/js/49.5f90d180.js"><link rel="prefetch" href="/assets/js/5.b88ed74c.js"><link rel="prefetch" href="/assets/js/50.7fa4c3a4.js"><link rel="prefetch" href="/assets/js/51.6ebb146b.js"><link rel="prefetch" href="/assets/js/52.fe6e9396.js"><link rel="prefetch" href="/assets/js/53.fa23c041.js"><link rel="prefetch" href="/assets/js/54.90582436.js"><link rel="prefetch" href="/assets/js/55.b8844963.js"><link rel="prefetch" href="/assets/js/56.5fd08d82.js"><link rel="prefetch" href="/assets/js/57.d57125ff.js"><link rel="prefetch" href="/assets/js/58.0696d91e.js"><link rel="prefetch" href="/assets/js/59.cf936091.js"><link rel="prefetch" href="/assets/js/6.d4fec8b7.js"><link rel="prefetch" href="/assets/js/60.e0404bbf.js"><link rel="prefetch" href="/assets/js/61.fd7b24c0.js"><link rel="prefetch" href="/assets/js/62.bab35282.js"><link rel="prefetch" href="/assets/js/63.bc3aab78.js"><link rel="prefetch" href="/assets/js/64.5f1bfff1.js"><link rel="prefetch" href="/assets/js/65.c431a11a.js"><link rel="prefetch" href="/assets/js/66.e2d06bb1.js"><link rel="prefetch" href="/assets/js/67.32853338.js"><link rel="prefetch" href="/assets/js/68.342b04c0.js"><link rel="prefetch" href="/assets/js/69.a1ce55b6.js"><link rel="prefetch" href="/assets/js/7.3197ebba.js"><link rel="prefetch" href="/assets/js/70.496c0997.js"><link rel="prefetch" href="/assets/js/71.31b35f4d.js"><link rel="prefetch" href="/assets/js/72.62ea27e4.js"><link rel="prefetch" href="/assets/js/73.2c961c77.js"><link rel="prefetch" href="/assets/js/74.8dbb42b8.js"><link rel="prefetch" href="/assets/js/75.f80b5005.js"><link rel="prefetch" href="/assets/js/76.07020749.js"><link rel="prefetch" href="/assets/js/77.930e3bad.js"><link rel="prefetch" href="/assets/js/78.fc6f0094.js"><link rel="prefetch" href="/assets/js/79.c72fd757.js"><link rel="prefetch" href="/assets/js/8.6e794918.js"><link rel="prefetch" href="/assets/js/80.8c9694ec.js"><link rel="prefetch" href="/assets/js/81.383d5cfc.js"><link rel="prefetch" href="/assets/js/82.1253ca4a.js"><link rel="prefetch" href="/assets/js/83.f0ff7a4d.js"><link rel="prefetch" href="/assets/js/84.5910af60.js"><link rel="prefetch" href="/assets/js/85.a9330cf0.js"><link rel="prefetch" href="/assets/js/86.e4b0497e.js"><link rel="prefetch" href="/assets/js/87.664f4a10.js"><link rel="prefetch" href="/assets/js/88.69b05471.js"><link rel="prefetch" href="/assets/js/89.4f1a869b.js"><link rel="prefetch" href="/assets/js/9.94dfd66d.js"><link rel="prefetch" href="/assets/js/90.91a54f02.js"><link rel="prefetch" href="/assets/js/91.cfe61516.js"><link rel="prefetch" href="/assets/js/92.99f20c42.js"><link rel="prefetch" href="/assets/js/93.dea260f7.js"><link rel="prefetch" href="/assets/js/94.4d34f33a.js"><link rel="prefetch" href="/assets/js/95.1977d5c8.js"><link rel="prefetch" href="/assets/js/96.07bc7add.js"><link rel="prefetch" href="/assets/js/97.548d05ca.js"><link rel="prefetch" href="/assets/js/98.3e689473.js"><link rel="prefetch" href="/assets/js/99.3382c108.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.cfd1e9a2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">个人主页</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Java" class="dropdown-title"><span class="title">Java</span> <span class="arrow down"></span></button> <button type="button" aria-label="Java" class="mobile-dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          Java面向对象和基础
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-oop.html" class="nav-link">
+  Java基础-面向对象
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-basic.html" class="nav-link">
+  Java基础-知识点
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-sum.html" class="nav-link">
+  Java 基础 - 图谱 &amp; Q/A
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java集合框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/collection/java-collection-all.html" class="nav-link">
+  Java 集合框架详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 并发框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-overview.html" class="nav-link">
+  Java 并发知识体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-theorty.html" class="nav-link">
+  Java 并发理论基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-thread-basic.html" class="nav-link">
+  Java 并发线程基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-juc-overview.html" class="nav-link">
+  J.U.C 知识体系与详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - IO框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/io/java-io-overview.html" class="nav-link">
+  Java IO/NIO/AIO详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 新版本特性
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/java8/java8.html" class="nav-link">
+  Java 8 特性详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java-8-up-overview.html" class="nav-link">
+  Java 8 以上版本特性体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java9-11.html" class="nav-link">
+  Java 8 升Java 11特性必读
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - JVM相关
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-classload.html" class="nav-link">
+  Java 类加载机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-class.html" class="nav-link">
+  Java 字节码和增强技术
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-struct.html" class="nav-link">
+  JVM 内存结构详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-gc.html" class="nav-link">
+  JVM 垃圾回收机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="nav-link">
+  Java 调试排错相关
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据库" class="dropdown-title"><span class="title">数据库</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据库" class="mobile-dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          数据库相关介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/info/mysql.html" class="nav-link">
+  mysql
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/oracle.html" class="nav-link">
+  oracle
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/h2.html" class="nav-link">
+  h2
+</a></li></ul></li><li class="dropdown-item"><h4>
+          框架介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/frame/mybatis/mybatis-base-overview.html" class="nav-link">
+  mybatis
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/mp/mp-base-overview.html" class="nav-link">
+  mybatis-plus
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/jpa/jpa-base-overview.html" class="nav-link">
+  jpa
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="中间件" class="dropdown-title"><span class="title">中间件</span> <span class="arrow down"></span></button> <button type="button" aria-label="中间件" class="mobile-dropdown-title"><span class="title">中间件</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          redis
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/middleware/redis/redis-overview.html" class="nav-link">
+  redis各大版本
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="个人记录" class="dropdown-title"><span class="title">个人记录</span> <span class="arrow down"></span></button> <button type="button" aria-label="个人记录" class="mobile-dropdown-title"><span class="title">个人记录</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          2024
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/owner/2024/229-1.html" class="nav-link">
+  vuepress打包报unsupported
+</a></li><li class="dropdown-subitem"><a href="/md/owner/2024/229-2.html" class="nav-link">
+  待定
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="https://github.com/xianglong123/cas-blog" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Java" class="dropdown-title"><span class="title">Java</span> <span class="arrow down"></span></button> <button type="button" aria-label="Java" class="mobile-dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          Java面向对象和基础
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-oop.html" class="nav-link">
+  Java基础-面向对象
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-basic.html" class="nav-link">
+  Java基础-知识点
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-sum.html" class="nav-link">
+  Java 基础 - 图谱 &amp; Q/A
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java集合框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/collection/java-collection-all.html" class="nav-link">
+  Java 集合框架详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 并发框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-overview.html" class="nav-link">
+  Java 并发知识体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-theorty.html" class="nav-link">
+  Java 并发理论基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-thread-basic.html" class="nav-link">
+  Java 并发线程基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-juc-overview.html" class="nav-link">
+  J.U.C 知识体系与详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - IO框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/io/java-io-overview.html" class="nav-link">
+  Java IO/NIO/AIO详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 新版本特性
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/java8/java8.html" class="nav-link">
+  Java 8 特性详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java-8-up-overview.html" class="nav-link">
+  Java 8 以上版本特性体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java9-11.html" class="nav-link">
+  Java 8 升Java 11特性必读
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - JVM相关
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-classload.html" class="nav-link">
+  Java 类加载机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-class.html" class="nav-link">
+  Java 字节码和增强技术
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-struct.html" class="nav-link">
+  JVM 内存结构详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-gc.html" class="nav-link">
+  JVM 垃圾回收机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="nav-link">
+  Java 调试排错相关
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据库" class="dropdown-title"><span class="title">数据库</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据库" class="mobile-dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          数据库相关介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/info/mysql.html" class="nav-link">
+  mysql
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/oracle.html" class="nav-link">
+  oracle
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/h2.html" class="nav-link">
+  h2
+</a></li></ul></li><li class="dropdown-item"><h4>
+          框架介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/frame/mybatis/mybatis-base-overview.html" class="nav-link">
+  mybatis
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/mp/mp-base-overview.html" class="nav-link">
+  mybatis-plus
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/jpa/jpa-base-overview.html" class="nav-link">
+  jpa
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="中间件" class="dropdown-title"><span class="title">中间件</span> <span class="arrow down"></span></button> <button type="button" aria-label="中间件" class="mobile-dropdown-title"><span class="title">中间件</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          redis
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/middleware/redis/redis-overview.html" class="nav-link">
+  redis各大版本
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="个人记录" class="dropdown-title"><span class="title">个人记录</span> <span class="arrow down"></span></button> <button type="button" aria-label="个人记录" class="mobile-dropdown-title"><span class="title">个人记录</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          2024
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/owner/2024/229-1.html" class="nav-link">
+  vuepress打包报unsupported
+</a></li><li class="dropdown-subitem"><a href="/md/owner/2024/229-2.html" class="nav-link">
+  待定
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="https://github.com/xianglong123/cas-blog" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/basic/java-basic-oop.html" class="sidebar-link">Java 基础 - 面向对象</a></li><li><a href="/md/java/basic/java-basic-lan-basic.html" class="sidebar-link">Java 基础 - 知识点</a></li><li><a href="/md/java/basic/java-basic-lan-sum.html" class="sidebar-link">Java 基础 - 图谱 &amp; Q/A</a></li><li><a href="/md/java/basic/java-basic-x-generic.html" class="sidebar-link">Java 基础 - 泛型机制详解</a></li><li><a href="/md/java/basic/java-basic-x-exception.html" class="sidebar-link">Java 基础 - 异常机制详解</a></li><li><a href="/md/java/basic/java-basic-x-reflection.html" class="sidebar-link">Java 基础 - 反射机制详解</a></li><li><a href="/md/java/advanced/java-advanced-spi.html" class="sidebar-link">Java常用机制 - SPI机制详解</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 集合框架</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/collection/java-collection-all.html" class="sidebar-link">Collection 类关系图</a></li><li><a href="/md/java/collection/java-collection-ArrayList.html" class="sidebar-link">Collection - ArrayList 源码解析</a></li><li><a href="/md/java/collection/java-collection-LinkedList.html" class="sidebar-link">Collection - LinkedList源码解析</a></li><li><a href="/md/java/collection/java-collection-Queue&amp;Stack.html" class="sidebar-link">Collection - Stack &amp; Queue 源码解析</a></li><li><a href="/md/java/collection/java-collection-PriorityQueue.html" class="sidebar-link">Collection - PriorityQueue源码解析</a></li><li><a href="/md/java/collection/java-map-HashMap&amp;HashSet.html" class="sidebar-link">Map - HashSet &amp; HashMap 源码解析</a></li><li><a href="/md/java/collection/java-map-LinkedHashMap&amp;LinkedHashSet.html" class="sidebar-link">Map - LinkedHashSet&amp;Map源码解析</a></li><li><a href="/md/java/collection/java-map-TreeMap&amp;TreeSet.html" class="sidebar-link">Map - TreeSet &amp; TreeMap 源码解析</a></li><li><a href="/md/java/collection/java-map-WeakHashMap.html" class="sidebar-link">Map - WeakHashMap源码解析</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Java 多线程与并发</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/thread/java-thread-x-overview.html" class="sidebar-link">♥Java并发知识体系详解♥</a></li><li><a href="/md/java/thread/java-thread-x-theorty.html" class="sidebar-link">Java 并发 - 理论基础</a></li><li><a href="/md/java/thread/java-thread-x-thread-basic.html" class="sidebar-link">Java 并发 - 线程基础</a></li><li><a href="/md/java/thread/java-thread-x-lock-all.html" class="sidebar-link">Java并发 - Java中所有的锁</a></li><li><a href="/md/java/thread/java-thread-x-key-synchronized.html" class="sidebar-link">关键字:synchronized详解</a></li><li><a href="/md/java/thread/java-thread-x-key-volatile.html" class="sidebar-link">关键字:volatile详解</a></li><li><a href="/md/java/thread/java-thread-x-key-final.html" class="sidebar-link">关键字:final详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-overview.html" class="sidebar-link">JUC - 类汇总和学习指南</a></li><li><a href="/md/java/thread/java-thread-x-juc-AtomicInteger.html" class="sidebar-link">JUC原子类CAS, Unsafe和原子类详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-LockSupport.html" class="sidebar-link">JUC锁:LockSupport详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-AbstractQueuedSynchronizer.html" class="sidebar-link">JUC锁:锁核心类AQS详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-ReentrantLock.html" class="sidebar-link">JUC锁:ReentrantLock详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-ReentrantReadWriteLock.html" class="sidebar-link">JUC锁:ReentrantReadWriteLock详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-ConcurrentHashMap.html" class="sidebar-link">JUC集合:ConcurrentHashMap详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-CopyOnWriteArrayList.html" class="sidebar-link">JUC集合:CopyOnWriteArrayList详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-ConcurrentLinkedQueue.html" class="sidebar-link">JUC集合:ConcurrentLinkedQueue详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-BlockingQueue.html" class="sidebar-link">JUC集合:BlockingQueue详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-FutureTask.html" class="sidebar-link">JUC线程池:FutureTask详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ThreadPoolExecutor.html" class="sidebar-link">JUC线程池:ThreadPoolExecutor详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ScheduledThreadPoolExecutor.html" class="sidebar-link">JUC线程池:ScheduledThreadPoolExecutor详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ForkJoinPool.html" class="sidebar-link">JUC线程池:Fork/Join框架详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-countdownlatch.html" class="sidebar-link">JUC工具类:CountDownLatch详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-cyclicbarrier.html" class="sidebar-link">JUC工具类:CyclicBarrier详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-semaphore.html" class="sidebar-link">JUC工具类:Semaphore详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-phaser.html" class="sidebar-link">JUC工具类:Phaser详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-exchanger.html" aria-current="page" class="active sidebar-link">JUC工具类:Exchanger详解</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/md/java/thread/java-thread-x-threadlocal.html" class="sidebar-link">Java 并发 - ThreadLocal详解</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java IO/NIO/AIO</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/io/java-io-overview.html" class="sidebar-link">♥Java IO知识体系详解♥</a></li><li><a href="/md/java/io/java-io-basic-category.html" class="sidebar-link">Java IO - 分类(传输，操作)</a></li><li><a href="/md/java/io/java-io-basic-design-pattern.html" class="sidebar-link">Java IO - 设计模式(装饰者模式)</a></li><li><a href="/md/java/io/java-io-basic-code-inputstream.html" class="sidebar-link">Java IO - 源码:InputStream</a></li><li><a href="/md/java/io/java-io-basic-code-outputstream.html" class="sidebar-link">Java IO - 源码:OutputStream</a></li><li><a href="/md/java/io/java-io-basic-usage.html" class="sidebar-link">Java IO - 常见类使用</a></li><li><a href="/md/java/io/java-io-model.html" class="sidebar-link">IO 模型 - Unix IO 模型</a></li><li><a href="/md/java/io/java-io-bio.html" class="sidebar-link">Java IO - BIO 详解</a></li><li><a href="/md/java/io/java-io-nio.html" class="sidebar-link">Java NIO - 基础详解</a></li><li><a href="/md/java/io/java-io-nio-select-epoll.html" class="sidebar-link">Java NIO - IO多路复用详解</a></li><li><a href="/md/java/io/java-io-aio.html" class="sidebar-link">Java AIO - 异步IO详解</a></li><li><a href="/md/java/io/java-io-nio-netty.html" class="sidebar-link">Java N(A)IO - 框架:Netty</a></li><li><a href="/md/java/io/java-io-nio-zerocopy.html" class="sidebar-link">Java NIO - 零拷贝实现</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java8 特性详解</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/java8/java8.html" class="sidebar-link">♥Java8特性知识体系详解♥</a></li><li><a href="/md/java/java8/java8-stream.html" class="sidebar-link">Java 8 - 函数编程(lambda表达式)</a></li><li><a href="/md/java/java8/java8-optional.html" class="sidebar-link">Java 8 - Optional类深度解析</a></li><li><a href="/md/java/java8/java8-default.html" class="sidebar-link">Java 8 - 默认方法</a></li><li><a href="/md/java/java8/java8-type-anno.html" class="sidebar-link">Java 8 - 类型注解</a></li><li><a href="/md/java/java8/java8-anno-repeat.html" class="sidebar-link">Java 8 - 重复注解</a></li><li><a href="/md/java/java8/java8-type.html" class="sidebar-link">Java 8 - 类型推断优化</a></li><li><a href="/md/java/java8/java8-jre.html" class="sidebar-link">Java 8 - JRE精简</a></li><li><a href="/md/java/java8/java8-permgen.html" class="sidebar-link">Java 8 - 移除Permgen</a></li><li><a href="/md/java/java8/java8-stampedlock.html" class="sidebar-link">Java 8 - StampedLock</a></li><li><a href="/md/java/java8/java8-localdatetime.html" class="sidebar-link">Java 8 - LocalDate/LocalDateTime</a></li><li><a href="/md/java/java8/java8-javafx.html" class="sidebar-link">Java 8 - JavaFx 2.0</a></li><li><a href="/md/java/java8/java8-others.html" class="sidebar-link">Java 8 - 其它更新:字符串base64,...</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java8 以上特性概述</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/java8up/java-8-up-overview.html" class="sidebar-link">♥Java8+特性知识体系详解♥</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>JVM相关</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/jvm/java-jvm-x-overview.html" class="sidebar-link">♥JVM相关知识体系详解♥</a></li><li><a href="/md/java/jvm/java-jvm-class.html" class="sidebar-link">JVM 基础 - 类字节码详解</a></li><li><a href="/md/java/jvm/java-jvm-class-enhancer.html" class="sidebar-link">JVM 基础 - 字节码的增强技术</a></li><li><a href="/md/java/jvm/java-jvm-classload.html" class="sidebar-link">JVM 基础 - Java 类加载机制</a></li><li><a href="/md/java/jvm/java-jvm-struct.html" class="sidebar-link">JVM 基础 - JVM 内存结构</a></li><li><a href="/md/java/jvm/java-jvm-x-introduce.html" class="sidebar-link">JVM 基础 - Java 内存模型引入</a></li><li><a href="/md/java/jvm/java-jvm-jmm.html" class="sidebar-link">JVM 基础 - Java 内存模型详解</a></li><li><a href="/md/java/jvm/java-jvm-gc.html" class="sidebar-link">GC - Java 垃圾回收基础知识</a></li><li><a href="/md/java/jvm/java-jvm-gc-g1.html" class="sidebar-link">GC - Java 垃圾回收器之G1详解</a></li><li><a href="/md/java/jvm/java-jvm-gc-zgc.html" class="sidebar-link">GC - Java 垃圾回收器之ZGC详解</a></li><li><a href="/md/java/jvm/java-jvm-cms-gc.html" class="sidebar-link">GC - Java 垃圾回收器之CMS GC问题分析与解决</a></li><li><a href="/md/java/jvm/java-jvm-param.html" class="sidebar-link">调试排错 - JVM 调优参数</a></li><li><a href="/md/java/jvm/java-jvm-oom.html" class="sidebar-link">调试排错 - Java 内存分析之堆内存和MetaSpace内存</a></li><li><a href="/md/java/jvm/java-jvm-oom-offheap.html" class="sidebar-link">调试排错 - Java 内存分析之堆外内存</a></li><li><a href="/md/java/jvm/java-jvm-thread-dump.html" class="sidebar-link">调试排错 - Java 线程分析之线程Dump分析</a></li><li><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="sidebar-link">调试排错 - Java 问题排查之Linux命令</a></li><li><a href="/md/java/jvm/java-jvm-debug-tools-list.html" class="sidebar-link">调试排错 - Java 问题排查之工具单</a></li><li><a href="/md/java/jvm/java-jvm-oom-tool.html" class="sidebar-link">调试排错 - Java 问题排查之JVM可视化工具</a></li><li><a href="/md/java/jvm/java-jvm-agent-arthas.html" class="sidebar-link">调试排错 - Java 问题排查之应用在线调试Arthas</a></li><li><a href="/md/java/jvm/java-jvm-debug-idea.html" class="sidebar-link">调试排错 - Java 问题排查之使用IDEA本地调试和远程调试</a></li><li><a href="/md/java/jvm/java-jvm-agent-usage.html" class="sidebar-link">调试排错 - Java动态调试技术原理</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="juc工具类-exchanger详解"><a href="#juc工具类-exchanger详解" class="header-anchor">#</a> JUC工具类:Exchanger详解</h1> <div class="custom-block tip"><p class="custom-block-title">提示</p> <p>Exchanger是用于线程协作的工具类, 主要用于两个线程之间的数据交换。 @123</p></div> <ul><li>JUC工具类: Exchanger详解
+<ul><li>带着BAT大厂的面试问题去理解Exchanger</li> <li>Exchanger简介</li> <li>Exchanger实现机制</li> <li>Exchanger源码解析
+<ul><li>内部类 - Participant</li> <li>内部类 - Node</li> <li>核心属性</li> <li>构造函数</li> <li>核心方法 - exchange(V x)</li> <li>slotExchange(Object item, boolean timed, long ns)</li> <li>arenaExchange(Object item, boolean timed, long ns)</li></ul></li> <li>参考文章</li></ul></li></ul> <h3 id="带着bat大厂的面试问题去理解exchanger"><a href="#带着bat大厂的面试问题去理解exchanger" class="header-anchor">#</a> # 带着BAT大厂的面试问题去理解Exchanger</h3> <blockquote><p>提示</p></blockquote> <blockquote><p>请带着这些问题继续后文，会很大程度上帮助你更好的理解Exchanger。@pdai</p></blockquote> <ul><li>Exchanger主要解决什么问题?</li> <li>对比SynchronousQueue，为什么说Exchanger可被视为 SynchronousQueue 的双向形式?</li> <li>Exchanger在不同的JDK版本中实现有什么差别?</li> <li>Exchanger实现机制?</li> <li>Exchanger已经有了slot单节点，为什么会加入arena node数组? 什么时候会用到数组?</li> <li>arena可以确保不同的slot在arena中是不会相冲突的，那么是怎么保证的呢?</li> <li>什么是伪共享，Exchanger中如何体现的?</li> <li>Exchanger实现举例</li></ul> <h3 id="exchanger简介"><a href="#exchanger简介" class="header-anchor">#</a> # Exchanger简介</h3> <blockquote><p>Exchanger用于进行两个线程之间的数据交换。它提供一个同步点，在这个同步点，两个线程可以交换彼此的数据。这两个线程通过exchange()方法交换数据，当一个线程先执行exchange()方法后，它会一直等待第二个线程也执行exchange()方法，当这两个线程到达同步点时，这两个线程就可以交换数据了。</p></blockquote> <h3 id="exchanger实现机制"><a href="#exchanger实现机制" class="header-anchor">#</a> # Exchanger实现机制</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>for (;;) {
+    if (slot is empty) { // offer
+        // slot为空时，将item 设置到Node 中        
+        place item in a Node;
+        if (can CAS slot from empty to node) {
+            // 当将node通过CAS交换到slot中时，挂起线程等待被唤醒
+            wait for release;
+            // 被唤醒后返回node中匹配到的item
+            return matching item in node;
+        }
+    } else if (can CAS slot from node to empty) { // release
+         // 将slot设置为空
+        // 获取node中的item，将需要交换的数据设置到匹配的item
+        get the item in node;
+        set matching item in node;
+        // 唤醒等待的线程
+        release waiting thread;
+    }
+    // else retry on CAS failure
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br></div></div><blockquote><p>比如有2条线程A和B，A线程交换数据时，发现slot为空，则将需要交换的数据放在slot中等待其它线程进来交换数据，等线程B进来，读取A设置的数据，然后设置线程B需要交换的数据，然后唤醒A线程，原理就是这么简单。但是当多个线程之间进行交换数据时就会出现问题，所以Exchanger加入了slot数组。</p></blockquote> <h3 id="exchanger源码解析"><a href="#exchanger源码解析" class="header-anchor">#</a> # Exchanger源码解析</h3> <h3 id="内部类-participant"><a href="#内部类-participant" class="header-anchor">#</a> # 内部类 - Participant</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>static final class Participant extends ThreadLocal&lt;Node&gt; {
+    public Node initialValue() { return new Node(); }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><blockquote><p>Participant的作用是为每个线程保留唯一的一个Node节点, 它继承ThreadLocal，说明每个线程具有不同的状态。</p></blockquote> <h3 id="内部类-node"><a href="#内部类-node" class="header-anchor">#</a> # 内部类 - Node</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>@sun.misc.Contended static final class Node {
+     // arena的下标，多个槽位的时候利用
+    int index; 
+    // 上一次记录的Exchanger.bound
+    int bound; 
+    // 在当前bound下CAS失败的次数；
+    int collides;
+    // 用于自旋；
+    int hash; 
+    // 这个线程的当前项，也就是需要交换的数据；
+    Object item; 
+    //做releasing操作的线程传递的项；
+    volatile Object match; 
+    //挂起时设置线程值，其他情况下为null；
+    volatile Thread parked;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br></div></div><blockquote><p>在Node定义中有两个变量值得思考：bound以及collides。前面提到了数组area是为了避免竞争而产生的，如果系统不存在竞争问题，那么完全没有必要开辟一个高效的arena来徒增系统的复杂性。首先通过单个slot的exchanger来交换数据，当探测到竞争时将安排不同的位置的slot来保存线程Node，并且可以确保没有slot会在同一个缓存行上。如何来判断会有竞争呢? CAS替换slot失败，如果失败，则通过记录冲突次数来扩展arena的尺寸，我们在记录冲突的过程中会跟踪bound的值，以及会重新计算冲突次数在bound的值被改变时。</p></blockquote> <h3 id="核心属性"><a href="#核心属性" class="header-anchor">#</a> # 核心属性</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>private final Participant participant;
+private volatile Node[] arena;
+private volatile Node slot;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><ul><li><code>为什么会有</code>arena数组槽<code>?</code></li></ul> <blockquote><p>slot为单个槽，arena为数组槽, 他们都是Node类型。在这里可能会感觉到疑惑，slot作为Exchanger交换数据的场景，应该只需要一个就可以了啊? 为何还多了一个Participant 和数组类型的arena呢? 一个slot交换场所原则上来说应该是可以的，但实际情况却不是如此，多个参与者使用同一个交换场所时，会存在严重伸缩性问题。既然单个交换场所存在问题，那么我们就安排多个，也就是数组arena。通过数组arena来安排不同的线程使用不同的slot来降低竞争问题，并且可以保证最终一定会成对交换数据。但是<code>Exchanger不是一来就会生成arena数组来降低竞争，只有当产生竞争是才会生成arena数组</code>。</p></blockquote> <ul><li><code>那么怎么将Node与当前线程绑定呢？</code></li></ul> <blockquote><p>Participant，Participant 的作用就是为每个线程保留唯一的一个Node节点，它继承ThreadLocal，同时在Node节点中记录在arena中的下标index。</p></blockquote> <h3 id="构造函数"><a href="#构造函数" class="header-anchor">#</a> # 构造函数</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>/**
+* Creates a new Exchanger.
+*/
+public Exchanger() {
+    participant = new Participant();
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><blockquote><p>初始化participant对象。</p></blockquote> <h3 id="核心方法-exchange-v-x"><a href="#核心方法-exchange-v-x" class="header-anchor">#</a> # 核心方法 - exchange(V x)</h3> <blockquote><p>等待另一个线程到达此交换点(除非当前线程被中断)，然后将给定的对象传送给该线程，并接收该线程的对象。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>public V exchange(V x) throws InterruptedException {
+    Object v;
+    // 当参数为null时需要将item设置为空的对象
+    Object item = (x == null) ? NULL_ITEM : x; // translate null args
+    // 注意到这里的这个表达式是整个方法的核心
+    if ((arena != null ||
+            (v = slotExchange(item, false, 0 L)) == null) &amp;&amp;
+        ((Thread.interrupted() || // disambiguates null return
+            (v = arenaExchange(item, false, 0 L)) == null)))
+        throw new InterruptedException();
+    return (v == NULL_ITEM) ? null : (V) v;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><blockquote><p>这个方法比较好理解：arena为数组槽，如果为null，则执行slotExchange()方法，否则判断线程是否中断，如果中断值抛出InterruptedException异常，没有中断则执行arenaExchange()方法。整套逻辑就是：如果slotExchange(Object item, boolean timed, long ns)方法执行失败了就执行arenaExchange(Object item, boolean timed, long ns)方法，最后返回结果V。</p></blockquote> <blockquote><p>NULL_ITEM 为一个空节点，其实就是一个Object对象而已，slotExchange()为单个slot交换。</p></blockquote> <h3 id="slotexchange-object-item-boolean-timed-long-ns"><a href="#slotexchange-object-item-boolean-timed-long-ns" class="header-anchor">#</a> # slotExchange(Object item, boolean timed, long ns)</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>private final Object slotExchange(Object item, boolean timed, long ns) {
+    // 获取当前线程node对象
+    Node p = participant.get();
+    // 当前线程
+    Thread t = Thread.currentThread();
+    // 若果线程被中断，就直接返回null
+    if (t.isInterrupted()) // preserve interrupt status so caller can recheck
+        return null;
+	// 自旋
+    for (Node q;;) {
+        // 将slot值赋给q
+        if ((q = slot) != null) {
+             // slot 不为null，即表示已有线程已经把需要交换的数据设置在slot中了
+			// 通过CAS将slot设置成null
+            if (U.compareAndSwapObject(this, SLOT, q, null)) {
+                // CAS操作成功后，将slot中的item赋值给对象v，以便返回。
+                // 这里也是就读取之前线程要交换的数据
+                Object v = q.item;
+                // 将当前线程需要交给的数据设置在q中的match
+                q.match = item;
+                 // 获取被挂起的线程
+                Thread w = q.parked;
+                if (w != null)
+                    // 如果线程不为null，唤醒它
+                    U.unpark(w);
+                // 返回其他线程给的V
+                return v;
+            }
+            // create arena on contention, but continue until slot null
+            // CAS 操作失败，表示有其它线程竞争，在此线程之前将数据已取走
+            // NCPU:CPU的核数
+            // bound == 0 表示arena数组未初始化过，CAS操作bound将其增加SEQ
+            if (NCPU &gt; 1 &amp;&amp; bound == 0 &amp;&amp;
+                U.compareAndSwapInt(this, BOUND, 0, SEQ))
+                // 初始化arena数组
+                arena = new Node[(FULL + 2) &lt;&lt; ASHIFT];
+        }
+        // 上面分析过，只有当arena不为空才会执行slotExchange方法的
+		// 所以表示刚好已有其它线程加入进来将arena初始化
+        else if (arena != null)
+            // 这里就需要去执行arenaExchange
+            return null; // caller must reroute to arenaExchange
+        else {
+            // 这里表示当前线程是以第一个线程进来交换数据
+            // 或者表示之前的数据交换已进行完毕，这里可以看作是第一个线程
+            // 将需要交换的数据先存放在当前线程变量p中
+            p.item = item;
+            // 将需要交换的数据通过CAS设置到交换区slot
+            if (U.compareAndSwapObject(this, SLOT, null, p))
+                // 交换成功后跳出自旋
+                break;
+            // CAS操作失败，表示有其它线程刚好先于当前线程将数据设置到交换区slot
+            // 将当前线程变量中的item设置为null，然后自旋获取其它线程存放在交换区slot的数据
+            p.item = null;
+        }
+    }
+
+    // await release
+    // 执行到这里表示当前线程已将需要的交换的数据放置于交换区slot中了，
+    // 等待其它线程交换数据然后唤醒当前线程
+    int h = p.hash;
+    long end = timed ? System.nanoTime() + ns : 0 L;
+    // 自旋次数
+    int spins = (NCPU &gt; 1) ? SPINS : 1;
+    Object v;
+    // 自旋等待直到p.match不为null，也就是说等待其它线程将需要交换的数据放置于交换区slot
+    while ((v = p.match) == null) {
+        // 下面的逻辑主要是自旋等待，直到spins递减到0为止
+        if (spins &gt; 0) {
+            h ^= h &lt;&lt; 1;
+            h ^= h &gt;&gt;&gt; 3;
+            h ^= h &lt;&lt; 10;
+            if (h == 0)
+                h = SPINS | (int) t.getId();
+            else if (h &lt; 0 &amp;&amp; (--spins &amp; ((SPINS &gt;&gt;&gt; 1) - 1)) == 0)
+                Thread.yield();
+        } else if (slot != p)
+            spins = SPINS;
+        // 此处表示未设置超时或者时间未超时
+        else if (!t.isInterrupted() &amp;&amp; arena == null &amp;&amp;
+            (!timed || (ns = end - System.nanoTime()) &gt; 0 L)) {
+            // 设置线程t被当前对象阻塞
+            U.putObject(t, BLOCKER, this);
+            // 给p挂机线程的值赋值
+            p.parked = t;
+            if (slot == p)
+                // 如果slot还没有被置为null，也就表示暂未有线程过来交换数据，需要将当前线程挂起
+                U.park(false, ns);
+            // 线程被唤醒，将被挂起的线程设置为null
+            p.parked = null;
+            // 设置线程t未被任何对象阻塞
+            U.putObject(t, BLOCKER, null);
+        // 不是以上条件时(可能是arena已不为null或者超时)    
+        } else if (U.compareAndSwapObject(this, SLOT, p, null)) {
+             // arena不为null则v为null,其它为超时则v为超市对象TIMED_OUT，并且跳出循环
+            v = timed &amp;&amp; ns &lt;= 0 L &amp;&amp; !t.isInterrupted() ? TIMED_OUT : null;
+            break;
+        }
+    }
+    // 取走match值，并将p中的match置为null
+    U.putOrderedObject(p, MATCH, null);
+    // 设置item为null
+    p.item = null;
+    p.hash = h;
+    // 返回交换值
+    return v;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br></div></div><blockquote><p>程序首先通过participant获取当前线程节点Node。检测是否中断，如果中断return null，等待后续抛出InterruptedException异常。</p></blockquote> <ul><li>如果slot不为null，则进行slot消除，成功直接返回数据V，否则失败，则创建arena消除数组。</li> <li>如果slot为null，但arena不为null，则返回null，进入arenaExchange逻辑。</li> <li>如果slot为null，且arena也为null，则尝试占领该slot，失败重试，成功则跳出循环进入spin+block(自旋+阻塞)模式。</li></ul> <blockquote><p>在自旋+阻塞模式中，首先取得结束时间和自旋次数。如果match(做releasing操作的线程传递的项)为null，其首先尝试spins+随机次自旋(改自旋使用当前节点中的hash，并改变之)和退让。当自旋数为0后，假如slot发生了改变(slot != p)则重置自旋数并重试。否则假如：当前未中断&amp;arena为null&amp;(当前不是限时版本或者限时版本+当前时间未结束)：阻塞或者限时阻塞。假如：当前中断或者arena不为null或者当前为限时版本+时间已经结束：不限时版本：置v为null；限时版本：如果时间结束以及未中断则TIMED_OUT；否则给出null(原因是探测到arena非空或者当前线程中断)。</p></blockquote> <blockquote><p>match不为空时跳出循环。</p></blockquote> <h3 id="arenaexchange-object-item-boolean-timed-long-ns"><a href="#arenaexchange-object-item-boolean-timed-long-ns" class="header-anchor">#</a> # arenaExchange(Object item, boolean timed, long ns)</h3> <blockquote><p>此方法被执行时表示多个线程进入交换区交换数据，arena数组已被初始化，此方法中的一些处理方式和slotExchange比较类似，它是通过遍历arena数组找到需要交换的数据。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>// timed 为true表示设置了超时时间，ns为&gt;0的值，反之没有设置超时时间
+private final Object arenaExchange(Object item, boolean timed, long ns) {
+    Node[] a = arena;
+    // 获取当前线程中的存放的node
+    Node p = participant.get();
+    //index初始值0
+    for (int i = p.index;;) { // access slot at i
+        // 遍历，如果在数组中找到数据则直接交换并唤醒线程，如未找到则将需要交换给其它线程的数据放置于数组中
+        int b, m, c;
+        long j; // j is raw array offset
+        // 其实这里就是向右遍历数组，只是用到了元素在内存偏移的偏移量
+        // q实际为arena数组偏移(i + 1) *  128个地址位上的node
+        Node q = (Node) U.getObjectVolatile(a, j = (i &lt;&lt; ASHIFT) + ABASE);
+        // 如果q不为null，并且CAS操作成功，将下标j的元素置为null
+        if (q != null &amp;&amp; U.compareAndSwapObject(a, j, q, null)) {
+            // 表示当前线程已发现有交换的数据，然后获取数据，唤醒等待的线程
+            Object v = q.item; // release
+            q.match = item;
+            Thread w = q.parked;
+            if (w != null)
+                U.unpark(w);
+            return v;
+        // q 为null 并且 i 未超过数组边界    
+        } else if (i &lt;= (m = (b = bound) &amp; MMASK) &amp;&amp; q == null) {
+             // 将需要给其它线程的item赋予给p中的item
+            p.item = item; // offer
+            if (U.compareAndSwapObject(a, j, null, p)) {
+                // 交换成功
+                long end = (timed &amp;&amp; m == 0) ? System.nanoTime() + ns : 0 L;
+                Thread t = Thread.currentThread(); // wait
+                // 自旋直到有其它线程进入，遍历到该元素并与其交换，同时当前线程被唤醒
+                for (int h = p.hash, spins = SPINS;;) {
+                    Object v = p.match;
+                    if (v != null) {
+                        // 其它线程设置的需要交换的数据match不为null
+                        // 将match设置null,item设置为null
+                        U.putOrderedObject(p, MATCH, null);
+                        p.item = null; // clear for next use
+                        p.hash = h;
+                        return v;
+                    } else if (spins &gt; 0) {
+                        h ^= h &lt;&lt; 1;
+                        h ^= h &gt;&gt;&gt; 3;
+                        h ^= h &lt;&lt; 10; // xorshift
+                        if (h == 0) // initialize hash
+                            h = SPINS | (int) t.getId();
+                        else if (h &lt; 0 &amp;&amp; // approx 50% true
+                            (--spins &amp; ((SPINS &gt;&gt;&gt; 1) - 1)) == 0)
+                            Thread.yield(); // two yields per wait
+                    } else if (U.getObjectVolatile(a, j) != p)
+                        // 和slotExchange方法中的类似，arena数组中的数据已被CAS设置
+                       // match值还未设置，让其再自旋等待match被设置
+                        spins = SPINS; // releaser hasn't set match yet
+                    else if (!t.isInterrupted() &amp;&amp; m == 0 &amp;&amp;
+                        (!timed ||
+                            (ns = end - System.nanoTime()) &gt; 0 L)) {
+                        // 设置线程t被当前对象阻塞
+                        U.putObject(t, BLOCKER, this); // emulate LockSupport
+                         // 线程t赋值
+                        p.parked = t; // minimize window
+                        if (U.getObjectVolatile(a, j) == p)
+                            // 数组中对象还相等，表示线程还未被唤醒，唤醒线程
+                            U.park(false, ns);
+                        p.parked = null;
+                         // 设置线程t未被任何对象阻塞
+                        U.putObject(t, BLOCKER, null);
+                    } else if (U.getObjectVolatile(a, j) == p &amp;&amp;
+                        U.compareAndSwapObject(a, j, p, null)) {
+                        // 这里给bound增加加一个SEQ
+                        if (m != 0) // try to shrink
+                            U.compareAndSwapInt(this, BOUND, b, b + SEQ - 1);
+                        p.item = null;
+                        p.hash = h;
+                        i = p.index &gt;&gt;&gt;= 1; // descend
+                        if (Thread.interrupted())
+                            return null;
+                        if (timed &amp;&amp; m == 0 &amp;&amp; ns &lt;= 0 L)
+                            return TIMED_OUT;
+                        break; // expired; restart
+                    }
+                }
+            } else
+                // 交换失败，表示有其它线程更改了arena数组中下标i的元素
+                p.item = null; // clear offer
+        } else {
+            // 此时表示下标不在bound &amp; MMASK或q不为null但CAS操作失败
+           // 需要更新bound变化后的值
+            if (p.bound != b) { // stale; reset
+                p.bound = b;
+                p.collides = 0;
+                // 反向遍历
+                i = (i != m || m == 0) ? m : m - 1;
+            } else if ((c = p.collides) &lt; m || m == FULL ||
+                !U.compareAndSwapInt(this, BOUND, b, b + SEQ + 1)) {
+                 // 记录CAS失败的次数
+                p.collides = c + 1;
+                // 循环遍历
+                i = (i == 0) ? m : i - 1; // cyclically traverse
+            } else
+                // 此时表示bound值增加了SEQ+1
+                i = m + 1; // grow
+            // 设置下标
+            p.index = i;
+        }
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br></div></div><blockquote><p>首先通过participant取得当前节点Node，然后根据当前节点Node的index去取arena中相对应的节点node。</p></blockquote> <ul><li><code>前面提到过arena可以确保不同的slot在arena中是不会相冲突的，那么是怎么保证的呢？</code></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>arena = new Node[(FULL + 2) &lt;&lt; ASHIFT];
+// 这个arena到底有多大呢? 我们先看FULL 和ASHIFT的定义：
+static final int FULL = (NCPU &gt;= (MMASK &lt;&lt; 1)) ? MMASK : NCPU &gt;&gt;&gt; 1;
+private static final int ASHIFT = 7;
+
+private static final int NCPU = Runtime.getRuntime().availableProcessors();
+private static final int MMASK = 0xff;        // 255
+// 假如我的机器NCPU = 8 ，则得到的是768大小的arena数组。然后通过以下代码取得在arena中的节点：
+
+Node q = (Node)U.getObjectVolatile(a, j = (i &lt;&lt; ASHIFT) + ABASE);
+// 它仍然是通过右移ASHIFT位来取得Node的，ABASE定义如下：
+
+Class&lt;?&gt; ak = Node[].class;
+ABASE = U.arrayBaseOffset(ak) + (1 &lt;&lt; ASHIFT);
+// U.arrayBaseOffset获取对象头长度，数组元素的大小可以通过unsafe.arrayIndexScale(T[].class) 方法获取到。这也就是说要访问类型为T的第N个元素的话，你的偏移量offset应该是arrayOffset+N*arrayScale。也就是说BASE = arrayOffset+ 128 。
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br></div></div><ul><li><code>用@sun.misc.Contended来规避伪共享？</code></li></ul> <blockquote><p><code>伪共享说明</code>：假设一个类的两个相互独立的属性a和b在内存地址上是连续的(比如FIFO队列的头尾指针)，那么它们通常会被加载到相同的cpu cache line里面。并发情况下，如果一个线程修改了a，会导致整个cache line失效(包括b)，这时另一个线程来读b，就需要从内存里再次加载了，这种多线程频繁修改ab的情况下，虽然a和b看似独立，但它们会互相干扰，非常影响性能。</p></blockquote> <blockquote><p>我们再看Node节点的定义, 在Java 8 中我们是可以利用sun.misc.Contended来规避伪共享的。所以说通过 &lt;&lt; ASHIFT方式加上sun.misc.Contended，所以使得任意两个可用Node不会再同一个缓存行中。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>@sun.misc.Contended static final class Node{
+....
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><blockquote><p>我们再次回到arenaExchange()。取得arena中的node节点后，如果定位的节点q 不为空，且CAS操作成功，则交换数据，返回交换的数据，唤醒等待的线程。</p></blockquote> <ul><li>如果q等于null且下标在bound &amp; MMASK范围之内，则尝试占领该位置，如果成功，则采用自旋 + 阻塞的方式进行等待交换数据。</li> <li>如果下标不在bound &amp; MMASK范围之内获取由于q不为null但是竞争失败的时候：消除p。加入bound 不等于当前节点的bond(b != p.bound)，则更新p.bound = b，collides = 0 ，i = m或者m - 1。如果冲突的次数不到m 获取m 已经为最大值或者修改当前bound的值失败，则通过增加一次collides以及循环递减下标i的值；否则更新当前bound的值成功：我们令i为m+1即为此时最大的下标。最后更新当前index的值。</li></ul> <h3 id="更深入理解"><a href="#更深入理解" class="header-anchor">#</a> # 更深入理解</h3> <ul><li><code>SynchronousQueue对比？</code></li></ul> <blockquote><p>Exchanger是一种线程间安全交换数据的机制。可以和之前分析过的SynchronousQueue对比一下：线程A通过SynchronousQueue将数据a交给线程B；线程A通过Exchanger和线程B交换数据，线程A把数据a交给线程B，同时线程B把数据b交给线程A。可见，SynchronousQueue是交给一个数据，Exchanger是交换两个数据。</p></blockquote> <ul><li><blockquote><p><code>不同JDK实现有何差别？</code></p></blockquote> <ul><li>在JDK5中Exchanger被设计成一个容量为1的容器，存放一个等待线程，直到有另外线程到来就会发生数据交换，然后清空容器，等到下一个到来的线程。</li> <li>从JDK6开始，Exchanger用了类似ConcurrentMap的分段思想，提供了多个slot，增加了并发执行时的吞吐量。</li></ul></li></ul> <blockquote><p>JDK1.6实现可以参考 这里在新窗口打开</p></blockquote> <h3 id="exchanger示例"><a href="#exchanger示例" class="header-anchor">#</a> # Exchanger示例</h3> <blockquote><p>来一个非常经典的并发问题：你有相同的数据buffer，一个或多个数据生产者，和一个或多个数据消费者。只是Exchange类只能同步2个线程，所以你只能在你的生产者和消费者问题中只有一个生产者和一个消费者时使用这个类。</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>public class Test {
+    static class Producer extends Thread {
+        private Exchanger&lt;Integer&gt; exchanger;
+        private static int data = 0;
+        Producer(String name, Exchanger&lt;Integer&gt; exchanger) {
+            super(&quot;Producer-&quot; + name);
+            this.exchanger = exchanger;
+        }
+
+        @Override
+        public void run() {
+            for (int i=1; i&lt;5; i++) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                    data = i;
+                    System.out.println(getName()+&quot; 交换前:&quot; + data);
+                    data = exchanger.exchange(data);
+                    System.out.println(getName()+&quot; 交换后:&quot; + data);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    static class Consumer extends Thread {
+        private Exchanger&lt;Integer&gt; exchanger;
+        private static int data = 0;
+        Consumer(String name, Exchanger&lt;Integer&gt; exchanger) {
+            super(&quot;Consumer-&quot; + name);
+            this.exchanger = exchanger;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                data = 0;
+                System.out.println(getName()+&quot; 交换前:&quot; + data);
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                    data = exchanger.exchange(data);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(getName()+&quot; 交换后:&quot; + data);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Exchanger&lt;Integer&gt; exchanger = new Exchanger&lt;Integer&gt;();
+        new Producer(&quot;&quot;, exchanger).start();
+        new Consumer(&quot;&quot;, exchanger).start();
+        TimeUnit.SECONDS.sleep(7);
+        System.exit(-1);
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br></div></div><blockquote><p>可以看到，其结果可能如下：</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>Consumer- 交换前:0
+Producer- 交换前:1
+Consumer- 交换后:1
+Consumer- 交换前:0
+Producer- 交换后:0
+Producer- 交换前:2
+Producer- 交换后:0
+Consumer- 交换后:2
+Consumer- 交换前:0
+Producer- 交换前:3
+Producer- 交换后:0
+Consumer- 交换后:3
+Consumer- 交换前:0
+Producer- 交换前:4
+Producer- 交换后:0
+Consumer- 交换后:4
+Consumer- 交换前:0
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br></div></div><h3 id="参考文章"><a href="#参考文章" class="header-anchor">#</a> # 参考文章</h3> <ul><li>https://cloud.tencent.com/developer/article/1529492</li> <li>https://coderbee.net/index.php/concurrent/20140424/897</li> <li>https://www.cnblogs.com/wanly3643/p/3939552.html</li> <li>https://www.iteye.com/blog/brokendreams-2253956</li> <li>https://blog.csdn.net/u014634338/article/details/78385521</li></ul></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">5/13/2023, 11:19:20 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/md/java/thread/java-thread-x-juc-tool-phaser.html" class="prev">
+        JUC工具类:Phaser详解
+      </a></span> <span class="next"><a href="/md/java/thread/java-thread-x-threadlocal.html">
+        Java 并发 - ThreadLocal详解
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:290px;display:none;" data-v-5775ee02>
+      欢迎来到我的博客
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="260px" height="320" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----><div class="RibbonAnimation"></div><!----><div class="Sakura" data-v-248d85d6><canvas id="canvas_sakura" style="z-index:2;" data-v-248d85d6></canvas></div></div></div>
+    <script src="/assets/js/app.0d6df2e4.js" defer></script><script src="/assets/js/3.2c60df78.js" defer></script><script src="/assets/js/112.862950f9.js" defer></script>
+  </body>
+</html>

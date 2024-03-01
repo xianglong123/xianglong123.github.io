@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>JUC线程池:ScheduledThreadPoolExecutor详解 | 个人主页</title>
+    <meta name="generator" content="VuePress 1.9.9">
+    <link rel="icon" href="/images/photo.jpg">
+    <link rel="manifest" href="/images/photo.jpg">
+    <link rel="apple-touch-icon" href="/images/photo.jpg">
+    <meta name="description" content="Personal Website">
+    <meta http-quiv="pragma" cotent="no-cache">
+    <meta http-quiv="pragma" cotent="no-cache,must-revalidate">
+    <meta http-quiv="expires" cotent="0">
+    
+    <link rel="preload" href="/assets/css/0.styles.cfd1e9a2.css" as="style"><link rel="preload" href="/assets/js/app.0d6df2e4.js" as="script"><link rel="preload" href="/assets/js/3.2c60df78.js" as="script"><link rel="preload" href="/assets/js/111.a37b7b9f.js" as="script"><link rel="prefetch" href="/assets/js/10.a675ef31.js"><link rel="prefetch" href="/assets/js/100.c1d0cb0f.js"><link rel="prefetch" href="/assets/js/101.c3caeaf7.js"><link rel="prefetch" href="/assets/js/102.c33f1aeb.js"><link rel="prefetch" href="/assets/js/103.eddf2e86.js"><link rel="prefetch" href="/assets/js/104.943ce33b.js"><link rel="prefetch" href="/assets/js/105.d04687f0.js"><link rel="prefetch" href="/assets/js/106.2dfd0540.js"><link rel="prefetch" href="/assets/js/107.d0139f1c.js"><link rel="prefetch" href="/assets/js/108.24c68d63.js"><link rel="prefetch" href="/assets/js/109.a88c2829.js"><link rel="prefetch" href="/assets/js/11.561f08ee.js"><link rel="prefetch" href="/assets/js/110.ec9d9c92.js"><link rel="prefetch" href="/assets/js/112.862950f9.js"><link rel="prefetch" href="/assets/js/113.bf489717.js"><link rel="prefetch" href="/assets/js/114.0569b17d.js"><link rel="prefetch" href="/assets/js/115.cf784dec.js"><link rel="prefetch" href="/assets/js/116.92c16b65.js"><link rel="prefetch" href="/assets/js/117.991782bd.js"><link rel="prefetch" href="/assets/js/12.e4c2aa4a.js"><link rel="prefetch" href="/assets/js/13.35f9ed5a.js"><link rel="prefetch" href="/assets/js/14.b7f6f87c.js"><link rel="prefetch" href="/assets/js/15.808b42c3.js"><link rel="prefetch" href="/assets/js/16.9a65883a.js"><link rel="prefetch" href="/assets/js/17.dbfc7bb2.js"><link rel="prefetch" href="/assets/js/18.c329e942.js"><link rel="prefetch" href="/assets/js/19.83deeff3.js"><link rel="prefetch" href="/assets/js/2.40aa7bb6.js"><link rel="prefetch" href="/assets/js/20.bdd777c1.js"><link rel="prefetch" href="/assets/js/21.b486bbf9.js"><link rel="prefetch" href="/assets/js/22.a25a903b.js"><link rel="prefetch" href="/assets/js/23.925ff4e0.js"><link rel="prefetch" href="/assets/js/24.ceff7a46.js"><link rel="prefetch" href="/assets/js/25.760d6451.js"><link rel="prefetch" href="/assets/js/26.66b0e693.js"><link rel="prefetch" href="/assets/js/27.79296467.js"><link rel="prefetch" href="/assets/js/28.6f5b92df.js"><link rel="prefetch" href="/assets/js/29.f2b1ce52.js"><link rel="prefetch" href="/assets/js/30.3bafedc7.js"><link rel="prefetch" href="/assets/js/31.b967adc4.js"><link rel="prefetch" href="/assets/js/32.bfcba426.js"><link rel="prefetch" href="/assets/js/33.c838af1a.js"><link rel="prefetch" href="/assets/js/34.6f70f963.js"><link rel="prefetch" href="/assets/js/35.40935f03.js"><link rel="prefetch" href="/assets/js/36.bcf1bbbf.js"><link rel="prefetch" href="/assets/js/37.48e1a430.js"><link rel="prefetch" href="/assets/js/38.82997478.js"><link rel="prefetch" href="/assets/js/39.77436fc0.js"><link rel="prefetch" href="/assets/js/4.7d10bedd.js"><link rel="prefetch" href="/assets/js/40.bc3182ae.js"><link rel="prefetch" href="/assets/js/41.71103288.js"><link rel="prefetch" href="/assets/js/42.7690245a.js"><link rel="prefetch" href="/assets/js/43.d2d3d553.js"><link rel="prefetch" href="/assets/js/44.3f350618.js"><link rel="prefetch" href="/assets/js/45.97083dfb.js"><link rel="prefetch" href="/assets/js/46.a41e95bb.js"><link rel="prefetch" href="/assets/js/47.8540ef07.js"><link rel="prefetch" href="/assets/js/48.54629455.js"><link rel="prefetch" href="/assets/js/49.5f90d180.js"><link rel="prefetch" href="/assets/js/5.b88ed74c.js"><link rel="prefetch" href="/assets/js/50.7fa4c3a4.js"><link rel="prefetch" href="/assets/js/51.6ebb146b.js"><link rel="prefetch" href="/assets/js/52.fe6e9396.js"><link rel="prefetch" href="/assets/js/53.fa23c041.js"><link rel="prefetch" href="/assets/js/54.90582436.js"><link rel="prefetch" href="/assets/js/55.b8844963.js"><link rel="prefetch" href="/assets/js/56.5fd08d82.js"><link rel="prefetch" href="/assets/js/57.d57125ff.js"><link rel="prefetch" href="/assets/js/58.0696d91e.js"><link rel="prefetch" href="/assets/js/59.cf936091.js"><link rel="prefetch" href="/assets/js/6.d4fec8b7.js"><link rel="prefetch" href="/assets/js/60.e0404bbf.js"><link rel="prefetch" href="/assets/js/61.fd7b24c0.js"><link rel="prefetch" href="/assets/js/62.bab35282.js"><link rel="prefetch" href="/assets/js/63.bc3aab78.js"><link rel="prefetch" href="/assets/js/64.5f1bfff1.js"><link rel="prefetch" href="/assets/js/65.c431a11a.js"><link rel="prefetch" href="/assets/js/66.e2d06bb1.js"><link rel="prefetch" href="/assets/js/67.32853338.js"><link rel="prefetch" href="/assets/js/68.342b04c0.js"><link rel="prefetch" href="/assets/js/69.a1ce55b6.js"><link rel="prefetch" href="/assets/js/7.3197ebba.js"><link rel="prefetch" href="/assets/js/70.496c0997.js"><link rel="prefetch" href="/assets/js/71.31b35f4d.js"><link rel="prefetch" href="/assets/js/72.62ea27e4.js"><link rel="prefetch" href="/assets/js/73.2c961c77.js"><link rel="prefetch" href="/assets/js/74.8dbb42b8.js"><link rel="prefetch" href="/assets/js/75.f80b5005.js"><link rel="prefetch" href="/assets/js/76.07020749.js"><link rel="prefetch" href="/assets/js/77.930e3bad.js"><link rel="prefetch" href="/assets/js/78.fc6f0094.js"><link rel="prefetch" href="/assets/js/79.c72fd757.js"><link rel="prefetch" href="/assets/js/8.6e794918.js"><link rel="prefetch" href="/assets/js/80.8c9694ec.js"><link rel="prefetch" href="/assets/js/81.383d5cfc.js"><link rel="prefetch" href="/assets/js/82.1253ca4a.js"><link rel="prefetch" href="/assets/js/83.f0ff7a4d.js"><link rel="prefetch" href="/assets/js/84.5910af60.js"><link rel="prefetch" href="/assets/js/85.a9330cf0.js"><link rel="prefetch" href="/assets/js/86.e4b0497e.js"><link rel="prefetch" href="/assets/js/87.664f4a10.js"><link rel="prefetch" href="/assets/js/88.69b05471.js"><link rel="prefetch" href="/assets/js/89.4f1a869b.js"><link rel="prefetch" href="/assets/js/9.94dfd66d.js"><link rel="prefetch" href="/assets/js/90.91a54f02.js"><link rel="prefetch" href="/assets/js/91.cfe61516.js"><link rel="prefetch" href="/assets/js/92.99f20c42.js"><link rel="prefetch" href="/assets/js/93.dea260f7.js"><link rel="prefetch" href="/assets/js/94.4d34f33a.js"><link rel="prefetch" href="/assets/js/95.1977d5c8.js"><link rel="prefetch" href="/assets/js/96.07bc7add.js"><link rel="prefetch" href="/assets/js/97.548d05ca.js"><link rel="prefetch" href="/assets/js/98.3e689473.js"><link rel="prefetch" href="/assets/js/99.3382c108.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.cfd1e9a2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">个人主页</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Java" class="dropdown-title"><span class="title">Java</span> <span class="arrow down"></span></button> <button type="button" aria-label="Java" class="mobile-dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          Java面向对象和基础
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-oop.html" class="nav-link">
+  Java基础-面向对象
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-basic.html" class="nav-link">
+  Java基础-知识点
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-sum.html" class="nav-link">
+  Java 基础 - 图谱 &amp; Q/A
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java集合框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/collection/java-collection-all.html" class="nav-link">
+  Java 集合框架详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 并发框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-overview.html" class="nav-link">
+  Java 并发知识体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-theorty.html" class="nav-link">
+  Java 并发理论基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-thread-basic.html" class="nav-link">
+  Java 并发线程基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-juc-overview.html" class="nav-link">
+  J.U.C 知识体系与详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - IO框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/io/java-io-overview.html" class="nav-link">
+  Java IO/NIO/AIO详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 新版本特性
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/java8/java8.html" class="nav-link">
+  Java 8 特性详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java-8-up-overview.html" class="nav-link">
+  Java 8 以上版本特性体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java9-11.html" class="nav-link">
+  Java 8 升Java 11特性必读
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - JVM相关
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-classload.html" class="nav-link">
+  Java 类加载机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-class.html" class="nav-link">
+  Java 字节码和增强技术
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-struct.html" class="nav-link">
+  JVM 内存结构详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-gc.html" class="nav-link">
+  JVM 垃圾回收机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="nav-link">
+  Java 调试排错相关
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据库" class="dropdown-title"><span class="title">数据库</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据库" class="mobile-dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          数据库相关介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/info/mysql.html" class="nav-link">
+  mysql
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/oracle.html" class="nav-link">
+  oracle
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/h2.html" class="nav-link">
+  h2
+</a></li></ul></li><li class="dropdown-item"><h4>
+          框架介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/frame/mybatis/mybatis-base-overview.html" class="nav-link">
+  mybatis
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/mp/mp-base-overview.html" class="nav-link">
+  mybatis-plus
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/jpa/jpa-base-overview.html" class="nav-link">
+  jpa
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="中间件" class="dropdown-title"><span class="title">中间件</span> <span class="arrow down"></span></button> <button type="button" aria-label="中间件" class="mobile-dropdown-title"><span class="title">中间件</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          redis
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/middleware/redis/redis-overview.html" class="nav-link">
+  redis各大版本
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="个人记录" class="dropdown-title"><span class="title">个人记录</span> <span class="arrow down"></span></button> <button type="button" aria-label="个人记录" class="mobile-dropdown-title"><span class="title">个人记录</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          2024
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/owner/2024/229-1.html" class="nav-link">
+  vuepress打包报unsupported
+</a></li><li class="dropdown-subitem"><a href="/md/owner/2024/229-2.html" class="nav-link">
+  待定
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="https://github.com/xianglong123/cas-blog" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Java" class="dropdown-title"><span class="title">Java</span> <span class="arrow down"></span></button> <button type="button" aria-label="Java" class="mobile-dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          Java面向对象和基础
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-oop.html" class="nav-link">
+  Java基础-面向对象
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-basic.html" class="nav-link">
+  Java基础-知识点
+</a></li><li class="dropdown-subitem"><a href="/md/java/basic/java-basic-lan-sum.html" class="nav-link">
+  Java 基础 - 图谱 &amp; Q/A
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java集合框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/collection/java-collection-all.html" class="nav-link">
+  Java 集合框架详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 并发框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-overview.html" class="nav-link">
+  Java 并发知识体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-theorty.html" class="nav-link">
+  Java 并发理论基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-thread-basic.html" class="nav-link">
+  Java 并发线程基础
+</a></li><li class="dropdown-subitem"><a href="/md/java/thread/java-thread-x-juc-overview.html" class="nav-link">
+  J.U.C 知识体系与详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - IO框架
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/io/java-io-overview.html" class="nav-link">
+  Java IO/NIO/AIO详解
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - 新版本特性
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/java8/java8.html" class="nav-link">
+  Java 8 特性详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java-8-up-overview.html" class="nav-link">
+  Java 8 以上版本特性体系
+</a></li><li class="dropdown-subitem"><a href="/md/java/java8up/java9-11.html" class="nav-link">
+  Java 8 升Java 11特性必读
+</a></li></ul></li><li class="dropdown-item"><h4>
+          Java进阶 - JVM相关
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-classload.html" class="nav-link">
+  Java 类加载机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-class.html" class="nav-link">
+  Java 字节码和增强技术
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-struct.html" class="nav-link">
+  JVM 内存结构详解
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-gc.html" class="nav-link">
+  JVM 垃圾回收机制
+</a></li><li class="dropdown-subitem"><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="nav-link">
+  Java 调试排错相关
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="数据库" class="dropdown-title"><span class="title">数据库</span> <span class="arrow down"></span></button> <button type="button" aria-label="数据库" class="mobile-dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          数据库相关介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/info/mysql.html" class="nav-link">
+  mysql
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/oracle.html" class="nav-link">
+  oracle
+</a></li><li class="dropdown-subitem"><a href="/md/db/info/h2.html" class="nav-link">
+  h2
+</a></li></ul></li><li class="dropdown-item"><h4>
+          框架介绍
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/db/frame/mybatis/mybatis-base-overview.html" class="nav-link">
+  mybatis
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/mp/mp-base-overview.html" class="nav-link">
+  mybatis-plus
+</a></li><li class="dropdown-subitem"><a href="/md/db/frame/jpa/jpa-base-overview.html" class="nav-link">
+  jpa
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="中间件" class="dropdown-title"><span class="title">中间件</span> <span class="arrow down"></span></button> <button type="button" aria-label="中间件" class="mobile-dropdown-title"><span class="title">中间件</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          redis
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/middleware/redis/redis-overview.html" class="nav-link">
+  redis各大版本
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="个人记录" class="dropdown-title"><span class="title">个人记录</span> <span class="arrow down"></span></button> <button type="button" aria-label="个人记录" class="mobile-dropdown-title"><span class="title">个人记录</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          2024
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/md/owner/2024/229-1.html" class="nav-link">
+  vuepress打包报unsupported
+</a></li><li class="dropdown-subitem"><a href="/md/owner/2024/229-2.html" class="nav-link">
+  待定
+</a></li></ul></li></ul></div></div><div class="nav-item"><a href="https://github.com/xianglong123/cas-blog" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 基础</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/basic/java-basic-oop.html" class="sidebar-link">Java 基础 - 面向对象</a></li><li><a href="/md/java/basic/java-basic-lan-basic.html" class="sidebar-link">Java 基础 - 知识点</a></li><li><a href="/md/java/basic/java-basic-lan-sum.html" class="sidebar-link">Java 基础 - 图谱 &amp; Q/A</a></li><li><a href="/md/java/basic/java-basic-x-generic.html" class="sidebar-link">Java 基础 - 泛型机制详解</a></li><li><a href="/md/java/basic/java-basic-x-exception.html" class="sidebar-link">Java 基础 - 异常机制详解</a></li><li><a href="/md/java/basic/java-basic-x-reflection.html" class="sidebar-link">Java 基础 - 反射机制详解</a></li><li><a href="/md/java/advanced/java-advanced-spi.html" class="sidebar-link">Java常用机制 - SPI机制详解</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java 集合框架</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/collection/java-collection-all.html" class="sidebar-link">Collection 类关系图</a></li><li><a href="/md/java/collection/java-collection-ArrayList.html" class="sidebar-link">Collection - ArrayList 源码解析</a></li><li><a href="/md/java/collection/java-collection-LinkedList.html" class="sidebar-link">Collection - LinkedList源码解析</a></li><li><a href="/md/java/collection/java-collection-Queue&amp;Stack.html" class="sidebar-link">Collection - Stack &amp; Queue 源码解析</a></li><li><a href="/md/java/collection/java-collection-PriorityQueue.html" class="sidebar-link">Collection - PriorityQueue源码解析</a></li><li><a href="/md/java/collection/java-map-HashMap&amp;HashSet.html" class="sidebar-link">Map - HashSet &amp; HashMap 源码解析</a></li><li><a href="/md/java/collection/java-map-LinkedHashMap&amp;LinkedHashSet.html" class="sidebar-link">Map - LinkedHashSet&amp;Map源码解析</a></li><li><a href="/md/java/collection/java-map-TreeMap&amp;TreeSet.html" class="sidebar-link">Map - TreeSet &amp; TreeMap 源码解析</a></li><li><a href="/md/java/collection/java-map-WeakHashMap.html" class="sidebar-link">Map - WeakHashMap源码解析</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Java 多线程与并发</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/thread/java-thread-x-overview.html" class="sidebar-link">♥Java并发知识体系详解♥</a></li><li><a href="/md/java/thread/java-thread-x-theorty.html" class="sidebar-link">Java 并发 - 理论基础</a></li><li><a href="/md/java/thread/java-thread-x-thread-basic.html" class="sidebar-link">Java 并发 - 线程基础</a></li><li><a href="/md/java/thread/java-thread-x-lock-all.html" class="sidebar-link">Java并发 - Java中所有的锁</a></li><li><a href="/md/java/thread/java-thread-x-key-synchronized.html" class="sidebar-link">关键字:synchronized详解</a></li><li><a href="/md/java/thread/java-thread-x-key-volatile.html" class="sidebar-link">关键字:volatile详解</a></li><li><a href="/md/java/thread/java-thread-x-key-final.html" class="sidebar-link">关键字:final详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-overview.html" class="sidebar-link">JUC - 类汇总和学习指南</a></li><li><a href="/md/java/thread/java-thread-x-juc-AtomicInteger.html" class="sidebar-link">JUC原子类CAS, Unsafe和原子类详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-LockSupport.html" class="sidebar-link">JUC锁:LockSupport详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-AbstractQueuedSynchronizer.html" class="sidebar-link">JUC锁:锁核心类AQS详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-ReentrantLock.html" class="sidebar-link">JUC锁:ReentrantLock详解</a></li><li><a href="/md/java/thread/java-thread-x-lock-ReentrantReadWriteLock.html" class="sidebar-link">JUC锁:ReentrantReadWriteLock详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-ConcurrentHashMap.html" class="sidebar-link">JUC集合:ConcurrentHashMap详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-CopyOnWriteArrayList.html" class="sidebar-link">JUC集合:CopyOnWriteArrayList详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-ConcurrentLinkedQueue.html" class="sidebar-link">JUC集合:ConcurrentLinkedQueue详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-collection-BlockingQueue.html" class="sidebar-link">JUC集合:BlockingQueue详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-FutureTask.html" class="sidebar-link">JUC线程池:FutureTask详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ThreadPoolExecutor.html" class="sidebar-link">JUC线程池:ThreadPoolExecutor详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ScheduledThreadPoolExecutor.html" aria-current="page" class="active sidebar-link">JUC线程池:ScheduledThreadPoolExecutor详解</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/md/java/thread/java-thread-x-juc-executor-ForkJoinPool.html" class="sidebar-link">JUC线程池:Fork/Join框架详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-countdownlatch.html" class="sidebar-link">JUC工具类:CountDownLatch详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-cyclicbarrier.html" class="sidebar-link">JUC工具类:CyclicBarrier详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-semaphore.html" class="sidebar-link">JUC工具类:Semaphore详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-phaser.html" class="sidebar-link">JUC工具类:Phaser详解</a></li><li><a href="/md/java/thread/java-thread-x-juc-tool-exchanger.html" class="sidebar-link">JUC工具类:Exchanger详解</a></li><li><a href="/md/java/thread/java-thread-x-threadlocal.html" class="sidebar-link">Java 并发 - ThreadLocal详解</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java IO/NIO/AIO</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/io/java-io-overview.html" class="sidebar-link">♥Java IO知识体系详解♥</a></li><li><a href="/md/java/io/java-io-basic-category.html" class="sidebar-link">Java IO - 分类(传输，操作)</a></li><li><a href="/md/java/io/java-io-basic-design-pattern.html" class="sidebar-link">Java IO - 设计模式(装饰者模式)</a></li><li><a href="/md/java/io/java-io-basic-code-inputstream.html" class="sidebar-link">Java IO - 源码:InputStream</a></li><li><a href="/md/java/io/java-io-basic-code-outputstream.html" class="sidebar-link">Java IO - 源码:OutputStream</a></li><li><a href="/md/java/io/java-io-basic-usage.html" class="sidebar-link">Java IO - 常见类使用</a></li><li><a href="/md/java/io/java-io-model.html" class="sidebar-link">IO 模型 - Unix IO 模型</a></li><li><a href="/md/java/io/java-io-bio.html" class="sidebar-link">Java IO - BIO 详解</a></li><li><a href="/md/java/io/java-io-nio.html" class="sidebar-link">Java NIO - 基础详解</a></li><li><a href="/md/java/io/java-io-nio-select-epoll.html" class="sidebar-link">Java NIO - IO多路复用详解</a></li><li><a href="/md/java/io/java-io-aio.html" class="sidebar-link">Java AIO - 异步IO详解</a></li><li><a href="/md/java/io/java-io-nio-netty.html" class="sidebar-link">Java N(A)IO - 框架:Netty</a></li><li><a href="/md/java/io/java-io-nio-zerocopy.html" class="sidebar-link">Java NIO - 零拷贝实现</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java8 特性详解</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/java8/java8.html" class="sidebar-link">♥Java8特性知识体系详解♥</a></li><li><a href="/md/java/java8/java8-stream.html" class="sidebar-link">Java 8 - 函数编程(lambda表达式)</a></li><li><a href="/md/java/java8/java8-optional.html" class="sidebar-link">Java 8 - Optional类深度解析</a></li><li><a href="/md/java/java8/java8-default.html" class="sidebar-link">Java 8 - 默认方法</a></li><li><a href="/md/java/java8/java8-type-anno.html" class="sidebar-link">Java 8 - 类型注解</a></li><li><a href="/md/java/java8/java8-anno-repeat.html" class="sidebar-link">Java 8 - 重复注解</a></li><li><a href="/md/java/java8/java8-type.html" class="sidebar-link">Java 8 - 类型推断优化</a></li><li><a href="/md/java/java8/java8-jre.html" class="sidebar-link">Java 8 - JRE精简</a></li><li><a href="/md/java/java8/java8-permgen.html" class="sidebar-link">Java 8 - 移除Permgen</a></li><li><a href="/md/java/java8/java8-stampedlock.html" class="sidebar-link">Java 8 - StampedLock</a></li><li><a href="/md/java/java8/java8-localdatetime.html" class="sidebar-link">Java 8 - LocalDate/LocalDateTime</a></li><li><a href="/md/java/java8/java8-javafx.html" class="sidebar-link">Java 8 - JavaFx 2.0</a></li><li><a href="/md/java/java8/java8-others.html" class="sidebar-link">Java 8 - 其它更新:字符串base64,...</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Java8 以上特性概述</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/java8up/java-8-up-overview.html" class="sidebar-link">♥Java8+特性知识体系详解♥</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>JVM相关</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/md/java/jvm/java-jvm-x-overview.html" class="sidebar-link">♥JVM相关知识体系详解♥</a></li><li><a href="/md/java/jvm/java-jvm-class.html" class="sidebar-link">JVM 基础 - 类字节码详解</a></li><li><a href="/md/java/jvm/java-jvm-class-enhancer.html" class="sidebar-link">JVM 基础 - 字节码的增强技术</a></li><li><a href="/md/java/jvm/java-jvm-classload.html" class="sidebar-link">JVM 基础 - Java 类加载机制</a></li><li><a href="/md/java/jvm/java-jvm-struct.html" class="sidebar-link">JVM 基础 - JVM 内存结构</a></li><li><a href="/md/java/jvm/java-jvm-x-introduce.html" class="sidebar-link">JVM 基础 - Java 内存模型引入</a></li><li><a href="/md/java/jvm/java-jvm-jmm.html" class="sidebar-link">JVM 基础 - Java 内存模型详解</a></li><li><a href="/md/java/jvm/java-jvm-gc.html" class="sidebar-link">GC - Java 垃圾回收基础知识</a></li><li><a href="/md/java/jvm/java-jvm-gc-g1.html" class="sidebar-link">GC - Java 垃圾回收器之G1详解</a></li><li><a href="/md/java/jvm/java-jvm-gc-zgc.html" class="sidebar-link">GC - Java 垃圾回收器之ZGC详解</a></li><li><a href="/md/java/jvm/java-jvm-cms-gc.html" class="sidebar-link">GC - Java 垃圾回收器之CMS GC问题分析与解决</a></li><li><a href="/md/java/jvm/java-jvm-param.html" class="sidebar-link">调试排错 - JVM 调优参数</a></li><li><a href="/md/java/jvm/java-jvm-oom.html" class="sidebar-link">调试排错 - Java 内存分析之堆内存和MetaSpace内存</a></li><li><a href="/md/java/jvm/java-jvm-oom-offheap.html" class="sidebar-link">调试排错 - Java 内存分析之堆外内存</a></li><li><a href="/md/java/jvm/java-jvm-thread-dump.html" class="sidebar-link">调试排错 - Java 线程分析之线程Dump分析</a></li><li><a href="/md/java/jvm/java-jvm-debug-tools-linux.html" class="sidebar-link">调试排错 - Java 问题排查之Linux命令</a></li><li><a href="/md/java/jvm/java-jvm-debug-tools-list.html" class="sidebar-link">调试排错 - Java 问题排查之工具单</a></li><li><a href="/md/java/jvm/java-jvm-oom-tool.html" class="sidebar-link">调试排错 - Java 问题排查之JVM可视化工具</a></li><li><a href="/md/java/jvm/java-jvm-agent-arthas.html" class="sidebar-link">调试排错 - Java 问题排查之应用在线调试Arthas</a></li><li><a href="/md/java/jvm/java-jvm-debug-idea.html" class="sidebar-link">调试排错 - Java 问题排查之使用IDEA本地调试和远程调试</a></li><li><a href="/md/java/jvm/java-jvm-agent-usage.html" class="sidebar-link">调试排错 - Java动态调试技术原理</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="juc线程池-scheduledthreadpoolexecutor详解"><a href="#juc线程池-scheduledthreadpoolexecutor详解" class="header-anchor">#</a> JUC线程池:ScheduledThreadPoolExecutor详解</h1> <div class="custom-block tip"><p class="custom-block-title">提示</p> <p>在很多业务场景中，我们可能需要周期性的运行某项任务来获取结果，比如周期数据统计，定时发送数据等。在并发包出现之前，Java 早在1.3就提供了 Timer 类(只需要了解，目前已渐渐被 ScheduledThreadPoolExecutor 代替)来适应这些业务场景。随着业务量的不断增大，我们可能需要多个工作线程运行任务来尽可能的增加产品性能，或者是需要更高的灵活性来控制和监控这些周期业务。这些都是 ScheduledThreadPoolExecutor 诞生的必然性。 @123</p></div> <ul><li>JUC线程池: ScheduledThreadPoolExecutor详解
+<ul><li>带着BAT大厂的面试问题去理解ScheduledThreadPoolExecutor</li> <li>ScheduledThreadPoolExecutor简介</li> <li>ScheduledThreadPoolExecutor数据结构</li> <li>ScheduledThreadPoolExecutor源码解析
+<ul><li>内部类ScheduledFutureTask
+<ul><li>属性</li> <li>核心方法run()</li> <li>cancel方法</li></ul></li> <li>核心属性</li> <li>构造函数</li> <li>核心方法:Schedule</li> <li>核心方法:scheduleAtFixedRate 和 scheduleWithFixedDelay</li> <li>核心方法:shutdown()</li></ul></li> <li>再深入理解</li> <li>参考文章</li></ul></li></ul> <h3 id="带着bat大厂的面试问题去理解scheduledthreadpoolexecutor"><a href="#带着bat大厂的面试问题去理解scheduledthreadpoolexecutor" class="header-anchor">#</a> # 带着BAT大厂的面试问题去理解ScheduledThreadPoolExecutor</h3> <blockquote><p>提示</p></blockquote> <blockquote><p>请带着这些问题继续后文，会很大程度上帮助你更好的理解ScheduledThreadPoolExecutor。@pdai</p></blockquote> <ul><li>ScheduledThreadPoolExecutor要解决什么样的问题?</li> <li>ScheduledThreadPoolExecutor相比ThreadPoolExecutor有哪些特性?</li> <li>ScheduledThreadPoolExecutor有什么样的数据结构，核心内部类和抽象类?</li> <li>ScheduledThreadPoolExecutor有哪两个关闭策略? 区别是什么?</li> <li>ScheduledThreadPoolExecutor中scheduleAtFixedRate 和 scheduleWithFixedDelay区别是什么?</li> <li>为什么ThreadPoolExecutor 的调整策略却不适用于 ScheduledThreadPoolExecutor?</li> <li>Executors 提供了几种方法来构造 ScheduledThreadPoolExecutor?</li></ul> <h3 id="scheduledthreadpoolexecutor简介"><a href="#scheduledthreadpoolexecutor简介" class="header-anchor">#</a> # ScheduledThreadPoolExecutor简介</h3> <blockquote><p>ScheduledThreadPoolExecutor继承自 ThreadPoolExecutor，为任务提供延迟或周期执行，属于线程池的一种。和 ThreadPoolExecutor 相比，它还具有以下几种特性:</p></blockquote> <ul><li>使用专门的任务类型—ScheduledFutureTask 来执行周期任务，也可以接收不需要时间调度的任务(这些任务通过 ExecutorService 来执行)。</li> <li>使用专门的存储队列—DelayedWorkQueue 来存储任务，DelayedWorkQueue 是无界延迟队列DelayQueue 的一种。相比ThreadPoolExecutor也简化了执行机制(delayedExecute方法，后面单独分析)。</li> <li>支持可选的run-after-shutdown参数，在池被关闭(shutdown)之后支持可选的逻辑来决定是否继续运行周期或延迟任务。并且当任务(重新)提交操作与 shutdown 操作重叠时，复查逻辑也不相同。</li></ul> <h3 id="scheduledthreadpoolexecutor数据结构"><a href="#scheduledthreadpoolexecutor数据结构" class="header-anchor">#</a> # ScheduledThreadPoolExecutor数据结构</h3> <blockquote><p>![](./JUC线程池_ ScheduledThreadPoolExecutor详解 _ Java 全栈知识体系_files/java-thread-x-stpe-1.png)</p></blockquote> <blockquote><p>ScheduledThreadPoolExecutor继承自 <code>ThreadPoolExecutor</code>:</p></blockquote> <ul><li>详情请参考: JUC线程池: ThreadPoolExecutor详解</li></ul> <blockquote><p>ScheduledThreadPoolExecutor 内部构造了两个内部类 <code>ScheduledFutureTask</code> 和 <code>DelayedWorkQueue</code>:</p></blockquote> <ul><li><blockquote><p><code>ScheduledFutureTask</code>: 继承了FutureTask，说明是一个异步运算任务；最上层分别实现了Runnable、Future、Delayed接口，说明它是一个可以延迟执行的异步运算任务。</p></blockquote></li> <li><blockquote><p><code>DelayedWorkQueue</code>: 这是 ScheduledThreadPoolExecutor 为存储周期或延迟任务专门定义的一个延迟队列，继承了 AbstractQueue，为了契合 ThreadPoolExecutor 也实现了 BlockingQueue 接口。它内部只允许存储 RunnableScheduledFuture 类型的任务。与 DelayQueue 的不同之处就是它只允许存放 RunnableScheduledFuture 对象，并且自己实现了二叉堆(DelayQueue 是利用了 PriorityQueue 的二叉堆结构)。</p></blockquote></li></ul> <h3 id="scheduledthreadpoolexecutor源码解析"><a href="#scheduledthreadpoolexecutor源码解析" class="header-anchor">#</a> # ScheduledThreadPoolExecutor源码解析</h3> <blockquote><blockquote><p>以下源码的解析是基于你已经理解了FutureTask。</p></blockquote></blockquote> <h3 id="内部类scheduledfuturetask"><a href="#内部类scheduledfuturetask" class="header-anchor">#</a> # 内部类ScheduledFutureTask</h3> <h4 id="属性"><a href="#属性" class="header-anchor">#</a> # 属性</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>//为相同延时任务提供的顺序编号
+private final long sequenceNumber;
+
+//任务可以执行的时间，纳秒级
+private long time;
+
+//重复任务的执行周期时间，纳秒级。
+private final long period;
+
+//重新入队的任务
+RunnableScheduledFuture&lt;V&gt; outerTask = this;
+
+//延迟队列的索引，以支持更快的取消操作
+int heapIndex;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br></div></div><ul><li><code>sequenceNumber</code>: 当两个任务有相同的延迟时间时，按照 FIFO 的顺序入队。sequenceNumber 就是为相同延时任务提供的顺序编号。</li> <li><code>time</code>: 任务可以执行时的时间，纳秒级，通过triggerTime方法计算得出。</li> <li><code>period</code>: 任务的执行周期时间，纳秒级。正数表示固定速率执行(为scheduleAtFixedRate提供服务)，负数表示固定延迟执行(为scheduleWithFixedDelay提供服务)，0表示不重复任务。</li> <li><code>outerTask</code>: 重新入队的任务，通过reExecutePeriodic方法入队重新排序。</li></ul> <h4 id="核心方法run"><a href="#核心方法run" class="header-anchor">#</a> # 核心方法run()</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>public void run() {
+    boolean periodic = isPeriodic();//是否为周期任务
+    if (!canRunInCurrentRunState(periodic))//当前状态是否可以执行
+        cancel(false);
+    else if (!periodic)
+        //不是周期任务，直接执行
+        ScheduledFutureTask.super.run();
+    else if (ScheduledFutureTask.super.runAndReset()) {
+        setNextRunTime();//设置下一次运行时间
+        reExecutePeriodic(outerTask);//重排序一个周期任务
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><blockquote><p>说明: ScheduledFutureTask 的run方法重写了 FutureTask 的版本，以便执行周期任务时重置/重排序任务。任务的执行通过父类 FutureTask 的run实现。内部有两个针对周期任务的方法:</p></blockquote> <ul><li>setNextRunTime(): 用来设置下一次运行的时间，源码如下:</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>//设置下一次执行任务的时间
+private void setNextRunTime() {
+    long p = period;
+    if (p &gt; 0)  //固定速率执行，scheduleAtFixedRate
+        time += p;
+    else
+        time = triggerTime(-p);  //固定延迟执行，scheduleWithFixedDelay
+}
+//计算固定延迟任务的执行时间
+long triggerTime(long delay) {
+    return now() +
+        ((delay &lt; (Long.MAX_VALUE &gt;&gt; 1)) ? delay : overflowFree(delay));
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br></div></div><ul><li>reExecutePeriodic(): 周期任务重新入队等待下一次执行，源码如下:</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>//重排序一个周期任务
+void reExecutePeriodic(RunnableScheduledFuture&lt;?&gt; task) {
+    if (canRunInCurrentRunState(true)) {//池关闭后可继续执行
+        super.getQueue().add(task);//任务入列
+        //重新检查run-after-shutdown参数，如果不能继续运行就移除队列任务，并取消任务的执行
+        if (!canRunInCurrentRunState(true) &amp;&amp; remove(task))
+            task.cancel(false);
+        else
+            ensurePrestart();//启动一个新的线程等待任务
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><blockquote><p>reExecutePeriodic与delayedExecute的执行策略一致，只不过reExecutePeriodic不会执行拒绝策略而是直接丢掉任务。</p></blockquote> <h4 id="cancel方法"><a href="#cancel方法" class="header-anchor">#</a> # cancel方法</h4> <div class="language- line-numbers-mode"><pre class="language-text"><code>public boolean cancel(boolean mayInterruptIfRunning) {
+    boolean cancelled = super.cancel(mayInterruptIfRunning);
+    if (cancelled &amp;&amp; removeOnCancel &amp;&amp; heapIndex &gt;= 0)
+        remove(this);
+    return cancelled;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><blockquote><p>ScheduledFutureTask.cancel本质上由其父类 FutureTask.cancel 实现。取消任务成功后会根据removeOnCancel参数决定是否从队列中移除此任务。</p></blockquote> <h3 id="核心属性"><a href="#核心属性" class="header-anchor">#</a> # 核心属性</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>//关闭后继续执行已经存在的周期任务 
+private volatile boolean continueExistingPeriodicTasksAfterShutdown;
+
+//关闭后继续执行已经存在的延时任务 
+private volatile boolean executeExistingDelayedTasksAfterShutdown = true;
+
+//取消任务后移除 
+private volatile boolean removeOnCancel = false;
+
+//为相同延时的任务提供的顺序编号，保证任务之间的FIFO顺序
+private static final AtomicLong sequencer = new AtomicLong();
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><ul><li><blockquote><div class="language- line-numbers-mode"><pre class="language-text"><code></code></pre> <div class="line-numbers-wrapper"></div></div></blockquote> <p>continueExistingPeriodicTasksAfterShutdown</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>
+和
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><p>executeExistingDelayedTasksAfterShutdown</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>
+是 ScheduledThreadPoolExecutor 定义的 `run-after-shutdown` 参数，用来控制池关闭之后的任务执行逻辑。
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div></li> <li><blockquote><p><code>removeOnCancel</code>用来控制任务取消后是否从队列中移除。当一个已经提交的周期或延迟任务在运行之前被取消，那么它之后将不会运行。默认配置下，这种已经取消的任务在届期之前不会被移除。 通过这种机制，可以方便检查和监控线程池状态，但也可能导致已经取消的任务无限滞留。为了避免这种情况的发生，我们可以通过</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>setRemoveOnCancelPolicy
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><p>方法设置移除策略，把参数<code>removeOnCancel</code>设为true可以在任务取消后立即从队列中移除。</p></li> <li><blockquote><p><code>sequencer</code>是为相同延时的任务提供的顺序编号，保证任务之间的 FIFO 顺序。与 ScheduledFutureTask 内部的sequenceNumber参数作用一致。</p></blockquote></li></ul> <h3 id="构造函数"><a href="#构造函数" class="header-anchor">#</a> # 构造函数</h3> <blockquote><p>首先看下构造函数，ScheduledThreadPoolExecutor 内部有四个构造函数，这里我们只看这个最大构造灵活度的:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>public ScheduledThreadPoolExecutor(int corePoolSize,
+                                   ThreadFactory threadFactory,
+                                   RejectedExecutionHandler handler) {
+    super(corePoolSize, Integer.MAX_VALUE, 0, NANOSECONDS,
+          new DelayedWorkQueue(), threadFactory, handler);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><blockquote><p>构造函数都是通过super调用了ThreadPoolExecutor的构造，并且使用特定等待队列DelayedWorkQueue。</p></blockquote> <h3 id="核心方法-schedule"><a href="#核心方法-schedule" class="header-anchor">#</a> # 核心方法:Schedule</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>public &lt;V&gt; ScheduledFuture&lt;V&gt; schedule(Callable&lt;V&gt; callable,
+                                       long delay,
+                                       TimeUnit unit) {
+    if (callable == null || unit == null)
+        throw new NullPointerException();
+    RunnableScheduledFuture&lt;V&gt; t = decorateTask(callable,
+        new ScheduledFutureTask&lt;V&gt;(callable, triggerTime(delay, unit)));//构造ScheduledFutureTask任务
+    delayedExecute(t);//任务执行主方法
+    return t;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><blockquote><p>说明: schedule主要用于执行一次性(延迟)任务。函数执行逻辑分两步:</p></blockquote> <ul><li><code>封装 Callable/Runnable</code>: 首先通过triggerTime计算任务的延迟执行时间，然后通过 ScheduledFutureTask 的构造函数把 Runnable/Callable 任务构造为ScheduledThreadPoolExecutor可以执行的任务类型，最后调用decorateTask方法执行用户自定义的逻辑；decorateTask是一个用户可自定义扩展的方法，默认实现下直接返回封装的RunnableScheduledFuture任务，源码如下:</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>protected &lt;V&gt; RunnableScheduledFuture&lt;V&gt; decorateTask(
+    Runnable runnable, RunnableScheduledFuture&lt;V&gt; task) {
+    return task;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><ul><li><code>执行任务</code>: 通过delayedExecute实现。下面我们来详细分析。</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>private void delayedExecute(RunnableScheduledFuture&lt;?&gt; task) {
+    if (isShutdown())
+        reject(task);//池已关闭，执行拒绝策略
+    else {
+        super.getQueue().add(task);//任务入队
+        if (isShutdown() &amp;&amp;
+            !canRunInCurrentRunState(task.isPeriodic()) &amp;&amp;//判断run-after-shutdown参数
+            remove(task))//移除任务
+            task.cancel(false);
+        else
+            ensurePrestart();//启动一个新的线程等待任务
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br></div></div><blockquote><p>说明: delayedExecute是执行任务的主方法，方法执行逻辑如下:</p></blockquote> <ul><li>如果池已关闭(ctl &gt;= SHUTDOWN)，执行任务拒绝策略；</li> <li>池正在运行，首先把任务入队排序；然后重新检查池的关闭状态，执行如下逻辑:</li></ul> <blockquote><p><code>A</code>: 如果池正在运行，或者 run-after-shutdown 参数值为true，则调用父类方法ensurePrestart启动一个新的线程等待执行任务。ensurePrestart源码如下:</p></blockquote> <div class="language- line-numbers-mode"><pre class="language-text"><code>void ensurePrestart() {
+    int wc = workerCountOf(ctl.get());
+    if (wc &lt; corePoolSize)
+        addWorker(null, true);
+    else if (wc == 0)
+        addWorker(null, false);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><blockquote><p>ensurePrestart是父类 ThreadPoolExecutor 的方法，用于启动一个新的工作线程等待执行任务，即使corePoolSize为0也会安排一个新线程。</p></blockquote> <blockquote><p><code>B</code>: 如果池已经关闭，并且 run-after-shutdown 参数值为false，则执行父类(ThreadPoolExecutor)方法remove移除队列中的指定任务，成功移除后调用ScheduledFutureTask.cancel取消任务</p></blockquote> <h3 id="核心方法-scheduleatfixedrate-和-schedulewithfixeddelay"><a href="#核心方法-scheduleatfixedrate-和-schedulewithfixeddelay" class="header-anchor">#</a> # 核心方法:scheduleAtFixedRate 和 scheduleWithFixedDelay</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>/**
+ * 创建一个周期执行的任务，第一次执行延期时间为initialDelay，
+ * 之后每隔period执行一次，不等待第一次执行完成就开始计时
+ */
+public ScheduledFuture&lt;?&gt; scheduleAtFixedRate(Runnable command,
+                                              long initialDelay,
+                                              long period,
+                                              TimeUnit unit) {
+    if (command == null || unit == null)
+        throw new NullPointerException();
+    if (period &lt;= 0)
+        throw new IllegalArgumentException();
+    //构建RunnableScheduledFuture任务类型
+    ScheduledFutureTask&lt;Void&gt; sft =
+        new ScheduledFutureTask&lt;Void&gt;(command,
+                                      null,
+                                      triggerTime(initialDelay, unit),//计算任务的延迟时间
+                                      unit.toNanos(period));//计算任务的执行周期
+    RunnableScheduledFuture&lt;Void&gt; t = decorateTask(command, sft);//执行用户自定义逻辑
+    sft.outerTask = t;//赋值给outerTask，准备重新入队等待下一次执行
+    delayedExecute(t);//执行任务
+    return t;
+}
+
+/**
+ * 创建一个周期执行的任务，第一次执行延期时间为initialDelay，
+ * 在第一次执行完之后延迟delay后开始下一次执行
+ */
+public ScheduledFuture&lt;?&gt; scheduleWithFixedDelay(Runnable command,
+                                                 long initialDelay,
+                                                 long delay,
+                                                 TimeUnit unit) {
+    if (command == null || unit == null)
+        throw new NullPointerException();
+    if (delay &lt;= 0)
+        throw new IllegalArgumentException();
+    //构建RunnableScheduledFuture任务类型
+    ScheduledFutureTask&lt;Void&gt; sft =
+        new ScheduledFutureTask&lt;Void&gt;(command,
+                                      null,
+                                      triggerTime(initialDelay, unit),//计算任务的延迟时间
+                                      unit.toNanos(-delay));//计算任务的执行周期
+    RunnableScheduledFuture&lt;Void&gt; t = decorateTask(command, sft);//执行用户自定义逻辑
+    sft.outerTask = t;//赋值给outerTask，准备重新入队等待下一次执行
+    delayedExecute(t);//执行任务
+    return t;
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br></div></div><blockquote><p>说明: scheduleAtFixedRate和scheduleWithFixedDelay方法的逻辑与schedule类似。</p></blockquote> <blockquote><p><code>注意scheduleAtFixedRate和scheduleWithFixedDelay的区别</code>: 乍一看两个方法一模一样，其实，在unit.toNanos这一行代码中还是有区别的。没错，scheduleAtFixedRate传的是正值，而scheduleWithFixedDelay传的则是负值，这个值就是 ScheduledFutureTask 的period属性。</p></blockquote> <h3 id="核心方法-shutdown"><a href="#核心方法-shutdown" class="header-anchor">#</a> # 核心方法:shutdown()</h3> <div class="language- line-numbers-mode"><pre class="language-text"><code>public void shutdown() {
+    super.shutdown();
+}
+//取消并清除由于关闭策略不应该运行的所有任务
+@Override void onShutdown() {
+    BlockingQueue&lt;Runnable&gt; q = super.getQueue();
+    //获取run-after-shutdown参数
+    boolean keepDelayed =
+        getExecuteExistingDelayedTasksAfterShutdownPolicy();
+    boolean keepPeriodic =
+        getContinueExistingPeriodicTasksAfterShutdownPolicy();
+    if (!keepDelayed &amp;&amp; !keepPeriodic) {//池关闭后不保留任务
+        //依次取消任务
+        for (Object e : q.toArray())
+            if (e instanceof RunnableScheduledFuture&lt;?&gt;)
+                ((RunnableScheduledFuture&lt;?&gt;) e).cancel(false);
+        q.clear();//清除等待队列
+    }
+    else {//池关闭后保留任务
+        // Traverse snapshot to avoid iterator exceptions
+        //遍历快照以避免迭代器异常
+        for (Object e : q.toArray()) {
+            if (e instanceof RunnableScheduledFuture) {
+                RunnableScheduledFuture&lt;?&gt; t =
+                    (RunnableScheduledFuture&lt;?&gt;)e;
+                if ((t.isPeriodic() ? !keepPeriodic : !keepDelayed) ||
+                    t.isCancelled()) { // also remove if already cancelled
+                    //如果任务已经取消，移除队列中的任务
+                    if (q.remove(t))
+                        t.cancel(false);
+                }
+            }
+        }
+    }
+    tryTerminate(); //终止线程池
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br></div></div><blockquote><p>说明: 池关闭方法调用了父类ThreadPoolExecutor的shutdown，具体分析见 ThreadPoolExecutor 篇。这里主要介绍以下在shutdown方法中调用的关闭钩子onShutdown方法，它的主要作用是在关闭线程池后取消并清除由于关闭策略不应该运行的所有任务，这里主要是根据 run-after-shutdown 参数(continueExistingPeriodicTasksAfterShutdown和executeExistingDelayedTasksAfterShutdown)来决定线程池关闭后是否关闭已经存在的任务。</p></blockquote> <h3 id="再深入理解"><a href="#再深入理解" class="header-anchor">#</a> # 再深入理解</h3> <ul><li><code>为什么ThreadPoolExecutor 的调整策略却不适用于 ScheduledThreadPoolExecutor？</code></li></ul> <blockquote><p>例如: 由于 ScheduledThreadPoolExecutor 是一个固定核心线程数大小的线程池，并且使用了一个无界队列，所以调整maximumPoolSize对其没有任何影响(所以 ScheduledThreadPoolExecutor 没有提供可以调整最大线程数的构造函数，默认最大线程数固定为Integer.MAX_VALUE)。此外，设置corePoolSize为0或者设置核心线程空闲后清除(allowCoreThreadTimeOut)同样也不是一个好的策略，因为一旦周期任务到达某一次运行周期时，可能导致线程池内没有线程去处理这些任务。</p></blockquote> <ul><li><code>Executors 提供了哪几种方法来构造 ScheduledThreadPoolExecutor？</code> <ul><li>newScheduledThreadPool: 可指定核心线程数的线程池。</li> <li>newSingleThreadScheduledExecutor: 只有一个工作线程的线程池。如果内部工作线程由于执行周期任务异常而被终止，则会新建一个线程替代它的位置。</li></ul></li></ul> <blockquote><p>注意: newScheduledThreadPool(1, threadFactory) 不等价于newSingleThreadScheduledExecutor。newSingleThreadScheduledExecutor创建的线程池保证内部只有一个线程执行任务，并且线程数不可扩展；而通过newScheduledThreadPool(1, threadFactory)创建的线程池可以通过setCorePoolSize方法来修改核心线程数。</p></blockquote> <h3 id="参考文章"><a href="#参考文章" class="header-anchor">#</a> # 参考文章</h3> <ul><li>文章主要参考自泰迪的bagwell的https://www.jianshu.com/p/8c97953f2751，在此基础上做了增改。</li></ul></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">5/13/2023, 11:19:20 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/md/java/thread/java-thread-x-juc-executor-ThreadPoolExecutor.html" class="prev">
+        JUC线程池:ThreadPoolExecutor详解
+      </a></span> <span class="next"><a href="/md/java/thread/java-thread-x-juc-executor-ForkJoinPool.html">
+        JUC线程池:Fork/Join框架详解
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:290px;display:none;" data-v-5775ee02>
+      欢迎来到我的博客
+    </div> <div class="operation" style="right:90px;bottom:40px;display:;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="260px" height="320" class="live2d" style="right:90px;bottom:-20px;opacity:0.9;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div><canvas id="vuepress-canvas-cursor"></canvas><!----><div class="RibbonAnimation"></div><!----><div class="Sakura" data-v-248d85d6><canvas id="canvas_sakura" style="z-index:2;" data-v-248d85d6></canvas></div></div></div>
+    <script src="/assets/js/app.0d6df2e4.js" defer></script><script src="/assets/js/3.2c60df78.js" defer></script><script src="/assets/js/111.a37b7b9f.js" defer></script>
+  </body>
+</html>
