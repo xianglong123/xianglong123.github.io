@@ -9,6 +9,7 @@ const MD_ROOT = path.join(DOCS, 'md')
 
 /** 分组的中文标题。没列的目录直接用文件夹名。 */
 const LABELS: Record<string, string> = {
+  'ai-code': 'AI 编程与验收',
   'ai-agent': 'AI Agent 与集成',
   'ai-content': 'AI 内容生产',
   tools: '工具站开发',
@@ -16,7 +17,7 @@ const LABELS: Record<string, string> = {
 }
 
 /** 组的显示顺序。 */
-const ORDER = ['ai-agent', 'ai-content', 'tools', 'devops']
+const ORDER = ['ai-code', 'ai-agent', 'ai-content', 'tools', 'devops']
 
 function readTitle(file: string): string {
   const txt = fs.readFileSync(file, 'utf-8').slice(0, 4000)
