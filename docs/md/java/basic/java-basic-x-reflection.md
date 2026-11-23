@@ -27,7 +27,7 @@ JAVA反射机制是在运行状态中，对于任意一个类，都能够知道�
         * 反射调用流程小结
     * 参考文章
 
-### # 反射基础
+### 反射基础
 
 > RTTI（Run-Time Type Identification）运行时类型识别。在《Thinking in
 > Java》一书第十四章中有提到，其作用是在运行时识别一个对象的类型和类的信息。主要有两种方式：一种是传统的RTTI，它假定我们在编译时已经知道了所有的类型；另一种是反射机制，它允许我们在运行时发现和使用类的信息。
@@ -38,7 +38,7 @@ JAVA反射机制是在运行状态中，对于任意一个类，都能够知道�
 
 > > 这里我们首先需要理解 Class类，以及类的加载机制； 然后基于此我们如何通过反射获取Class类以及类中的成员变量、方法、构造方法等。
 
-### # Class类
+### Class类
 
 > Class类，Class类也是一个实实在在的类，存在于JDK的java.lang包中。Class类的实例表示java应用运行时的类(class ans enum)
 > 或接口(interface and annotation)（每个java类运行时都在JVM里表现为一个class对象，可通过类名.class、类型.getClass()
@@ -84,7 +84,7 @@ public final class Class<T> implements java.io.Serializable,
 
 *   > Class类的对象作用是运行时提供或获得某个对象的类型信息，这点对于反射技术很重要(关于反射稍后分析)。
 
-### # 类加载
+### 类加载
 
 > 类加载机制和类字节码技术可以参考如下两篇文章：
 
@@ -103,7 +103,7 @@ public final class Class<T> implements java.io.Serializable,
 
 > ![](images/java-basic-reflection-3.png)
 
-### # 反射的使用
+### 反射的使用
 
 > 提示
 
@@ -114,7 +114,7 @@ public final class Class<T> implements java.io.Serializable,
 对象所表示的类的构造方法，利用它可以在运行时动态创建对象、Field表示Class对象所表示的类的成员变量，通过它可以在运行时动态修改成员变量的属性值(
 > 包含private)、Method表示Class对象所表示的类的成员方法，通过它可以动态调用对象的方法(包含private)，下面将对这几个重要类进行分别说明。
 
-### # Class类对象的获取
+### Class类对象的获取
 
 > 在类加载的时候，jvm会创建一个class对象
 
@@ -332,7 +332,7 @@ public class Test {
 }
 ```
 
-### # Constructor类及其用法
+### Constructor类及其用法
 
 > > Constructor类存在于反射包(java.lang.reflect)中，反映的是Class 对象所表示的类的构造方法。
 
@@ -532,7 +532,7 @@ class java.lang.String
         getoGenericString():private com.example.javabase.User(int,java.lang.String)
 ```
 
-### # Field类及其用法
+### Field类及其用法
 
 > > Field 提供有关类或接口的单个字段的信息，以及对它的动态访问权限。反射的字段可能是一个类（静态）字段或实例字段。
 
@@ -652,7 +652,7 @@ setBoolean()/getBoolean
 
 、`setChar()/getChar()`等等方法，这里就不全部列出了，需要时查API文档即可。需要特别注意的是被final关键字修饰的Field字段是安全的，在运行时可以接收任何修改，但最终其实际值是不会发生改变的。
 
-### # Method类及其用法
+### Method类及其用法
 
 > > Method 提供关于类或接口上单独某个方法（以及如何访问该方法）的信息，所反映的方法可能是类方法或实例方法（包括抽象方法）。
 
@@ -830,7 +830,7 @@ getParameterTypes/getGenericParameterTypes
 
 也是同样的道理，都是获取Method对象所表示的方法的参数类型，其他方法与前面的Field和Constructor是类似的。
 
-### # 反射机制执行的流程
+### 反射机制执行的流程
 
 > > 这部分主要参考自https://www.cnblogs.com/yougewe/p/10125073.html
 
@@ -871,7 +871,7 @@ public class HelloReflect {
 
 > ![](images/java-basic-reflection-1.png)
 
-### # 反射获取类实例
+### 反射获取类实例
 
 > 首先调用了 java.lang.Class 的静态方法，获取类信息。
 
@@ -1317,7 +1317,7 @@ public Object newInstance(Object[]args)
 
 > 返回构造器的实例后，可以根据外部进行进行类型转换，从而使用接口或方法进行调用实例功能了。
 
-### # 反射获取方法
+### 反射获取方法
 
 * `第一步，先获取 Method`;
 
@@ -1450,7 +1450,7 @@ private static Method searchMethods(Method[]methods,
 * 这里是匹配最精确的子类进行返回（最优匹配）
 * 最后，还是通过 ReflectionFactory, copy 方法后返回。
 
-### # 调用 method.invoke() 方法
+### 调用 method.invoke() 方法
 
 ```java
 @CallerSensitive
@@ -1937,7 +1937,7 @@ ClassDefiner.defineClass
 
 > 而反射生成的类，有时候可能用了就可以卸载了，所以使用其独立的类加载器，从而使得更容易控制反射类的生命周期。
 
-### # 反射调用流程小结
+### 反射调用流程小结
 
 > 最后，用几句话总结反射的实现原理：
 
@@ -1955,7 +1955,7 @@ ClassDefiner.defineClass
 
 7.  > 调度反射方法，最终是由jvm执行invoke0()执行；
 
-### # 参考文章
+### 参考文章
 
 * https://www.codercto.com/a/46094.html
 * https://blog.csdn.net/sinat_38259539/article/details/71799078

@@ -9,7 +9,7 @@ title: 增删改查(通用)
 或者参考[源码](https://github.com/xianglong123/cas-mybatis-plus/tree/master/src/test/java/com/cas)@123
 :::
 
-## 增
+# 增
 > 这里就提供了一个默认方法 参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -35,7 +35,7 @@ public class InsertTest {
 }
 ```
 
-## 删
+# 删
 > 有四个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 ---
 
@@ -86,7 +86,7 @@ public class DeleteTest {
 }
 ```
 
-## 改
+# 改
 > 一共2个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 
@@ -129,7 +129,7 @@ public class UpdateTest {
 
 ```
 
-## 查
+# 查
 > 一共10个方法
 > 方法详情，参考[官方文档](https://baomidou.com/pages/49cc81/#select)
 
@@ -253,9 +253,9 @@ public class SelectTest {
 }
 ```
 
-## 参考
+# 参考
 [官方文档](https://baomidou.com/pages/49cc81/#select)
 [源码](https://github.com/xianglong123)
 
-## 感谢
+# 感谢
 > 您好，如果文档能帮助到您，希望可以满足作者的小小虚荣心，在源码的项目上点一个小小的star ♥️

@@ -24,7 +24,7 @@ title: Java并发 - Java中所有的锁
 *   什么是锁的升级和降级? 什么是JVM里的偏斜锁、轻量级锁、重量级锁?
 *   不同的JDK中对Synchronized有何优化?
 
-### # Synchronized的使用
+### Synchronized的使用
 
 > 在应用Sychronized关键字时需要把握如下注意点：
 
@@ -32,11 +32,11 @@ title: Java并发 - Java中所有的锁
 *   每个实例都对应有自己的一把锁(this),不同实例之间互不影响；例外：锁对象是*.class以及synchronized修饰的是static方法的时候，所有对象公用同一把锁
 *   synchronized修饰的方法，无论方法正常执行完毕还是抛出异常，都会释放锁
 
-### # 对象锁
+### 对象锁
 
 > 包括方法锁(默认锁对象为this,当前实例对象)和同步代码块锁(自己指定锁对象)
 
-#### # 代码块形式：手动指定锁定对象，也可是是this,也可以是自定义的锁
+#### 代码块形式：手动指定锁定对象，也可是是this,也可以是自定义的锁
 
 *   示例1
 
@@ -131,7 +131,7 @@ block2锁,我是线程Thread-1
 block2锁,Thread-1结束
 ```
 
-#### # 方法锁形式：synchronized修饰普通方法，锁对象默认为this
+#### 方法锁形式：synchronized修饰普通方法，锁对象默认为this
 
 ```
 public class SynchronizedObjectLock implements Runnable {
@@ -170,11 +170,11 @@ Thread-0结束
 Thread-1结束
 ```
 
-### # 类锁
+### 类锁
 
 > 指synchronize修饰静态的方法或指定锁对象为Class对象
 
-#### # synchronize修饰静态方法
+#### synchronize修饰静态方法
 
 *   示例1
 
@@ -259,7 +259,7 @@ Thread-0结束
 Thread-1结束
 ```
 
-#### # synchronized指定锁对象为Class对象
+#### synchronized指定锁对象为Class对象
 
 ```
 public class SynchronizedObjectLock implements Runnable {
@@ -298,9 +298,9 @@ Thread-0结束
 Thread-1结束
 ```
 
-### # Synchronized原理分析
+### Synchronized原理分析
 
-### # 加锁和释放锁的原理
+### 加锁和释放锁的原理
 
 > > 现象、时机(内置锁this)、深入JVM看字节码(反编译看monitor指令)
 
@@ -355,7 +355,7 @@ public class SynchronizedDemo2 {
 
 > 该图可以看出，任意线程对Object的访问，首先要获得Object的监视器，如果获取失败，该线程就进入同步状态，线程状态变为BLOCKED，当Object的监视器占有者释放后，在同步队列中得线程就会有机会重新获取该监视器。
 
-### # 可重入原理：加锁次数计数器
+### 可重入原理：加锁次数计数器
 
 *   `什么是可重入？可重入锁`？
 
@@ -404,7 +404,7 @@ public class SynchronizedDemo {
 
 > 这就是Synchronized的重入性，即在`同一锁程`中，每个对象拥有一个monitor计数器，当线程获取该对象锁后，monitor计数器就会加一，释放锁后就会将monitor计数器减一，线程不需要再次获取同一把锁。
 
-### # 保证可见性的原理：内存模型和happens-before规则
+### 保证可见性的原理：内存模型和happens-before规则
 
 > Synchronized的happens-before规则，即监视器锁规则：对同一个监视器的解锁，happens-before于对该监视器的加锁。继续来看代码：
 
@@ -430,7 +430,7 @@ public class MonitorDemo {
 
 > 根据happens-before的定义中的一条:如果A happens-before B，则A的执行结果对B可见，并且A的执行顺序先于B。线程A先对共享变量A进行加一，由2 happens-before 5关系可知线程A的执行结果对线程B可见即线程B所读取到的a的值为1。
 
-### # JVM中锁的优化
+### JVM中锁的优化
 
 > 简单来说在JVM中monitorenter和monitorexit字节码依赖于底层的操作系统的Mutex Lock来实现的，但是由于使用Mutex Lock需要将当前线程挂起并从用户态切换到内核态来执行，这种切换的代价是非常昂贵的；然而在现实中的大部分情况下，同步方法是运行在单线程环境(无锁竞争环境)如果每次都调用Mutex Lock那么将严重的影响程序的性能。`不过在jdk1.6中对锁的实现引入了大量的优化，如锁粗化(Lock Coarsening)、锁消除(Lock Elimination)、轻量级锁(Lightweight Locking)、偏向锁(Biased Locking)、适应性自旋(Adaptive Spinning)等技术来减少锁操作的开销`。
 
@@ -592,7 +592,7 @@ public static String test04(String s1, String s2, String s3) {
 
 > > `ReentrantLock`为常用类，它是一个可重入的互斥锁 Lock，它具有与使用 synchronized 方法和语句所访问的隐式监视器锁相同的一些基本行为和语义，但功能更强大。详细分析请看: JUC锁: ReentrantLock详解
 
-### # 再深入理解
+### 再深入理解
 
 > synchronized是通过软件(JVM)实现的，简单易用，即使在JDK5之后有了Lock，仍然被广泛的使用。
 
@@ -606,7 +606,7 @@ public static String test04(String s1, String s2, String s3) {
 
 > synchronized实际上是非公平的，新来的线程有可能立即获得监视器，而在等待区中等候已久的线程可能再次等待，这样有利于提高性能，但是也可能会导致饥饿现象。
 
-### # 参考文章
+### 参考文章
 
 > +《深入理解Java虚拟机》 +《Java并发编程的艺术》
 

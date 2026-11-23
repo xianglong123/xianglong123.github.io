@@ -30,7 +30,7 @@ CopyOnWriteArrayList是ArrayList 的一个线程安全的变体，其中所有�
         *   CopyOnWriteArrayList为什么并发安全且性能比Vector好?
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -39,13 +39,13 @@ CopyOnWriteArrayList是ArrayList 的一个线程安全的变体，其中所有�
 *   请先说说非并发集合中Fail-fast机制?
 *   再为什么说ArrayList查询快而增删慢?
 *   对比ArrayList说说CopyOnWriteArrayList的增删改查实现原理? COW基于拷贝
-*   再说下弱一致性的迭代器原理是怎么样的? `COWIterator<E>`
+*   再说下弱一致性的迭代器原理是怎么样的? `COWIterator&lt;E&gt;`
 *   CopyOnWriteArrayList为什么并发安全且性能比Vector好?
 *   CopyOnWriteArrayList有何缺陷，说说其应用场景?
 
-### # CopyOnWriteArrayList源码分析
+### CopyOnWriteArrayList源码分析
 
-### # 类的继承关系
+### 类的继承关系
 
 > CopyOnWriteArrayList实现了List接口，List接口定义了对列表的基本操作；同时实现了RandomAccess接口，表示可以随机访问(数组具有随机访问的特性)；同时实现了Cloneable接口，表示可克隆；同时也实现了Serializable接口，表示可被序列化。
 
@@ -53,7 +53,7 @@ CopyOnWriteArrayList是ArrayList 的一个线程安全的变体，其中所有�
 public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable, java.io.Serializable {}
 ```
 
-### # 类的内部类
+### 类的内部类
 
 *   COWIterator类
 
@@ -150,7 +150,7 @@ static final class COWIterator<E> implements ListIterator<E> {
 }
 ```
 
-### # 类的属性
+### 类的属性
 
 > 属性中有一个可重入锁，用来保证线程安全访问，还有一个Object类型的数组，用来存放具体的元素。当然，也使用到了反射机制和CAS来保证原子性的修改lock域。
 
@@ -180,7 +180,7 @@ public class CopyOnWriteArrayList<E>
 }
 ```
 
-### # 类的构造函数
+### 类的构造函数
 
 *   默认构造函数
 
@@ -239,11 +239,11 @@ public CopyOnWriteArrayList(E[] toCopyIn) {
 }
 ```
 
-### # 核心函数分析
+### 核心函数分析
 
 > 对于CopyOnWriteArrayList的函数分析，主要明白Arrays.copyOf方法即可理解CopyOnWriteArrayList其他函数的意义。
 
-#### # copyOf函数
+#### copyOf函数
 
 > 该函数用于复制指定的数组，截取或用 null 填充(如有必要)，以使副本具有指定的长度。
 
@@ -262,7 +262,7 @@ public static <T,U> T[] copyOf(U[] original, int newLength, Class<? extends T[]>
 }
 ```
 
-#### # add函数
+#### add函数
 
 ```
 public boolean add(E e) {
@@ -297,7 +297,7 @@ public boolean add(E e) {
 
 *   > 将下标为length的数组元素newElements[length]设置为元素e，再设置当前Object[]为newElements，释放锁，返回。这样就完成了元素的添加。
 
-#### # addIfAbsent方法
+#### addIfAbsent方法
 
 > 该函数用于添加元素(如果数组中不存在，则添加；否则，不添加，直接返回)，可以保证多线程环境下不会重复添加元素。
 
@@ -351,7 +351,7 @@ private boolean addIfAbsent(E e, Object[] snapshot) {
 
 > ⑤ 释放锁，返回。
 
-#### # set函数
+#### set函数
 
 > 此函数用于用指定的元素替代此列表指定位置上的元素，也是基于数组的复制来实现的。
 
@@ -390,7 +390,7 @@ public E set(int index, E element) {
 }
 ```
 
-#### # remove函数
+#### remove函数
 
 > 此函数用于移除此列表指定位置上的元素。
 
@@ -440,7 +440,7 @@ public E remove(int index) {
 
 > ③ 释放锁，返回旧值。
 
-### # CopyOnWriteArrayList示例
+### CopyOnWriteArrayList示例
 
 > 下面通过一个示例来了解CopyOnWriteArrayList的使用: 在程序中，有一个PutThread线程会每隔50ms就向CopyOnWriteArrayList中添加一个元素，并且两次使用了迭代器，迭代器输出的内容都是生成迭代器时，CopyOnWriteArrayList的Object数组的快照的内容，在迭代的过程中，往CopyOnWriteArrayList中添加元素也不会抛出异常。
 
@@ -501,9 +501,9 @@ public class CopyOnWriteArrayListDemo {
 0 1 2 3 4 5 6 7 8 9 100 101 102 103
 ```
 
-### # 更深入理解
+### 更深入理解
 
-### # CopyOnWriteArrayList的缺陷和使用场景
+### CopyOnWriteArrayList的缺陷和使用场景
 
 > CopyOnWriteArrayList 有几个缺点：
 
@@ -515,11 +515,11 @@ public class CopyOnWriteArrayListDemo {
 
 > 因为谁也没法保证CopyOnWriteArrayList 到底要放置多少数据，万一数据稍微有点多，每次add/set都要重新复制数组，这个代价实在太高昂了。在高性能的互联网应用中，这种操作分分钟引起故障。
 
-### # CopyOnWriteArrayList为什么并发安全且性能比Vector好?
+### CopyOnWriteArrayList为什么并发安全且性能比Vector好?
 
 > Vector对单独的add，remove等方法都是在方法上加了synchronized; 并且如果一个线程A调用size时，另一个线程B 执行了remove，然后size的值就不是最新的，然后线程A调用remove就会越界(这时就需要再加一个Synchronized)。这样就导致有了双重锁，效率大大降低，何必呢。于是vector废弃了，要用就用CopyOnWriteArrayList 吧。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5547853.html，在此基础上做了增改。
 *   https://blog.csdn.net/LuoZheng4698729/article/details/102824923

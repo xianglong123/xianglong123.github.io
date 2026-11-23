@@ -26,7 +26,7 @@ title: Java IO - 常见类使用
     *   常见问题
     *   参考文章
 
-### # IO常见类的使用
+### IO常见类的使用
 
 > Java 的 I/O 大概可以分成以下几类:
 
@@ -36,7 +36,7 @@ title: Java IO - 常见类使用
 *   对象操作: Serializable
 *   网络操作: Socket
 
-### # File相关
+### File相关
 
 > File 类可以用于表示文件和目录的信息，但是它不表示文件的内容。
 
@@ -57,7 +57,7 @@ public static void listAllFiles(File dir) {
 }
 ```
 
-### # 字节流相关
+### 字节流相关
 
 ```java
 public static void copyFile(String src, String dist) throws IOException {
@@ -78,7 +78,7 @@ public static void copyFile(String src, String dist) throws IOException {
 }
 ```
 
-### # 实现逐行输出文本文件的内容
+### 实现逐行输出文本文件的内容
 
 ```java
 public static void readFileContent(String filePath) throws IOException {
@@ -98,7 +98,7 @@ public static void readFileContent(String filePath) throws IOException {
 }
 ```
 
-### # 序列化 & Serializable & transient
+### 序列化 & Serializable & transient
 
 > 序列化就是将一个对象转换成字节序列，方便存储和传输。
 
@@ -151,14 +151,14 @@ private static class A implements Serializable {
 private transient Object[] elementData;
 ```
 
-### # Java 中的网络支持:
+### Java 中的网络支持:
 
 *   InetAddress: 用于表示网络上的硬件资源，即 IP 地址；
 *   URL: 统一资源定位符；
 *   Sockets: 使用 TCP 协议实现网络通信；
 *   Datagram: 使用 UDP 协议实现网络通信。
 
-#### # InetAddress
+#### InetAddress
 
 > 没有公有的构造函数，只能通过静态方法来创建实例。
 
@@ -167,7 +167,7 @@ InetAddress.getByName(String host);
 InetAddress.getByAddress(byte[] address);
 ```
 
-#### # URL
+#### URL
 
 > 可以直接从 URL 中读取字节流数据。
 
@@ -194,7 +194,7 @@ public static void main(String[] args) throws IOException {
 }
 ```
 
-#### # Sockets
+#### Sockets
 
 *   ServerSocket: 服务器端类
 *   Socket: 客户端类
@@ -202,15 +202,15 @@ public static void main(String[] args) throws IOException {
 
 > ![image](images/ClienteServidorSockets1521731145260.jpg)
 
-#### # Datagram
+#### Datagram
 
 *   DatagramSocket: 通信类
 *   DatagramPacket: 数据包类
 
-### # 常见问题
+### 常见问题
 
 *   Java 字节读取流的read方法返回int的原因
 
 > https://blog.csdn.net/congwiny/article/details/18922847
 
-### # 参考文章
+### 参考文章

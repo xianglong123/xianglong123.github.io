@@ -22,7 +22,7 @@ title: Java NIO - 零拷贝实现
         *   RocketMQ和Kafka对比
     *   参考文章
 
-### # Java NIO零拷贝
+### Java NIO零拷贝
 
 > 在 Java NIO 中的`通道（Channel）`就相当于操作系统的`内核空间`（kernel space）的缓冲区，而`缓冲区`（Buffer）对应的相当于操作系统的`用户空间`（user space）中的`用户缓冲区`（user buffer）。
 
@@ -37,7 +37,7 @@ sun.misc.Unsafe.copyMemory()
 
 的调用，背后的实现原理与 `memcpy()` 类似。 最后，将临时生成的 DirectBuffer 内部的数据的内存地址传给 I/O 调用函数，这样就避免了再去访问 Java 对象处理 I/O 读写。
 
-### # MappedByteBuffer
+### MappedByteBuffer
 
 > MappedByteBuffer 是 NIO 基于**内存映射（mmap）**这种零拷贝方式的提供的一种实现，它继承自 ByteBuffer。FileChannel 定义了一个 map() 方法，它可以把一个文件从 position 位置开始的 size 大小的区域映射为内存映像文件。抽象方法 map() 方法在 FileChannel 中的定义如下：
 
@@ -256,7 +256,7 @@ public static void clean(final Object buffer) throws Exception {
 }
 ```
 
-### # DirectByteBuffer
+### DirectByteBuffer
 
 > DirectByteBuffer 的对象引用位于 Java 内存模型的堆里面，JVM 可以对 DirectByteBuffer 的对象进行内存分配和回收管理，一般使用 DirectByteBuffer 的静态方法 allocateDirect() 创建 DirectByteBuffer 实例并分配内存。
 
@@ -407,7 +407,7 @@ private long ix(int i) {
 }
 ```
 
-### # FileChannel
+### FileChannel
 
 > FileChannel 是一个用于文件读写、映射和操作的通道，同时它在并发环境下是线程安全的，基于 FileInputStream、FileOutputStream 或者 RandomAccessFile 的 getChannel() 方法可以创建并打开一个文件通道。FileChannel 定义了 transferFrom() 和 transferTo() 两个抽象方法，它通过在通道和通道之间建立连接实现数据传输的。
 
@@ -639,9 +639,9 @@ ssize_t sendfile64(int out_fd, int in_fd, off_t *offset, size_t count);
 
 > 在 Linux 2.6.3 之前，out_fd 必须是一个 socket，而从 Linux 2.6.3 以后，out_fd 可以是任何文件。也就是说，sendfile64() 函数不仅可以进行网络文件传输，还可以对本地文件实现零拷贝操作。
 
-### # 其它的零拷贝实现
+### 其它的零拷贝实现
 
-### # Netty零拷贝
+### Netty零拷贝
 
 > Netty 中的零拷贝和上面提到的操作系统层面上的零拷贝不太一样, 我们所说的 Netty 零拷贝完全是基于（Java 层面）用户态的，它的更多的是偏向于数据操作优化这样的概念，具体表现在以下几个方面：
 
@@ -649,13 +649,13 @@ ssize_t sendfile64(int out_fd, int in_fd, off_t *offset, size_t count);
 
 > ByteBuf 可以通过 wrap 操作把字节数组、ByteBuf、ByteBuffer 包装成一个 ByteBuf 对象, 进而避免了拷贝操作 ByteBuf 支持 slice 操作, 因此可以将 ByteBuf 分解为多个共享同一个存储区域的 ByteBuf，避免了内存的拷贝 Netty 提供了 CompositeByteBuf 类，它可以将多个 ByteBuf 合并为一个逻辑上的 ByteBuf，避免了各个 ByteBuf 之间的拷贝 其中第 1 条属于操作系统层面的零拷贝操作，后面 3 条只能算用户层面的数据操作优化。
 
-### # RocketMQ和Kafka对比
+### RocketMQ和Kafka对比
 
 > RocketMQ 选择了 mmap + write 这种零拷贝方式，适用于业务级消息这种小块文件的数据持久化和传输；而 Kafka 采用的是 sendfile 这种零拷贝方式，适用于系统日志消息这种高吞吐量的大块文件的数据持久化和传输。但是值得注意的一点是，Kafka 的索引文件使用的是 mmap + write 方式，数据文件使用的是 sendfile 方式。
 
 > ![](images/java-io-copy-11.jpg)
 
-### # 参考文章
+### 参考文章
 
 *   本文主要整理自 https://zhuanlan.zhihu.com/p/83398714
 *   作者：零壹技术栈

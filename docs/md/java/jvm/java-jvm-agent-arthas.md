@@ -59,15 +59,15 @@ title: 调试排错 - Java 问题排查之应用在线调试Arthas
     *   Arthas源码
     *   参考资料
 
-### # Arthas简介
+### Arthas简介
 
 > > 在学习Arthas之前，推荐先看上一篇美团技术团队的Java 动态调试技术原理及实践，这样你会对它最底层技术有个了解。可以看下文中最后有个对比图：Greys(Arthas也是基于它做的二次开发)和Java-debug-tool。
 
-### # Arthas是什么
+### Arthas是什么
 
 > `Arthas` 是Alibaba开源的Java诊断工具，深受开发者喜爱。
 
-### # Arthas能解决什么问题
+### Arthas能解决什么问题
 
 > 当你遇到以下类似问题而束手无策时，`Arthas`可以帮助你解决：
 
@@ -80,7 +80,7 @@ title: 调试排错 - Java 问题排查之应用在线调试Arthas
 
 > `Arthas`支持JDK 6+，支持Linux/Mac/Windows，采用命令行交互模式，同时提供丰富的 `Tab` 自动补全功能，进一步方便进行问题的定位和诊断。
 
-### # Arthas资源推荐
+### Arthas资源推荐
 
 *   用户文档在新窗口打开
 *   官方在线教程(推荐)在新窗口打开
@@ -92,7 +92,7 @@ title: 调试排错 - Java 问题排查之应用在线调试Arthas
 *   用户案例在新窗口打开
 *   常见问题在新窗口打开
 
-### # Arthas基于了哪些工具上发展而来
+### Arthas基于了哪些工具上发展而来
 
 *   greys-anatomy在新窗口打开: Arthas代码基于Greys二次开发而来，非常感谢Greys之前所有的工作，以及Greys原作者对Arthas提出的意见和建议！
 *   termd在新窗口打开: Arthas的命令行实现基于termd开发，是一款优秀的命令行程序开发框架，感谢termd提供了优秀的框架。
@@ -103,20 +103,20 @@ title: 调试排错 - Java 问题排查之应用在线调试Arthas
 *   `JavaAgent`：运行在 main方法之前的拦截器，它内定的方法名叫 premain ，也就是说先执行 premain 方法然后再执行 main 方法
 *   `ASM`：一个通用的Java字节码操作和分析框架。它可以用于修改现有的类或直接以二进制形式动态生成类。ASM提供了一些常见的字节码转换和分析算法，可以从它们构建定制的复杂转换和代码分析工具。ASM提供了与其他Java字节码框架类似的功能，但是主要关注性能。因为它被设计和实现得尽可能小和快，所以非常适合在动态系统中使用(当然也可以以静态方式使用，例如在编译器中)
 
-### # 同类工具有哪些
+### 同类工具有哪些
 
 *   BTrace
 *   美团 Java-debug-tool
 *   去哪儿Bistoury: 一个集成了Arthas的项目在新窗口打开
 *   一个使用MVEL脚本的fork在新窗口打开
 
-### # Arthas入门
+### Arthas入门
 
-### # Arthas 上手前
+### Arthas 上手前
 
 > 推荐先在线使用下arthas：官方在线教程(推荐)在新窗口打开
 
-### # Arthas 安装
+### Arthas 安装
 
 > 下载`arthas-boot.jar`，然后用`java -jar`的方式启动：
 
@@ -125,15 +125,15 @@ curl -O https://alibaba.github.io/arthas/arthas-boot.jar
 java -jar arthas-boot.jar
 ```
 
-### # Arthas 官方案例展示
+### Arthas 官方案例展示
 
-#### # Dashboard
+#### Dashboard
 
 *   https://alibaba.github.io/arthas/dashboard
 
 > ![dashboard](images/java-jvm-agent-arthas-dashboard.png)
 
-#### # Thread
+#### Thread
 
 > 一目了然的了解系统的状态，哪些线程比较占cpu? 他们到底在做什么?
 
@@ -164,7 +164,7 @@ $ thread -n 3
     at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:133)
 ```
 
-#### # jad
+#### jad
 
 > 对类进行反编译:
 
@@ -203,13 +203,13 @@ public interface Servlet {
 }
 ```
 
-#### # mc
+#### mc
 
 > Memory Compiler/内存编译器，编译`.java`文件生成`.class`。
 
 `mc /tmp/Test.java`
 
-#### # redefine
+#### redefine
 
 > 加载外部的`.class`文件，redefine jvm已加载的类。
 
@@ -218,7 +218,7 @@ redefine /tmp/Test.class
 redefine -c 327a647b /tmp/Test.class /tmp/Test\\$Inner.class
 ```
 
-#### # sc
+#### sc
 
 > 查找JVM中已经加载的类
 
@@ -253,7 +253,7 @@ $ sc -d org.springframework.web.context.support.XmlWebApplicationContext
  classLoaderHash   25131501
 ```
 
-#### # stack
+#### stack
 
 > 查看方法
 
@@ -294,13 +294,13 @@ ts=2018-09-18 10:11:45;thread_name=http-bio-8080-exec-10;id=d9;is_daemon=true;pr
         at java.lang.Thread.run(Thread.java:745)
 ```
 
-#### # Trace
+#### Trace
 
 > 观察方法执行的时候哪个子调用比较慢:
 
 > ![trace](images/java-jvm-agent-arthas-trace.png)
 
-#### # Watch
+#### Watch
 
 > 观察方法
 
@@ -320,7 +320,7 @@ ts=2018-09-18 10:26:28;result=@ArrayList[
 ]
 ```
 
-#### # Monitor
+#### Monitor
 
 > 监控某个特殊方法的调用统计数据，包括总调用次数，平均rt，成功率等信息，每隔5秒输出一次。
 
@@ -341,7 +341,7 @@ Affect(class-cnt:1 , method-cnt:1) cost in 109 ms.
  2018-09-20 09:45:42  org.apache.dubbo.demo.provider.DemoServiceImpl  sayHello  5      5        0     43        00%
 ```
 
-#### # Time Tunnel(tt)
+#### Time Tunnel(tt)
 
 > 记录方法调用信息，支持事后查看方法调用的参数，返回值，抛出的异常等信息，仿佛穿越时空隧道回到调用现场一般。
 
@@ -362,7 +362,7 @@ Affect(class-cnt:1 , method-cnt:1) cost in 75 ms.
  1008    2018-09-20 09:54:18  18468   true    false    0x55965cca     DemoServiceImpl                sayHello
 ```
 
-#### # Classloader
+#### Classloader
 
 > 了解当前系统中有多少类加载器，以及每个加载器加载的类数量，帮助您判断是否有类加载器泄露。
 
@@ -381,15 +381,15 @@ $ classloader
  sun.reflect.misc.MethodUtil                           1                  1
 ```
 
-#### # Web Console
+#### Web Console
 
 *   https://alibaba.github.io/arthas/web-console
 
 > ![web console](images/java-jvm-agent-arthas-webconsole.png)
 
-### # Arthas 命令集
+### Arthas 命令集
 
-#### # 基础命令
+#### 基础命令
 
 *   help——查看命令帮助信息
 *   cat在新窗口打开——打印文件内容，和linux里的cat命令类似
@@ -404,7 +404,7 @@ $ classloader
 *   stop/shutdown——关闭 Arthas 服务端，所有 Arthas 客户端全部退出
 *   keymap在新窗口打开——Arthas快捷键列表及自定义快捷键
 
-#### # jvm相关
+#### jvm相关
 
 *   dashboard在新窗口打开——当前系统的实时数据面板
 *   thread在新窗口打开——查看当前 JVM 的线程堆栈信息
@@ -418,7 +418,7 @@ $ classloader
 *   mbean在新窗口打开——查看 Mbean 的信息
 *   heapdump在新窗口打开——dump java heap, 类似jmap命令的heap dump功能
 
-#### # class/classloader相关
+#### class/classloader相关
 
 *   sc在新窗口打开——查看JVM已加载的类信息
 *   sm在新窗口打开——查看已加载类的方法信息
@@ -428,7 +428,7 @@ $ classloader
 *   dump在新窗口打开——dump 已加载类的 byte code 到特定目录
 *   classloader在新窗口打开——查看classloader的继承树，urls，类加载信息，使用classloader去getResource
 
-#### # monitor/watch/trace相关
+#### monitor/watch/trace相关
 
 > > 请注意，这些命令，都通过字节码增强技术来实现的，会在指定类的方法中插入一些切面来实现数据统计和观测，因此在线上、预发使用时，请尽量明确需要观测的类、方法以及条件，诊断结束要执行 `shutdown` 或将增强过的类执行 `reset` 命令。
 
@@ -438,11 +438,11 @@ $ classloader
 *   stack在新窗口打开——输出当前方法被调用的调用路径
 *   tt在新窗口打开——方法执行数据的时空隧道，记录下指定方法每次调用的入参和返回信息，并能对这些不同的时间下调用进行观测
 
-#### # options
+#### options
 
 *   options在新窗口打开——查看或设置Arthas全局开关
 
-#### # 管道
+#### 管道
 
 > Arthas支持使用管道对上述命令的结果进行进一步的处理，如
 
@@ -454,7 +454,7 @@ sm java.lang.String * | grep index
 *   plaintext——将命令的结果去除ANSI颜色
 *   wc——按行统计输出结果
 
-#### # 后台异步任务
+#### 后台异步任务
 
 > 当线上出现偶发的问题，比如需要watch某个条件，而这个条件一天可能才会出现一次时，异步后台任务就派上用场了，详情请参考这里在新窗口打开
 
@@ -464,13 +464,13 @@ sm java.lang.String * | grep index
 *   fg——将暂停的任务拉到前台执行
 *   bg——将暂停的任务放到后台执行
 
-#### # Web Console
+#### Web Console
 
 > 通过websocket连接Arthas。
 
 *   Web Console在新窗口打开
 
-#### # 用户数据回报
+#### 用户数据回报
 
 > 在`3.1.4`版本后，增加了用户数据回报功能，方便统一做安全或者历史数据统计。
 
@@ -484,16 +484,16 @@ sm java.lang.String * | grep index
 
 > StatController.java在新窗口打开
 
-#### # 其他特性
+#### 其他特性
 
 *   异步命令支持在新窗口打开
 *   执行结果存日志在新窗口打开
 *   批处理的支持在新窗口打开
 *   ognl表达式的用法说明在新窗口打开
 
-### # Arthas场景实战
+### Arthas场景实战
 
-### # 查看最繁忙的线程，以及是否有阻塞情况发生?
+### 查看最繁忙的线程，以及是否有阻塞情况发生?
 
 > > 场景：我想看下查看最繁忙的线程，以及是否有阻塞情况发生? 常规查看线程，一般我们可以通过 top 等系统命令进行查看，但是那毕竟要很多个步骤，很麻烦。
 
@@ -503,7 +503,7 @@ thread  # 以直观的方式展现所有的线程情况
 thread -b #找出当前阻塞其他线程的线程
 ```
 
-### # 确认某个类是否已被系统加载?
+### 确认某个类是否已被系统加载?
 
 > > 场景：我新写了一个类或者一个方法，我想知道新写的代码是否被部署了?
 
@@ -518,7 +518,7 @@ sm pdai.tech.servlet.TestMyServlet *
 sm pdai.tech.servlet.TestMyServlet testMethod
 ```
 
-### # 如何查看一个class类的源码信息?
+### 如何查看一个class类的源码信息?
 
 > > 场景：我新修改的内容在方法内部，而上一个步骤只能看到方法，这时候可以反编译看下源码
 
@@ -527,7 +527,7 @@ sm pdai.tech.servlet.TestMyServlet testMethod
 jad pdai.tech.servlet.TestMyServlet
 ```
 
-### # 重要：如何跟踪某个方法的返回值、入参.... ?
+### 重要：如何跟踪某个方法的返回值、入参.... ?
 
 > > 场景：我想看下我新加的方法在线运行的参数和返回值?
 
@@ -538,7 +538,7 @@ watch pdai.tech.servlet.TestMyServlet testMethod "{params, returnObj, throwExp}"
 
 > 具体看watch命令。
 
-### # 如何看方法调用栈的信息?
+### 如何看方法调用栈的信息?
 
 > > 场景：我想看下某个方法的调用栈的信息?
 
@@ -548,7 +548,7 @@ stack pdai.tech.servlet.TestMyServlet testMethod
 
 > 运行此命令之后需要即时触发方法才会有响应的信息打印在控制台上
 
-### # 重要：找到最耗时的方法调用?
+### 重要：找到最耗时的方法调用?
 
 > > 场景：testMethod这个方法入口响应很慢，如何找到最耗时的子调用?
 
@@ -559,7 +559,7 @@ trace pdai.tech.servlet.TestMyServlet testMethod
 
 > 运行此命令之后需要即时触发方法才会有响应的信息打印在控制台上，然后一层一层看子调用。
 
-### # 重要：如何临时更改代码运行?
+### 重要：如何临时更改代码运行?
 
 > > 场景：我找到了问题所在，能否线上直接修改测试，而不需要在本地改了代码后，重新打包部署，然后重启观察效果?
 
@@ -578,7 +578,7 @@ redefine /tmp/com/example/demo/arthas/user/UserController.class
 
 > 总之，已经完全不用重启和发布了！这个功能真的很方便，比起重启带来的代价，真的是不可比的。比如，重启时可能导致负载重分配，选主等等问题，就不是你能控制的了。
 
-### # 我如何测试某个方法的性能问题?
+### 我如何测试某个方法的性能问题?
 
 > > 场景：我想看下某个方法的性能
 
@@ -586,11 +586,11 @@ redefine /tmp/com/example/demo/arthas/user/UserController.class
 monitor -c 5 demo.MathGame primeFactors
 ```
 
-### # 更多
+### 更多
 
 > 请参考: 官方Issue墙在新窗口打开
 
-### # Arthas源码
+### Arthas源码
 
 > 首先我们先放出一张整体宏观的模块调用图：
 
@@ -601,7 +601,7 @@ monitor -c 5 demo.MathGame primeFactors
 *   什么是 Arthas在新窗口打开
 *   Arthas阅读在新窗口打开
 
-### # 参考资料
+### 参考资料
 
 *   https://www.cnblogs.com/muxuanchan/p/10097639.html
 *   https://www.cnblogs.com/yougewe/p/10770690.html

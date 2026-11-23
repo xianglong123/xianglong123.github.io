@@ -30,9 +30,9 @@ Java 在线问题排查主要分两篇：本文是第二篇，通过java调试/�
         *   dmesg
     *   参考文章
 
-### # Java 调试入门工具
+### Java 调试入门工具
 
-### # jps
+### jps
 
 > > jps是jdk提供的一个查看当前java进程的小工具， 可以看做是JavaVirtual Machine Process Status Tool的缩写。
 
@@ -64,7 +64,7 @@ jps -l xxx.xxx.xx.xx # 远程查看
 
 > 更多请参考 jps - Java Virtual Machine Process Status Tool在新窗口打开
 
-### # jstack
+### jstack
 
 > > jstack是jdk自带的线程堆栈分析工具，使用该命令可以查看或导出 Java 应用程序中线程堆栈信息。
 
@@ -95,7 +95,7 @@ jstack -l 2815
 
 > 更多请参考: jvm 性能调优工具之 jstack在新窗口打开
 
-### # jinfo
+### jinfo
 
 > > jinfo 是 JDK 自带的命令，可以用来查看正在运行的 java 应用程序的扩展参数，包括Java System属性和JVM命令行参数；也可以动态的修改正在运行的 JVM 一些参数。当系统崩溃时，jinfo可以从core文件里面知道崩溃的Java应用程序的配置信息
 
@@ -134,7 +134,7 @@ no option 输出全部的参数和系统属性
 
 > 更多请参考：jvm 性能调优工具之 jinfo在新窗口打开
 
-### # jmap
+### jmap
 
 > > 命令jmap是一个多功能的命令。它可以生成 java 程序的 dump 文件， 也可以查看堆内对象示例的统计信息、查看 ClassLoader 的信息以及 finalizer 队列。
 
@@ -168,7 +168,7 @@ J<flag>：指定传递给运行jmap的JVM的参数
 
 > 更多请参考：jvm 性能调优工具之 jmap在新窗口打开 和 jmap - Memory Map在新窗口打开
 
-### # jstat
+### jstat
 
 > jstat参数众多，但是使用一个就够了
 
@@ -176,7 +176,7 @@ J<flag>：指定传递给运行jmap的JVM的参数
 jstat -gcutil 2815 1000
 ```
 
-### # jdb
+### jdb
 
 > jdb可以用来预发debug,假设你预发的java_home是/opt/java/，远程调试端口是8000.那么
 
@@ -186,7 +186,7 @@ jstat -gcutil 2815 1000
 
 > 具体参数可见oracle官方说明jdb - The Java Debugger在新窗口打开
 
-### # CHLSDB
+### CHLSDB
 
 > CHLSDB感觉很多情况下可以看到更好玩的东西，不详细叙述了。 查询资料听说jstack和jmap等工具就是基于它的。
 
@@ -196,9 +196,9 @@ java -classpath /opt/taobao/java/lib/sa-jdi.jar sun.jvm.hotspot.CLHSDB
 
 > 更详细的可见R大此贴 http://rednaxelafx.iteye.com/blog/1847971
 
-### # Java 调试进阶工具
+### Java 调试进阶工具
 
-### # btrace
+### btrace
 
 > 首当其冲的要说的是btrace。真是生产环境&预发的排查问题大杀器。 简介什么的就不说了。直接上代码干
 
@@ -236,7 +236,7 @@ public static void mt(long userId, int current, int relation, String check, Stri
 *   正则表达式匹配trace类时范围一定要控制，否则极有可能出现跑满CPU导致应用卡死的情况
 *   由于是字节码注入的原理，想要应用恢复到正常情况，需要重启应用。
 
-### # Greys
+### Greys
 
 > Greys是@杜琨的大作吧。说几个挺棒的功能(部分功能和btrace重合):
 
@@ -244,13 +244,13 @@ public static void mt(long userId, int current, int relation, String check, Stri
 
 *   > `trace class method`: 打印出当前方法调用的耗时情况，细分到每个方法, 对排查方法性能时很有帮助。
 
-### # Arthas
+### Arthas
 
 > > Arthas是基于Greys。
 
 > 具体请参考：调试排错 - Java应用在线调试Arthas
 
-### # javOSize
+### javOSize
 
 > 就说一个功能:
 
@@ -260,15 +260,15 @@ public static void mt(long userId, int current, int relation, String check, Stri
 
 > 更多请参考：官网在新窗口打开
 
-### # JProfiler
+### JProfiler
 
 > 之前判断许多问题要通过JProfiler，但是现在Greys和btrace基本都能搞定了。再加上出问题的基本上都是生产环境(网络隔离)，所以基本不怎么使用了，但是还是要标记一下。
 
 > 更多请参考：官网在新窗口打开
 
-### # 其它工具
+### 其它工具
 
-### # dmesg
+### dmesg
 
 > 如果发现自己的java进程悄无声息的消失了，几乎没有留下任何线索，那么dmesg一发，很有可能有你想要的。
 
@@ -294,7 +294,7 @@ echo "$(date +%s)-$(cat /proc/uptime|cut -f 1 -d )+122888926194"|bc
 
 seconds" 剩下的，就是看看为什么内存这么大，触发了OOM-Killer了。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考了如下， 在此基础上重新整理，和添加新内容。
 *   作者：红魔七号

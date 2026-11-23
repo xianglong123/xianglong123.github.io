@@ -19,7 +19,7 @@ title: Java 8 - StampedLock
     *   总结
     *   参考
 
-### # synchronized
+### synchronized
 
 > 在java5之前，实现同步主要是使用synchronized。它是Java语言的关键字，当它用来修饰一个方法或者一个代码块的时候，能够保证在同一时刻最多只有一个线程执行该段代码。
 
@@ -42,7 +42,7 @@ synchronized(this)
 
 > 小结: 在多线程并发编程中Synchronized一直是元老级角色，很多人都会称呼它为重量级锁，但是随着Java SE1.6对Synchronized进行了各种优化之后，性能上也有所提升。
 
-### # Lock
+### Lock
 
 ```
 rwlock.writeLock().lock();
@@ -118,7 +118,7 @@ class Point {
 
 > 小结: 比synchronized更灵活、更具可伸缩性的锁定机制，但不管怎么说还是synchronized代码要更容易书写些
 
-### # StampedLock
+### StampedLock
 
 > 它是java8在java.util.concurrent.locks新增的一个API。
 
@@ -189,7 +189,7 @@ class Point {
 
 > StampedLock要比ReentrantReadWriteLock更加廉价，也就是消耗比较小。
 
-### # StampedLock与ReadWriteLock性能对比
+### StampedLock与ReadWriteLock性能对比
 
 > 是和ReadWritLock相比，在一个线程情况下，是读速度其4倍左右，写是1倍。
 
@@ -197,7 +197,7 @@ class Point {
 
 > ![](images/java-stampedlock-1.png)
 
-### # 总结
+### 总结
 
 *   synchronized是在JVM层面上实现的，不但可以通过一些监控工具监控synchronized的锁定，而且在代码执行时出现异常，JVM会自动释放锁定；
 *   ReentrantLock、ReentrantReadWriteLock,、StampedLock都是对象层面的锁定，要保证锁定一定会被释放，就必须将unLock()放到finally{}中；
@@ -208,7 +208,7 @@ class Point {
 
 > StampedLock 可以说是Lock的一个很好的补充，吞吐量以及性能上的提升足以打动很多人了，但并不是说要替代之前Lock的东西，毕竟他还是有些应用场景的，起码API比StampedLock容易入手。
 
-### # 参考
+### 参考
 
 *   > https://wizardforcel.gitbooks.io/java8-tutorials/content/Java%208%20%E5%B9%B6%E5%8F%91%E6%95%99%E7%A8%8B%20Threads%20%E5%92%8C%20Executors.html
 

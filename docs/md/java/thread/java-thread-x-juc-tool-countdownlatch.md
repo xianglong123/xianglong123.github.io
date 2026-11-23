@@ -29,7 +29,7 @@ CountDownLatch底层也是由AQS，用来同步一个或多个任务的常用并
         *   CountDownLatch实现
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -42,13 +42,13 @@ CountDownLatch底层也是由AQS，用来同步一个或多个任务的常用并
 *   CountDownLatch适用于什么场景?
 *   写道题：实现一个容器，提供两个方法，add，size 写两个线程，线程1添加10个元素到容器中，线程2实现监控元素的个数，当个数到5个时，线程2给出提示并结束? 使用CountDownLatch 代替wait notify 好处。
 
-### # CountDownLatch介绍
+### CountDownLatch介绍
 
 > 从源码可知，其底层是由AQS提供支持，所以其数据结构可以参考AQS的数据结构，而AQS的数据结构核心就是两个虚拟队列: 同步队列sync queue 和条件队列condition queue，不同的条件会有不同的条件队列。CountDownLatch典型的用法是将一个程序分为n个互相独立的可解决任务，并创建值为n的CountDownLatch。当每一个任务完成时，都会在这个锁存器上调用countDown，等待问题被解决的任务调用这个锁存器的await，将他们自己拦住，直至锁存器计数结束。
 
-### # CountDownLatch源码分析
+### CountDownLatch源码分析
 
-### # 类的继承关系
+### 类的继承关系
 
 > CountDownLatch没有显示继承哪个父类或者实现哪个父接口, 它底层是AQS是通过内部类Sync来实现的。
 
@@ -56,7 +56,7 @@ CountDownLatch底层也是由AQS，用来同步一个或多个任务的常用并
 public class CountDownLatch {}
 ```
 
-### # 类的内部类
+### 类的内部类
 
 > CountDownLatch类存在一个内部类Sync，继承自AbstractQueuedSynchronizer，其源代码如下。
 
@@ -100,7 +100,7 @@ private static final class Sync extends AbstractQueuedSynchronizer {
 
 > 说明: 对CountDownLatch方法的调用会转发到对Sync或AQS的方法的调用，所以，AQS对CountDownLatch提供支持。
 
-### # 类的属性
+### 类的属性
 
 > 可以看到CountDownLatch类的内部只有一个Sync类型的属性:
 
@@ -111,7 +111,7 @@ public class CountDownLatch {
 }
 ```
 
-### # 类的构造函数
+### 类的构造函数
 
 ```
 public CountDownLatch(int count) {
@@ -123,7 +123,7 @@ public CountDownLatch(int count) {
 
 > 说明: 该构造函数可以构造一个用给定计数初始化的CountDownLatch，并且构造函数内完成了sync的初始化，并设置了状态数。
 
-### # 核心函数 - await函数
+### 核心函数 - await函数
 
 > 此函数将会使当前线程在锁存器倒计数至零之前一直等待，除非线程被中断。其源码如下
 
@@ -279,7 +279,7 @@ private void doReleaseShared() {
 
 > 说明: 上图给出了可能会调用到的主要方法，并非一定会调用到，之后，会通过一个示例给出详细的分析。
 
-### # 核心函数 - countDown函数
+### 核心函数 - countDown函数
 
 > 此函数将递减锁存器的计数，如果计数到达零，则释放所有等待的线程
 
@@ -372,7 +372,7 @@ private void doReleaseShared() {
 
 > 说明: 上图给出了可能会调用到的主要方法，并非一定会调用到，之后，会通过一个示例给出详细的分析。
 
-### # CountDownLatch示例
+### CountDownLatch示例
 
 > 下面给出了一个使用CountDownLatch的示例。
 
@@ -458,13 +458,13 @@ main continue
 
 > 说明: main线程恢复，继续在parkAndCheckInterrupt函数中运行，之后又会回到最终达到的状态为AQS的state为0，并且head与tail指向同一个结点，该节点的额nextWaiter域还是指向SHARED结点。
 
-### # 更深入理解
+### 更深入理解
 
-### # 写道面试题
+### 写道面试题
 
 > > 实现一个容器，提供两个方法，add，size 写两个线程，线程1添加10个元素到容器中，线程2实现监控元素的个数，当个数到5个时，线程2给出提示并结束.
 
-### # 使用wait和notify实现
+### 使用wait和notify实现
 
 ```
 import java.util.ArrayList;
@@ -546,7 +546,7 @@ add7
 add8
 ```
 
-### # CountDownLatch实现
+### CountDownLatch实现
 
 > 说出使用CountDownLatch 代替wait notify 好处?
 
@@ -603,7 +603,7 @@ public class T3 {
 }
 ```
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5406191.html，在此基础上做了增改。
 *   https://www.jianshu.com/p/40336ef1f5fe

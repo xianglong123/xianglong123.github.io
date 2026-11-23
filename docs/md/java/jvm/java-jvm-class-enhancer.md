@@ -29,21 +29,21 @@ title: JVM 基础 - 字节码的增强技术
     *   参考文献
     *   作者简介
 
-### # 字节码增强技术
+### 字节码增强技术
 
 > 在上文中，着重介绍了字节码的结构，这为我们了解字节码增强技术的实现打下了基础。字节码增强技术就是一类对现有字节码进行修改或者动态生成全新字节码文件的技术。接下来，我们将从最直接操纵字节码的实现方式开始深入进行剖析
 
 > ![](images/java-class-enhancer-1.png)
 
-### # ASM
+### ASM
 
 > 对于需要手动操纵字节码的需求，可以使用ASM，它可以直接生产 .class字节码文件，也可以在类被加载入JVM之前动态修改类行为（如下图17所示）。ASM的应用场景有AOP（Cglib就是基于ASM）、热部署、修改其他jar包中的类等。当然，涉及到如此底层的步骤，实现起来也比较麻烦。接下来，本文将介绍ASM的两种API，并用ASM来实现一个比较粗糙的AOP。但在此之前，为了让大家更快地理解ASM的处理流程，强烈建议读者先对访问者模式进行了解。简单来说，访问者模式主要用于修改或操作一些数据结构比较稳定的数据，而通过第一章，我们知道字节码文件的结构是由JVM固定的，所以很适合利用访问者模式对字节码文件进行修改。
 
 > ![](images/java-class-enhancer-2.png)
 
-#### # ASM API
+#### ASM API
 
-##### # 核心API
+##### 核心API
 
 > ASM Core API可以类比解析XML文件中的SAX方式，不需要把这个类的整个结构读取进来，就可以用流式的方法来处理字节码文件。好处是非常节约内存，但是编程难度较大。然而出于性能考虑，一般情况下编程都使用Core API。在Core API中有以下几个关键类：
 
@@ -51,11 +51,11 @@ title: JVM 基础 - 字节码的增强技术
 *   ClassWriter：用于重新构建编译后的类，如修改类名、属性以及方法，也可以生成新的类的字节码文件。
 *   各种Visitor类：如上所述，CoreAPI根据字节码从上到下依次处理，对于字节码文件中不同的区域有不同的Visitor，比如用于访问方法的MethodVisitor、用于访问类变量的FieldVisitor、用于访问注解的AnnotationVisitor等。为了实现AOP，重点要使用的是MethodVisitor。
 
-##### # 树形API
+##### 树形API
 
 > ASM Tree API可以类比解析XML文件中的DOM方式，把整个类的结构读取到内存中，缺点是消耗内存多，但是编程比较简单。TreeApi不同于CoreAPI，TreeAPI通过各种Node类来映射字节码的各个区域，类比DOM节点，就可以很好地理解这种编程方式。
 
-#### # 直接利用ASM实现AOP
+#### 直接利用ASM实现AOP
 
 > 利用ASM的CoreAPI来增强类。这里不纠结于AOP的专业名词如切片、通知，只实现在方法调用前、后增加逻辑，通俗易懂且方便理解。首先定义需要被增强的Base类：其中只包含一个process()方法，方法内输出一行process。增强后，我们期望的是，方法执行前输出start，之后输出end。
 
@@ -154,7 +154,7 @@ public class MyClassVisitor extends ClassVisitor implements Opcodes {
 
 > ![](images/java-class-enhancer-3.png)
 
-#### # ASM工具
+#### ASM工具
 
 > 利用ASM手写字节码时，需要利用一系列visitXXXXInsn()方法来写对应的助记符，所以需要先将每一行源代码转化为一个个的助记符，然后通过ASM的语法转换为visitXXXXInsn()这种写法。第一步将源码转化为助记符就已经够麻烦了，不熟悉字节码操作集合的话，需要我们将代码编译后再反编译，才能得到源代码对应的助记符。第二步利用ASM写字节码时，如何传参也很令人头疼。ASM社区也知道这两个问题，所以提供了工具ASM ByteCode Outline在新窗口打开。
 
@@ -162,7 +162,7 @@ public class MyClassVisitor extends ClassVisitor implements Opcodes {
 
 > ![](images/java-class-enhancer-4.png)
 
-### # Javassist
+### Javassist
 
 > ASM是在指令层次上操作字节码的，阅读上文后，我们的直观感受是在指令层次上操作字节码的框架实现起来比较晦涩。故除此之外，我们再简单介绍另外一类框架：强调源代码层次操作字节码的框架Javassist。
 
@@ -192,9 +192,9 @@ public class JavassistTest {
 }
 ```
 
-### # 运行时类的重载
+### 运行时类的重载
 
-### # 问题引出
+### 问题引出
 
 > 上一章重点介绍了两种不同类型的字节码操作框架，且都利用它们实现了较为粗糙的AOP。其实，为了方便大家理解字节码增强技术，在上文中我们避重就轻将ASM实现AOP的过程分为了两个main方法：第一个是利用MyClassVisitor对已编译好的class文件进行修改，第二个是new对象并调用。这期间并不涉及到JVM运行时对类的重加载，而是在第一个main方法中，通过ASM对已编译类的字节码进行替换，在第二个main方法中，直接使用已替换好的新类信息。另外在Javassist的实现中，我们也只加载了一次Base类，也不涉及到运行时重加载类。
 
@@ -231,7 +231,7 @@ public class Base {
 }
 ```
 
-### # Instrument
+### Instrument
 
 > instrument是JVM提供的一个可以修改已加载类的类库，专门为Java语言编写的插桩服务提供支持。它需要依赖JVMTI的Attach API机制实现，JVMTI这一部分，我们将在下一小节进行介绍。在JDK 1.6以前，instrument只能在JVM刚启动开始加载类时生效，而在JDK 1.6之后，instrument支持了在运行时对类定义的修改。要使用instrument的类修改功能，我们需要实现它提供的ClassFileTransformer接口，定义一个类文件转换器。接口中的transform()方法会在类文件被加载时调用，而在transform方法里，我们可以利用上文中的ASM或Javassist对传入的字节码进行改写或替换，生成新的字节码数组后返回。
 
@@ -279,7 +279,7 @@ public class TestAgent {
 }
 ```
 
-### # JVMTI & Agent & Attach API
+### JVMTI & Agent & Attach API
 
 > 上一小节中，我们给出了Agent类的代码，追根溯源需要先介绍JPDA（Java Platform Debugger Architecture）。如果JVM启动时开启了JPDA，那么类是允许被重新加载的。在这种情况下，已被加载的旧版本类信息可以被卸载，然后重新加载新版本的类。正如JDPA名称中的Debugger，JDPA其实是一套用于调试Java程序的标准，任何JDK都必须实现该标准。
 
@@ -316,9 +316,9 @@ public class Attacher {
 
 > 以下为运行时重新载入类的效果：先运行Base中的main()方法，启动一个JVM，可以在控制台看到每隔五秒输出一次process。接着执行Attacher中的main()方法，并将上一个JVM的pid传入。此时回到上一个main()方法的控制台，可以看到现在每隔五秒输出process前后会分别输出start和end，也就是说完成了运行时的字节码增强，并重新载入了这个类。
 
-> ![](./JVM 基础 - 字节码的增强技术 _ Java 全栈知识体系_files/java-class-enhancer-8.png)
+> 
 
-### # 使用场景
+### 使用场景
 
 > 至此，字节码增强技术的可使用范围就不再局限于JVM加载类前了。通过上述几个类库，我们可以在运行时对JVM中的类进行修改并重载了。通过这种手段，可以做的事情就变得很多了：
 
@@ -326,11 +326,11 @@ public class Attacher {
 *   Mock：测试时候对某些服务做Mock。
 *   性能诊断工具：比如bTrace就是利用Instrument，实现无侵入地跟踪一个正在运行的JVM，监控到类和方法级别的状态信息。
 
-### # 总结
+### 总结
 
 > 字节码增强技术相当于是一把打开运行时JVM的钥匙，利用它可以动态地对运行中的程序做修改，也可以跟踪JVM运行中程序的状态。此外，我们平时使用的动态代理、AOP也与字节码增强密切相关，它们实质上还是利用各种手段生成符合规范的字节码文件。综上所述，掌握字节码增强后可以高效地定位并快速修复一些棘手的问题（如线上性能问题、方法出现不可控的出入参需要紧急加日志等问题），也可以在开发中减少冗余代码，大大提高开发效率。
 
-### # 参考文献
+### 参考文献
 
 *   《ASM4-Guide》
 *   Oracle:The class File Format
@@ -338,7 +338,7 @@ public class Attacher {
 *   javassist tutorial
 *   JVM Tool Interface - Version 1.2
 
-### # 作者简介
+### 作者简介
 
 > 泽恩，美团点评研发工程师。
 

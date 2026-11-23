@@ -28,7 +28,7 @@ title: Java IO - 分类(传输，操作)
         *   对象序列化反序列化
         *   转换
 
-### # IO理解分类 - 从传输方式上
+### IO理解分类 - 从传输方式上
 
 > 从数据传输方式或者说是运输方式角度看，可以将 IO 类分为:
 
@@ -37,26 +37,26 @@ title: Java IO - 分类(传输，操作)
 
 > `字节`是个计算机看的，`字符`才是给人看的
 
-### # 字节流
+### 字节流
 
 > (整体结构如下，部分派生类有缺失)
 
 > ![](images/java-io-category-1-1.png)
 
-### # 字符流
+### 字符流
 
 > (整体结构如下，部分派生类有缺失)
 
 > ![](images/java-io-category-2-1.png)
 
-### # 字节流和字符流的区别
+### 字节流和字符流的区别
 
 *   字节流读取单个字节，字符流读取单个字符(一个字符根据编码的不同，对应的字节也不同，如 UTF-8 编码中文汉字是 3 个字节，GBK编码中文汉字是 2 个字节。)
 *   字节流用来处理二进制文件(图片、MP3、视频文件)，字符流用来处理文本文件(可以看做是特殊的二进制文件，使用了某种编码，人可以阅读)。
 
 > > 简而言之，字节是给计算机看的，字符才是给人看的。
 
-### # 字节转字符Input/OutputStreamReader/Writer
+### 字节转字符Input/OutputStreamReader/Writer
 
 > 编码就是把字符转换为字节，而解码是把字节重新组合成字符。
 
@@ -72,41 +72,41 @@ title: Java IO - 分类(传输，操作)
 
 > ![](images/java-io-1.png)
 
-### # IO理解分类 - 从数据操作上
+### IO理解分类 - 从数据操作上
 
 > 从数据来源或者说是操作对象角度看，IO 类可以分为:
 
 > ![](images/java-io-category-3.png)
 
-### # 文件(file)
+### 文件(file)
 
 > FileInputStream、FileOutputStream、FileReader、FileWriter
 
-### # 数组([])
+### 数组([])
 
 *   字节数组(byte[]): ByteArrayInputStream、ByteArrayOutputStream
 *   字符数组(char[]): CharArrayReader、CharArrayWriter
 
-### # 管道操作
+### 管道操作
 
 > PipedInputStream、PipedOutputStream、PipedReader、PipedWriter
 
-### # 基本数据类型
+### 基本数据类型
 
 > DataInputStream、DataOutputStream
 
-### # 缓冲操作
+### 缓冲操作
 
 > BufferedInputStream、BufferedOutputStream、BufferedReader、BufferedWriter
 
-### # 打印
+### 打印
 
 > PrintStream、PrintWriter
 
-### # 对象序列化反序列化
+### 对象序列化反序列化
 
 > ObjectInputStream、ObjectOutputStream
 
-### # 转换
+### 转换
 
 > InputStreamReader、OutputStreamWriter

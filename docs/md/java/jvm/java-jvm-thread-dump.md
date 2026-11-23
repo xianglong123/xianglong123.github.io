@@ -28,20 +28,20 @@ Thread Dump是非常有用的诊断Java应用问题的工具。 @123
     *   JVM重要线程
     *   参考文章
 
-### # Thread Dump介绍
+### Thread Dump介绍
 
-### # 什么是Thread Dump
+### 什么是Thread Dump
 
 > Thread Dump是非常有用的诊断Java应用问题的工具。每一个Java虚拟机都有及时生成所有线程在某一点状态的thread-dump的能力，虽然各个 Java虚拟机打印的thread dump略有不同，但是 大多都提供了当前活动线程的快照，及JVM中所有Java线程的堆栈跟踪信息，堆栈信息一般包含完整的类名及所执行的方法，如果可能的话还有源代码的行数。
 
-### # Thread Dump特点
+### Thread Dump特点
 
 *   能在各种操作系统下使用；
 *   能在各种Java应用服务器下使用；
 *   能在生产环境下使用而不影响系统的性能；
 *   能将问题直接定位到应用程序的代码行上；
 
-### # Thread Dump抓取
+### Thread Dump抓取
 
 > 一般当服务器挂起，崩溃或者性能低下时，就需要抓取服务器的线程堆栈（Thread Dump）用于后续的分析。在实际运行中，往往一次 dump的信息，还不足以确认问题。为了反映线程状态的动态变化，需要接连多次做thread dump，每次间隔10-20s，建议至少产生三次 dump信息，如果每次 dump都指向同一个问题，我们才确定问题的典型性。
 
@@ -63,9 +63,9 @@ jps 或 ps –ef | grep java （获取PID）
 jstack [-l ] <pid> | tee -a jstack.log（获取ThreadDump）
 ```
 
-### # Thread Dump分析
+### Thread Dump分析
 
-### # Thread Dump信息
+### Thread Dump信息
 
 *   头部信息：时间，JVM信息
 
@@ -153,7 +153,7 @@ java.lang.Thread.State: TIMED_WAITING (parking)
 > The thread's execution wassuspended by java.lang.Thread.suspend() or a JVMTI agent call.
 ```
 
-### # Thread状态分析
+### Thread状态分析
 
 > 线程的状态是一个很重要的东西，因此thread dump中会显示这些状态，通过对这些状态的分析，能够得出线程的运行状况，进而发现可能存在的问题。`线程的状态在Thread.State这个枚举类型中定义`：
 
@@ -249,7 +249,7 @@ public enum State
 
 > 线程执行完毕，执行完run方法正常返回，或者抛出了运行时异常而结束，线程都会停留在这个状态。这个时候线程只剩下Thread对象了，没有什么用了。
 
-### # 关键状态分析
+### 关键状态分析
 
 *   `Wait on condition`：The thread is either sleeping or waiting to be notified by another thread.
 
@@ -312,7 +312,7 @@ at java.lang.Thread.run(Thread.java:595)
 
 > 上面提到如果 synchronized和 monitor机制运用不当，可能会造成多线程程序的性能问题。在 JDK 5.0中，引入了 Lock机制，从而使开发者能更灵活的开发高性能的并发多线程程序，可以替代以往 JDK中的 synchronized和 Monitor的 机制。但是，`要注意的是，因为 Lock类只是一个普通类，JVM无从得知 Lock对象的占用情况，所以在线程 DUMP中，也不会包含关于 Lock的信息`， 关于死锁等问题，就不如用 synchronized的编程方式容易识别。
 
-### # 关键状态示例
+### 关键状态示例
 
 *   `显示BLOCKED状态`
 
@@ -518,9 +518,9 @@ java.lang.Thread.State: TIMED_WAITING (parking)
 
 > 可以看到t1和t2线程都处在java.lang.Thread.State: TIMED_WAITING (parking)，这个parking代表是调用的JUC下的工具类，而不是java默认的监视器。
 
-### # 案例分析
+### 案例分析
 
-### # 问题场景
+### 问题场景
 
 *   > `CPU飙高，load高，响应很慢`
 
@@ -538,7 +538,7 @@ java.lang.Thread.State: TIMED_WAITING (parking)
 
 > 多次dump，对比是否所有的runnable线程都一直在执行相同的方法，如果是的，恭喜你，锁住了！
 
-### # 死锁
+### 死锁
 
 > 死锁经常表现为程序的停顿，或者不再响应用户的请求。从操作系统上观察，对应进程的CPU占用率为零，很快会从top或prstat的输出中消失。
 
@@ -572,7 +572,7 @@ waiting to lock monitor 0x0003f314 (object 0x22c19f20, a java.lang.Object),
 which is held by "Thread-1"
 ```
 
-### # 热锁
+### 热锁
 
 > 热锁，也往往是导致系统性能瓶颈的主要因素。其表现特征为：`由于多个线程对临界区，或者锁的竞争`，可能出现：
 
@@ -587,7 +587,7 @@ which is held by "Thread-1"
 
 > 一个重要的方法是 结合操作系统的各种工具观察系统资源使用状况，以及收集Java线程的DUMP信息，看线程都阻塞在什么方法上，了解原因，才能找到对应的解决方法。
 
-### # JVM重要线程
+### JVM重要线程
 
 > JVM运行过程中产生的一些比较重要的线程罗列如下：
 
@@ -603,7 +603,7 @@ which is held by "Thread-1"
 | Reference Handler | JVM在创建main线程后就创建Reference Handler线程，其优先级最高，为10，它主要用于处理引用对象本身（软引用、弱引用、虚引用）的垃圾回收问题 。 |
 | VM Thread | 这个线程就比较牛b了，是JVM里面的线程母体，根据hotspot源码（vmThread.hpp）里面的注释，它是一个单个的对象（最原始的线程）会产生或触发所有其他的线程，这个单个的VM线程是会被其他线程所使用来做一些VM操作（如：清扫垃圾等）。 |
 
-### # 参考文章
+### 参考文章
 
 *   作者：猿码架构
 *   链接：https://www.jianshu.com/p/f1db856022de

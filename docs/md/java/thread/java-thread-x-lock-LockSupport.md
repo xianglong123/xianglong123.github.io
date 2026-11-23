@@ -36,7 +36,7 @@ LockSupport是锁中的基础，是一个提供锁机制的工具类，所以先
         *   LockSupport.park()会释放锁资源吗?
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -49,13 +49,13 @@ LockSupport是锁中的基础，是一个提供锁机制的工具类，所以先
 *   如果在wait()之前执行了notify()会怎样?
 *   如果在park()之前执行了unpark()会怎样?
 
-### # LockSupport简介
+### LockSupport简介
 
 > LockSupport用来创建锁和其他同步类的基本线程阻塞原语。简而言之，当调用LockSupport.park时，表示当前线程将会等待，直至获得许可，当调用LockSupport.unpark时，必须把等待获得许可的线程作为参数进行传递，好让此线程继续运行。
 
-### # LockSupport源码分析
+### LockSupport源码分析
 
-### # 类的属性
+### 类的属性
 
 ```
 public class LockSupport {
@@ -95,7 +95,7 @@ public class LockSupport {
 
 > 说明: UNSAFE字段表示sun.misc.Unsafe类，查看其源码，点击在这里，一般程序中不允许直接调用，而long型的表示实例对象相应字段在内存中的偏移地址，可以通过该偏移地址获取或者设置该字段的值。
 
-### # 类的构造函数
+### 类的构造函数
 
 ```
 // 私有构造函数，无法被实例化
@@ -104,7 +104,7 @@ private LockSupport() {}
 
 > 说明: LockSupport只有一个私有构造函数，无法被实例化。
 
-### # 核心函数分析
+### 核心函数分析
 
 > 在分析LockSupport函数之前，先引入sun.misc.Unsafe类中的park和unpark函数，因为LockSupport的核心函数都是基于Unsafe类中定义的park和unpark函数，下面给出两个函数的定义:
 
@@ -119,7 +119,7 @@ public native void unpark(Thread thread);
 
 *   > unpark函数，释放线程的许可，即激活调用park后阻塞的线程。这个函数不是安全的，调用这个函数时要确保线程依旧存活。
 
-#### # park函数
+#### park函数
 
 > park函数有两个重载版本，方法摘要如下
 
@@ -169,7 +169,7 @@ public static void park() {
 *   其他某个线程中断当前线程。
 *   该调用不合逻辑地(即毫无理由地)返回。
 
-#### # parkNanos函数
+#### parkNanos函数
 
 > 此函数表示在许可可用前禁用当前线程，并最多等待指定的等待时间。具体函数如下。
 
@@ -190,7 +190,7 @@ public static void parkNanos(Object blocker, long nanos) {
 
 > 说明: 该函数也是调用了两次setBlocker函数，nanos参数表示相对时间，表示等待多长时间。
 
-#### # parkUntil函数
+#### parkUntil函数
 
 > 此函数表示在指定的时限前禁用当前线程，除非许可可用, 具体函数如下:
 
@@ -208,7 +208,7 @@ public static void parkUntil(Object blocker, long deadline) {
 
 > 说明: 该函数也调用了两次setBlocker函数，deadline参数表示绝对时间，表示指定的时间。
 
-#### # unpark函数
+#### unpark函数
 
 > 此函数表示如果给定线程的许可尚不可用，则使其可用。如果线程在 park 上受阻塞，则它将解除其阻塞状态。否则，保证下一次调用 park 不会受阻塞。如果给定线程尚未启动，则无法保证此操作有任何效果。具体函数如下:
 
@@ -221,9 +221,9 @@ public static void unpark(Thread thread) {
 
 > 说明: 释放许可，指定线程可以继续运行。
 
-### # LockSupport示例说明
+### LockSupport示例说明
 
-### # 使用wait/notify实现线程同步
+### 使用wait/notify实现线程同步
 
 ```
 class MyThread extends Thread {
@@ -313,7 +313,7 @@ before wait
 
 > 说明: 由于先调用了notify，再调用的wait，此时主线程还是会一直阻塞。
 
-### # 使用park/unpark实现线程同步
+### 使用park/unpark实现线程同步
 
 ```
 import java.util.concurrent.locks.LockSupport;
@@ -423,7 +423,7 @@ after park
 
 > 说明: 可以看到，在先调用unpark，再调用park时，仍能够正确实现同步，不会造成由wait/notify调用顺序不当所引起的阻塞。因此park/unpark相比wait/notify更加的灵活。
 
-### # 中断响应
+### 中断响应
 
 > 看下面示例
 
@@ -475,9 +475,9 @@ after park
 
 > 说明: 可以看到，在主线程调用park阻塞后，在myThread线程中发出了中断信号，此时主线程会继续运行，也就是说明此时interrupt起到的作用与unpark一样。
 
-### # 更深入的理解
+### 更深入的理解
 
-### # Thread.sleep()和Object.wait()的区别
+### Thread.sleep()和Object.wait()的区别
 
 > 首先，我们先来看看Thread.sleep()和Object.wait()的区别，这是一个烂大街的题目了，大家应该都能说上来两点。
 
@@ -489,13 +489,13 @@ after park
 
 > 其实，他们俩最大的区别就是Thread.sleep()不会释放锁资源，Object.wait()会释放锁资源。
 
-### # Object.wait()和Condition.await()的区别
+### Object.wait()和Condition.await()的区别
 
 > Object.wait()和Condition.await()的原理是基本一致的，不同的是Condition.await()底层是调用LockSupport.park()来实现阻塞当前线程的。
 
 > 实际上，它在阻塞当前线程之前还干了两件事，一是把当前线程添加到条件队列中，二是完全释放锁，也就是让state状态变量变为0，然后才是调用LockSupport.park()阻塞当前线程。
 
-### # Thread.sleep()和LockSupport.park()的区别
+### Thread.sleep()和LockSupport.park()的区别
 
 > LockSupport.park()还有几个兄弟方法——parkNanos()、parkUtil()等，我们这里说的park()方法统称这一类方法。
 
@@ -507,7 +507,7 @@ after park
 *   Thread.sleep()本身就是一个native方法；
 *   LockSupport.park()底层是调用的Unsafe的native方法；
 
-### # Object.wait()和LockSupport.park()的区别
+### Object.wait()和LockSupport.park()的区别
 
 > 二者都会阻塞当前线程的运行，他们有什么区别呢? 经过上面的分析相信你一定很清楚了，真的吗? 往下看！
 
@@ -520,21 +520,21 @@ after park
 
 > park()/unpark()底层的原理是二元信号量，你可以把它相像成只有一个许可证的Semaphore，只不过这个信号量在重复执行unpark()的时候也不会再增加许可证，最多只有一个许可证。
 
-#### # 如果在wait()之前执行了notify()会怎样?
+#### 如果在wait()之前执行了notify()会怎样?
 
 > 如果当前的线程不是此对象锁的所有者，却调用该对象的notify()或wait()方法时抛出IllegalMonitorStateException异常；
 
 > 如果当前线程是此对象锁的所有者，wait()将一直阻塞，因为后续将没有其它notify()唤醒它。
 
-#### # 如果在park()之前执行了unpark()会怎样?
+#### 如果在park()之前执行了unpark()会怎样?
 
 > 线程不会被阻塞，直接跳过park()，继续执行后续内容
 
-### # LockSupport.park()会释放锁资源吗?
+### LockSupport.park()会释放锁资源吗?
 
 > 不会，它只负责阻塞当前线程，释放锁资源实际上是在Condition的await()方法中实现的。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5347293.html，在此基础上做了增改。
 *   https://blog.csdn.net/tangtong1/article/details/102829724

@@ -19,7 +19,7 @@ Netty是一个高性能、异步事件驱动的NIO框架，提供了对TCP、UDP
         *   例子
     *   参考文章
 
-### # NIO框架
+### NIO框架
 
 > 目前流行的NIO框架非常的多。在论坛上、互联网上大家讨论和使用最多的有以下几种:
 
@@ -39,9 +39,9 @@ Netty是一个高性能、异步事件驱动的NIO框架，提供了对TCP、UDP
 
 > Grizzly是一种应用程序框架，专门解决编写成千上万用户访问服务器时候产生的各种问题。使用JAVA NIO作为基础，并隐藏其编程的复杂性。
 
-### # 比较好的基于NIO的开源框架(Netty)
+### 比较好的基于NIO的开源框架(Netty)
 
-### # 优点
+### 优点
 
 *   api简单，开发门槛低
 *   功能强大，内置了多种编码、解码功能
@@ -49,7 +49,7 @@ Netty是一个高性能、异步事件驱动的NIO框架，提供了对TCP、UDP
 *   社区活跃，使用广泛，经历过很多商业应用项目的考验
 *   定制能力强，可以对框架进行灵活的扩展
 
-### # 例子
+### 例子
 
 ```java
 <dependency>
@@ -168,7 +168,7 @@ public class NettyClient {
 }
 ```
 
-### # 参考文章
+### 参考文章
 
 *   https://blog.csdn.net/yinwenjie/article/details/48829419
 *   https://blog.csdn.net/yinwenjie/article/details/48969853

@@ -26,7 +26,7 @@ title: JVM 基础 - 类字节码详解
         *   kotlin 函数扩展的实现
     *   参考文章
 
-### # 多语言编译为字节码在JVM运行
+### 多语言编译为字节码在JVM运行
 
 > 计算机是不能直接运行java代码的，必须要先运行java虚拟机，再由java虚拟机运行编译后的java代码。这个编译后的java代码，就是本文要介绍的java字节码。
 
@@ -37,7 +37,7 @@ title: JVM 基础 - 类字节码详解
 
 > ![](images/java-jvm-class-1.png)
 
-### # Java字节码文件
+### Java字节码文件
 
 > class文件本质上是一个以8位字节为基础单位的二进制流，各个数据项目严格按照顺序紧凑的排列在class文件中。jvm根据其特定的规则解析该二进制数据，从而得到相关信息。
 
@@ -45,13 +45,13 @@ title: JVM 基础 - 类字节码详解
 
 > 本文将通过简单的java例子编译后的文件来理解。
 
-### # Class文件的结构属性
+### Class文件的结构属性
 
 > 在理解之前先从整体看下java字节码文件包含了哪些类型的数据：
 
 > ![](images/java-jvm-class-2.png)
 
-### # 从一个例子开始
+### 从一个例子开始
 
 > 下面以一个简单的例子来逐步讲解字节码。
 
@@ -106,7 +106,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 131-b11, mixed mode)
 
 > 继续往下是常量池... 知道是这么分析的就可以了，然后我们通过工具反编译字节码文件继续去看。
 
-### # 反编译字节码文件
+### 反编译字节码文件
 
 > > 使用到java内置的一个反编译工具javap可以反编译字节码文件, 用法:
 >
@@ -213,7 +213,7 @@ Constant pool:
 SourceFile: "Main.java"
 ```
 
-### # 字节码文件信息
+### 字节码文件信息
 
 > 开头的7行信息包括:Class文件当前所在位置，最后修改时间，文件大小，MD5值，编译自哪个文件，类的全限定名，jdk次版本号，主版本号。
 
@@ -230,7 +230,7 @@ SourceFile: "Main.java"
 | ACC_ANNOTATION | 0x2000 | 标志这是一个注解 |
 | ACC_ENUM | 0x4000 | 标志这是一个枚举 |
 
-### # 常量池
+### 常量池
 
 > `Constant pool`意为常量池。
 
@@ -287,7 +287,7 @@ java/lang/Object."<init>":()V
 
 > 对于数组类型，每一位使用一个前置的`[`字符来描述，如定义一个`java.lang.String[][]`类型的维数组，将被记录为`[[Ljava/lang/String;`
 
-### # 方法表集合
+### 方法表集合
 
 > 在常量池之后的是对类内部的方法描述，在字节码中以表的集合形式表现，暂且不管字节码文件的16进制文件内容如何，我们直接看反编译后的内容。
 
@@ -341,7 +341,7 @@ public com.rhythmMain();
 
 > 方法体内的内容是：将this入栈，获取字段#2并置于栈顶, 将int类型的1入栈，将栈内顶部的两个数值相加，返回一个int类型的值。
 
-### # 类名
+### 类名
 
 > 最后很显然是源码文件：
 
@@ -349,9 +349,9 @@ public com.rhythmMain();
 SourceFile: "Main.java"
 ```
 
-### # 再看两个示例
+### 再看两个示例
 
-### # 分析try-catch-finally
+### 分析try-catch-finally
 
 > 通过以上一个最简单的例子，可以大致了解源码被编译成字节码后是什么样子的。 下面利用所学的知识点来分析一些Java问题:
 
@@ -431,7 +431,7 @@ public int foo();
 
 > > 以上例子来自于《深入理解Java虚拟机 JVM高级特性与最佳实践》, 关于虚拟机字节码指令表，也可以在《深入理解Java虚拟机 JVM高级特性与最佳实践-附录B》中获取。
 
-### # kotlin 函数扩展的实现
+### kotlin 函数扩展的实现
 
 > kotlin提供了扩展函数的语言特性，借助这个特性，我们可以给任意对象添加自定义方法。
 
@@ -507,7 +507,7 @@ kotlin.jvm.internal.Intrinsics.checkParameterIsNotNull(Object value, String para
 
 方法来检查传入的Any类型对象是否为空。如果我们扩展的函数为`Any?.sayHello()`，那么在编译后的文件中则不会有这段字节码的出现。
 
-### # 参考文章
+### 参考文章
 
 *   https://www.cnblogs.com/paddix/p/5282004.html
 *   https://blog.csdn.net/sinat_37191123/article/details/84582438

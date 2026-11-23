@@ -29,7 +29,7 @@ JUC里的 BlockingQueue 接口表示一个线程安放入和提取实例的队�
         *   链阻塞双端队列 LinkedBlockingDeque
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -51,9 +51,9 @@ JUC里的 BlockingQueue 接口表示一个线程安放入和提取实例的队�
 *   BlockingDeque大家族有哪些?
 *   BlockingDeque 与BlockingQueue实现例子?
 
-### # BlockingQueue和BlockingDeque
+### BlockingQueue和BlockingDeque
 
-### # BlockingQueue
+### BlockingQueue
 
 > BlockingQueue 通常用于一个线程生产对象，而另外一个线程消费这些对象的场景。下图是对这个原理的阐述:
 
@@ -63,7 +63,7 @@ JUC里的 BlockingQueue 接口表示一个线程安放入和提取实例的队�
 
 > 一个线程将会持续生产新对象并将其插入到队列之中，直到队列达到它所能容纳的临界点。也就是说，它是有限的。如果该阻塞队列到达了其临界点，负责生产的线程将会在往里边插入新对象时发生阻塞。它会一直处于阻塞之中，直到负责消费的线程从队列中拿走一个对象。 负责消费的线程将会一直从该阻塞队列中拿出对象。如果消费线程尝试去从一个空的队列中提取对象的话，这个消费线程将会处于阻塞之中，直到一个生产线程把一个对象丢进队列。
 
-### # BlockingQueue 的方法
+### BlockingQueue 的方法
 
 > BlockingQueue 具有 4 组不同的方法用于插入、移除以及对队列中的元素进行检查。如果请求的操作不能得到立即执行的话，每个方法的表现也不同。这些方法如下:
 
@@ -82,7 +82,7 @@ JUC里的 BlockingQueue 接口表示一个线程安放入和提取实例的队�
 
 > 无法向一个 BlockingQueue 中插入 null。如果你试图插入 null，BlockingQueue 将会抛出一个 NullPointerException。 可以访问到 BlockingQueue 中的所有元素，而不仅仅是开始和结束的元素。比如说，你将一个对象放入队列之中以等待处理，但你的应用想要将其取消掉。那么你可以调用诸如 remove(o) 方法来将队列之中的特定对象进行移除。但是这么干效率并不高(译者注: 基于队列的数据结构，获取除开始或结束位置的其他对象的效率不会太高)，因此你尽量不要用这一类的方法，除非你确实不得不那么做。
 
-### # BlockingDeque
+### BlockingDeque
 
 > java.util.concurrent 包里的 BlockingDeque 接口表示一个线程安放入和提取实例的双端队列。
 
@@ -92,7 +92,7 @@ JUC里的 BlockingQueue 接口表示一个线程安放入和提取实例的队�
 
 > ![](images/java-thread-x-blocking-deque-1.png)
 
-### # BlockingDeque 的方法
+### BlockingDeque 的方法
 
 > 一个 BlockingDeque - 线程在双端队列的两端都可以插入和提取元素。 一个线程生产元素，并把它们插入到队列的任意一端。如果双端队列已满，插入线程将被阻塞，直到一个移除线程从该队列中移出了一个元素。如果双端队列为空，移除线程将被阻塞，直到一个插入线程向该队列插入了一个新元素。
 
@@ -117,7 +117,7 @@ JUC里的 BlockingQueue 接口表示一个线程安放入和提取实例的队�
 *   阻塞: 如果试图的操作无法立即执行，该方法调用将会发生阻塞，直到能够执行。
 *   超时: 如果试图的操作无法立即执行，该方法调用将会发生阻塞，直到能够执行，但等待时间不会超过给定值。返回一个特定值以告知该操作是否成功(典型的是 true / false)。
 
-### # BlockingDeque 与BlockingQueue关系
+### BlockingDeque 与BlockingQueue关系
 
 > BlockingDeque 接口继承自 BlockingQueue 接口。这就意味着你可以像使用一个 BlockingQueue 那样使用 BlockingDeque。如果你这么干的话，各种插入方法将会把新元素添加到双端队列的尾端，而移除方法将会把双端队列的首端的元素移除。正如 BlockingQueue 接口的插入和移除方法一样。
 
@@ -134,7 +134,7 @@ JUC里的 BlockingQueue 接口表示一个线程安放入和提取实例的队�
 | element() | getFirst() |
 | peek() | peekFirst() |
 
-### # BlockingQueue 的例子
+### BlockingQueue 的例子
 
 > 这里是一个 Java 中使用 BlockingQueue 的示例。本示例使用的是 BlockingQueue 接口的 ArrayBlockingQueue 实现。 首先，BlockingQueueExample 类分别在两个独立的线程中启动了一个 Producer 和 一个 Consumer。Producer 向一个共享的 BlockingQueue 中注入字符串，而 Consumer 则会从中把它们拿出来。
 
@@ -204,7 +204,7 @@ public class Consumer implements Runnable{
 }
 ```
 
-### # 数组阻塞队列 ArrayBlockingQueue
+### 数组阻塞队列 ArrayBlockingQueue
 
 > ArrayBlockingQueue 类实现了 BlockingQueue 接口。
 
@@ -224,7 +224,7 @@ queue.put("1");
 String string = queue.take();
 ```
 
-### # 延迟队列 DelayQueue
+### 延迟队列 DelayQueue
 
 > DelayQueue 实现了 BlockingQueue 接口。
 
@@ -264,7 +264,7 @@ public class DelayQueueExample {
 
 > DelayedElement 是我所创建的一个 DelayedElement 接口的实现类，它不在 java.util.concurrent 包里。你需要自行创建你自己的 Delayed 接口的实现以使用 DelayQueue 类。
 
-### # 链阻塞队列 LinkedBlockingQueue
+### 链阻塞队列 LinkedBlockingQueue
 
 > LinkedBlockingQueue 类实现了 BlockingQueue 接口。
 
@@ -279,7 +279,7 @@ bounded.put("Value");
 String value = bounded.take();
 ```
 
-### # 具有优先级的阻塞队列 PriorityBlockingQueue
+### 具有优先级的阻塞队列 PriorityBlockingQueue
 
 > PriorityBlockingQueue 类实现了 BlockingQueue 接口。
 
@@ -294,13 +294,13 @@ queue.put("Value");
 String value = queue.take();
 ```
 
-### # 同步队列 SynchronousQueue
+### 同步队列 SynchronousQueue
 
 > SynchronousQueue 类实现了 BlockingQueue 接口。
 
 > SynchronousQueue 是一个特殊的队列，它的内部同时只能够容纳单个元素。如果该队列已有一元素的话，试图向队列中插入一个新元素的线程将会阻塞，直到另一个线程将该元素从队列中抽走。同样，如果该队列为空，试图向队列中抽取一个元素的线程将会阻塞，直到另一个线程向队列中插入了一条新的元素。 据此，把这个类称作一个队列显然是夸大其词了。它更多像是一个汇合点。
 
-### # BlockingDeque 的例子
+### BlockingDeque 的例子
 
 > 既然 BlockingDeque 是一个接口，那么你想要使用它的话就得使用它的众多的实现类的其中一个。java.util.concurrent 包提供了以下 BlockingDeque 接口的实现类: LinkedBlockingDeque。
 
@@ -315,7 +315,7 @@ String two = deque.takeLast();
 String one = deque.takeFirst();
 ```
 
-### # 链阻塞双端队列 LinkedBlockingDeque
+### 链阻塞双端队列 LinkedBlockingDeque
 
 > LinkedBlockingDeque 类实现了 BlockingDeque 接口。
 
@@ -334,7 +334,7 @@ String two = deque.takeLast();
 String one = deque.takeFirst();
 ```
 
-### # 参考文章
+### 参考文章
 
 *   https://blog.csdn.net/defonds/article/details/44021605#t7
 *   http://tutorials.jenkov.com/java-concurrency/index.html

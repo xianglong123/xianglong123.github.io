@@ -20,7 +20,7 @@ title: Java 8 - 其它更新:字符串base64,...
     *   java.util.Base64
     *   参考
 
-### # 处理数值
+### 处理数值
 
 > Java8添加了对无符号数的额外支持。Java中的数值总是有符号的，例如，让我们来观察Integer:
 
@@ -90,7 +90,7 @@ catch (ArithmeticException e) {
 }
 ```
 
-### # 处理文件
+### 处理文件
 
 > Files工具类首次在Java7中引入，作为NIO的一部分。JDK8 API添加了一些额外的方法，它们可以将文件用于函数式数据流。让我们深入探索一些代码示例。 列出文件
 
@@ -113,7 +113,7 @@ try (Stream<Path> stream = Files.list(Paths.get(""))) {
 
 > > 返回的数据流是DirectoryStream的封装。如果需要及时处理文件资源，就应该使用try-with结构来确保在流式操作完成后，数据流的close方法被调用。
 
-### # 查找文件
+### 查找文件
 
 > 下面的例子演示了如何查找在目录及其子目录下的文件:
 
@@ -149,7 +149,7 @@ try (Stream<Path> stream = Files.walk(start, maxDepth)) {
 
 > 这个例子中，我们使用了流式操作filter来完成和上个例子相同的行为。
 
-### # 读写文件
+### 读写文件
 
 > 将文本文件读到内存，以及向文本文件写入字符串在Java 8 中是简单的任务。不需要再去摆弄读写器了。Files.readAllLines从指定的文件把所有行读进字符串列表中。你可以简单地修改这个列表，并且将它通过Files.write写到另一个文件中:
 
@@ -207,7 +207,7 @@ try (BufferedReader reader = Files.newBufferedReader(path)) {
 
 > 不幸的是你需要显式使用try-with语句来关闭文件流，这会使示例代码有些凌乱。我期待函数式数据流可以在调用类似count和collect时可以自动关闭，因为你不能在相同数据流上调用终止操作两次。
 
-### # java.util.Random
+### java.util.Random
 
 > 在Java8中java.util.Random类的一个非常明显的变化就是新增了返回随机数流(random Stream of numbers)的一些方法。
 
@@ -313,7 +313,7 @@ gaussianRangeCountMap.forEach((k, v) -> System.out.println(k.from() + "\\t" + v)
 
 > 译文链接: http://www.importnew.com/9672.html
 
-### # java.util.Base64
+### java.util.Base64
 
 > > Java8中java.util.Base64性能比较高，推荐使用。请参考:
 
@@ -354,7 +354,7 @@ String mimeEncoded = BasegetMimeEncoder().encodeToString(toEncode);
 System.out.println(mimeEncoded);
 ```
 
-### # 参考
+### 参考
 
 *   > https://wizardforcel.gitbooks.io/modern-java/ch7.html
 

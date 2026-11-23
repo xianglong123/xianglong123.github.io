@@ -31,7 +31,7 @@ AbstractQueuedSynchronizer抽象类是核心，需要重点掌握。它提供了
     *   AbstractQueuedSynchronizer总结
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -50,11 +50,11 @@ AbstractQueuedSynchronizer抽象类是核心，需要重点掌握。它提供了
 *   AQS底层使用了什么样的设计模式? 模板
 *   AQS的应用示例?
 
-### # AbstractQueuedSynchronizer简介
+### AbstractQueuedSynchronizer简介
 
 > AQS是一个用来构建锁和同步器的框架，使用AQS能简单且高效地构造出应用广泛的大量的同步器，比如我们提到的ReentrantLock，Semaphore，其他的诸如ReentrantReadWriteLock，SynchronousQueue，FutureTask等等皆是基于AQS的。当然，我们自己也能利用AQS非常轻松容易地构造出符合我们自己需求的同步器。
 
-### # AQS 核心思想
+### AQS 核心思想
 
 > AQS核心思想是，如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，这个机制AQS是用CLH队列锁实现的，即将暂时获取不到锁的线程加入到队列中。
 
@@ -83,7 +83,7 @@ protected final boolean compareAndSetState(int expect, int update) {
 }
 ```
 
-### # AQS 对资源的共享方式
+### AQS 对资源的共享方式
 
 > AQS定义两种资源共享方式
 
@@ -96,7 +96,7 @@ protected final boolean compareAndSetState(int expect, int update) {
 
 > 不同的自定义同步器争用共享资源的方式也不同。自定义同步器在实现时只需要实现共享资源 state 的获取与释放方式即可，至于具体线程等待队列的维护(如获取资源失败入队/唤醒出队等)，AQS已经在上层已经帮我们实现好了。
 
-### # AQS底层使用了模板方法模式
+### AQS底层使用了模板方法模式
 
 > > 同步器的设计是基于模板方法模式的，如果需要自定义同步器一般的方式是这样(模板方法模式很经典的一个应用)：
 
@@ -118,7 +118,7 @@ tryReleaseShared(int)//共享方式。尝试释放资源，成功则返回true�
 
 > 以ReentrantLock为例，state初始化为0，表示未锁定状态。A线程lock()时，会调用tryAcquire()独占该锁并将state+1。此后，其他线程再tryAcquire()时就会失败，直到A线程unlock()到state=0(即释放锁)为止，其它线程才有机会获取该锁。当然，释放锁之前，A线程自己是可以重复获取此锁的(state会累加)，这就是可重入的概念。但要注意，获取多少次就要释放多么次，这样才能保证state是能回到零态的。
 
-### # AbstractQueuedSynchronizer数据结构
+### AbstractQueuedSynchronizer数据结构
 
 > AbstractQueuedSynchronizer类底层的数据结构是使用
 
@@ -128,11 +128,11 @@ CLH(Craig,Landin,and Hagersten)队列
 
 是一个虚拟的双向队列(虚拟的双向队列即不存在队列实例，仅存在结点之间的关联关系)。AQS是将每条请求共享资源的线程封装成一个CLH锁队列的一个结点(Node)来实现锁的分配。其中Sync queue，即同步队列，是双向链表，包括head结点和tail结点，head结点主要用作后续的调度。而Condition queue不是必须的，其是一个单向链表，只有当使用Condition时，才会存在此单向链表。并且可能会有多个Condition queue。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-1.png)
+> 
 
-### # AbstractQueuedSynchronizer源码分析
+### AbstractQueuedSynchronizer源码分析
 
-### # 类的继承关系
+### 类的继承关系
 
 > AbstractQueuedSynchronizer继承自AbstractOwnableSynchronizer抽象类，并且实现了Serializable接口，可以进行序列化。
 
@@ -168,7 +168,7 @@ public abstract class AbstractOwnableSynchronizer implements java.io.Serializabl
 
 > > AbstractQueuedSynchronizer类有两个内部类，分别为Node类与ConditionObject类。下面分别做介绍。
 
-### # 类的内部类 - Node类
+### 类的内部类 - Node类
 
 ```
 static final class Node {
@@ -244,7 +244,7 @@ static final class Node {
 
 *   > 值为0，表示当前节点在sync queue中，等待着获取锁。
 
-### # 类的内部类 - ConditionObject类
+### 类的内部类 - ConditionObject类
 
 > 这个类有点长，耐心看下:
 
@@ -753,7 +753,7 @@ public interface Condition {
 
 > Condition接口中定义了await、signal方法，用来等待条件、释放条件。之后会详细分析CondtionObject的源码。
 
-### # 类的属性
+### 类的属性
 
 > 属性中包含了头节点head，尾结点tail，状态state、自旋时间spinForTimeoutThreshold，还有AbstractQueuedSynchronizer抽象的属性在内存中的偏移地址，通过该偏移地址，可以获取和设置该属性的值，同时还包括一个静态初始化块，用于加载内存偏移地址。
 
@@ -802,7 +802,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 }
 ```
 
-### # 类的构造方法
+### 类的构造方法
 
 > 此类构造方法为从抽象构造方法，供子类调用。
 
@@ -810,7 +810,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 protected AbstractQueuedSynchronizer() { }
 ```
 
-### # 类的核心方法 - acquire方法
+### 类的核心方法 - acquire方法
 
 > 该方法以独占模式获取(资源)，忽略中断，即线程在aquire过程中，中断此线程是无效的。源码如下:
 
@@ -823,7 +823,7 @@ public final void acquire(int arg) {
 
 > 由上述源码可以知道，当一个线程调用acquire时，调用方法流程如下
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-2.png)
+> 
 
 *   > 首先调用tryAcquire方法，调用此方法的线程会试图在独占模式下获取对象状态。此方法应该查询是否允许它在独占模式下获取对象状态，如果允许，则获取它。在AbstractQueuedSynchronizer源码中默认会抛出一个异常，即需要子类去重写此方法完成自己的逻辑。之后会进行分析。
 
@@ -1059,7 +1059,7 @@ private void unparkSuccessor(Node node) {
 
 > 对于cancelAcquire与unparkSuccessor方法，如下示意图可以清晰的表示:
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-3.png)
+> 
 
 > 其中node为参数，在执行完cancelAcquire方法后的效果就是unpark了s结点所包含的t4线程。
 
@@ -1070,7 +1070,7 @@ private void unparkSuccessor(Node node) {
 *   若步骤2不满足，则判断是否需要park当前线程，是否需要park当前线程的逻辑是判断结点的前驱结点的状态是否为SIGNAL，若是，则park当前结点，否则，不进行park操作。
 *   若park了当前线程，之后某个线程对本线程unpark后，并且本线程也获得机会运行。那么，将会继续进行步骤①的判断。
 
-### # 类的核心方法 - release方法
+### 类的核心方法 - release方法
 
 > 以独占模式释放对象，其源码如下:
 
@@ -1091,7 +1091,7 @@ public final boolean release(int arg) {
 
 > 对于其他方法我们也可以分析，与前面分析的方法大同小异，所以，不再累赘。
 
-### # AbstractQueuedSynchronizer示例详解一
+### AbstractQueuedSynchronizer示例详解一
 
 > 借助下面示例来分析AbstractQueuedSyncrhonizer内部的工作机制。示例源码如下
 
@@ -1136,39 +1136,39 @@ Thread[t2,5,main] running
 
 > 结果分析: 从示例可知，线程t1与t2共用了一把锁，即同一个lock。可能会存在如下一种时序。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-4.png)
+> 
 
 > 说明: 首先线程t1先执行lock.lock操作，然后t2执行lock.lock操作，然后t1执行lock.unlock操作，最后t2执行lock.unlock操作。基于这样的时序，分析AbstractQueuedSynchronizer内部的工作机制。
 
 *   t1线程调用lock.lock方法，其方法调用顺序如下，只给出了主要的方法调用。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-5.png)
+> 
 
 > 说明: 其中，前面的部分表示哪个类，后面是具体的类中的哪个方法，AQS表示AbstractQueuedSynchronizer类，AOS表示AbstractOwnableSynchronizer类。
 
 *   t2线程调用lock.lock方法，其方法调用顺序如下，只给出了主要的方法调用。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-6.png)
+> 
 
 > 说明: 经过一系列的方法调用，最后达到的状态是禁用t2线程，因为调用了LockSupport.park。
 
 *   t1线程调用lock.unlock，其方法调用顺序如下，只给出了主要的方法调用。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-7.png)
+> 
 
 > 说明: t1线程中调用lock.unlock后，经过一系列的调用，最终的状态是释放了许可，因为调用了LockSupport.unpark。这时，t2线程就可以继续运行了。此时，会继续恢复t2线程运行环境，继续执行LockSupport.park后面的语句，即进一步调用如下。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-8.png)
+> 
 
 > 说明: 在上一步调用了LockSupport.unpark后，t2线程恢复运行，则运行parkAndCheckInterrupt，之后，继续运行acquireQueued方法，最后达到的状态是头节点head与尾结点tail均指向了t2线程所在的结点，并且之前的头节点已经从sync队列中断开了。
 
 *   t2线程调用lock.unlock，其方法调用顺序如下，只给出了主要的方法调用。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-9.png)
+> 
 
 > 说明: t2线程执行lock.unlock后，最终达到的状态还是与之前的状态一样。
 
-### # AbstractQueuedSynchronizer示例详解二
+### AbstractQueuedSynchronizer示例详解二
 
 > 下面我们结合Condition实现生产者与消费者，来进一步分析AbstractQueuedSynchronizer的内部工作机制。
 
@@ -1303,84 +1303,84 @@ consume = 200, size = 0
 
 > 说明: 根据结果，我们猜测一种可能的时序如下
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-10.png)
+> 
 
 > 说明: p1代表produce 500的那个线程，p2代表produce 200的那个线程，c1代表consume 500的那个线程，c2代表consume 200的那个线程。
 
 *   p1线程调用lock.lock，获得锁，继续运行，方法调用顺序在前面已经给出。
 *   p2线程调用lock.lock，由前面的分析可得到如下的最终状态。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-11.png)
+> 
 
 > 说明: p2线程调用lock.lock后，会禁止p2线程的继续运行，因为执行了LockSupport.park操作。
 
 *   c1线程调用lock.lock，由前面的分析得到如下的最终状态。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-12.png)
+> 
 
 > 说明: 最终c1线程会在sync queue队列的尾部，并且其结点的前驱结点(包含p2的结点)的waitStatus变为了SIGNAL。
 
 *   c2线程调用lock.lock，由前面的分析得到如下的最终状态。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-13.png)
+> 
 
 > 说明: 最终c1线程会在sync queue队列的尾部，并且其结点的前驱结点(包含c1的结点)的waitStatus变为了SIGNAL。
 
 *   p1线程执行emptyCondition.signal，其方法调用顺序如下，只给出了主要的方法调用。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-14.png)
+> 
 
 > 说明: AQS.CO表示AbstractQueuedSynchronizer.ConditionObject类。此时调用signal方法不会产生任何其他效果。
 
 *   p1线程执行lock.unlock，根据前面的分析可知，最终的状态如下。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-15.png)
+> 
 
 > 说明: 此时，p2线程所在的结点为头节点，并且其他两个线程(c1、c2)依旧被禁止，所以，此时p2线程继续运行，执行用户逻辑。
 
 *   p2线程执行fullCondition.await，其方法调用顺序如下，只给出了主要的方法调用。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-17-1.png)
+> 
 
 > 说明: 最终到达的状态是新生成了一个结点，包含了p2线程，此结点在condition queue中；并且sync queue中p2线程被禁止了，因为在执行了LockSupport.park操作。从方法一些调用可知，在await操作中线程会释放锁资源，供其他线程获取。同时，head结点后继结点的包含的线程的许可被释放了，故其可以继续运行。由于此时，只有c1线程可以运行，故运行c1。
 
 *   继续运行c1线程，c1线程由于之前被park了，所以此时恢复，继续之前的步骤，即还是执行前面提到的acquireQueued方法，之后，c1判断自己的前驱结点为head，并且可以获取锁资源，最终到达的状态如下。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-16.png)
+> 
 
 > 说明: 其中，head设置为包含c1线程的结点，c1继续运行。
 
 *   c1线程执行fullCondtion.signal，其方法调用顺序如下，只给出了主要的方法调用。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-17.png)
+> 
 
 > 说明: signal方法达到的最终结果是将包含p2线程的结点从condition queue中转移到sync queue中，之后condition queue为null，之前的尾结点的状态变为SIGNAL。
 
 *   c1线程执行lock.unlock操作，根据之前的分析，经历的状态变化如下。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-18.png)
+> 
 
 > 说明: 最终c2线程会获取锁资源，继续运行用户逻辑。
 
 *   c2线程执行emptyCondition.await，由前面的第七步分析，可知最终的状态如下。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-19.png)
+> 
 
 > 说明: await操作将会生成一个结点放入condition queue中与之前的一个condition queue是不相同的，并且unpark头节点后面的结点，即包含线程p2的结点。
 
 *   p2线程被unpark，故可以继续运行，经过CPU调度后，p2继续运行，之后p2线程在AQS:await方法中被park，继续AQS.CO:await方法的运行，其方法调用顺序如下，只给出了主要的方法调用。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-20.png)
+> 
 
 *   p2继续运行，执行emptyCondition.signal，根据第九步分析可知，最终到达的状态如下。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-21.png)
+> 
 
 > 说明: 最终，将condition queue中的结点转移到sync queue中，并添加至尾部，condition queue会为空，并且将head的状态设置为SIGNAL。
 
 *   p2线程执行lock.unlock操作，根据前面的分析可知，最后的到达的状态如下。
 
-> ![image](./JUC锁_ 锁核心类AQS详解 _ Java 全栈知识体系_files/java-thread-x-juc-aqs-22.png)
+> 
 
 > 说明: unlock操作会释放c2线程的许可，并且将头节点设置为c2线程所在的结点。
 
@@ -1388,7 +1388,7 @@ consume = 200, size = 0
 
 *   > c2执行lock.unlock，由于c2是sync队列中最后一个结点，故其不会再调用unparkSuccessor了，直接返回true。即整个流程就完成了。
 
-### # AbstractQueuedSynchronizer总结
+### AbstractQueuedSynchronizer总结
 
 > 对于AbstractQueuedSynchronizer的分析，最核心的就是sync queue的分析。
 
@@ -1397,7 +1397,7 @@ consume = 200, size = 0
 *   condition queue中的结点向sync queue中转移是通过signal操作完成的。
 *   当结点的状态为SIGNAL时，表示后面的结点需要运行。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5350186.html，在此基础上做了增改。
 *   http://ifeve.com/introduce-abstractqueuedsynchronizer/

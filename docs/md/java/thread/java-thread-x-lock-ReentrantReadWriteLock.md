@@ -30,7 +30,7 @@ Future 表示了一个任务的生命周期，是一个可取消的异步运算�
         *   FutureTask+Thread例子
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解FutureTask
+### 带着BAT大厂的面试问题去理解FutureTask
 
 > 提示
 
@@ -43,19 +43,19 @@ Future 表示了一个任务的生命周期，是一个可取消的异步运算�
 *   FutureTask内部运行状态的转变?
 *   FutureTask通常会怎么用? 举例说明。
 
-### # FutureTask简介
+### FutureTask简介
 
 > FutureTask 为 Future 提供了基础实现，如获取任务执行结果(get)和取消任务(cancel)等。如果任务尚未完成，获取任务执行结果时将会阻塞。一旦执行结束，任务就不能被重启或取消(除非使用runAndReset执行计算)。FutureTask 常用来封装 Callable 和 Runnable，也可以作为一个任务提交到线程池中执行。除了作为一个独立的类之外，此类也提供了一些功能性函数供我们创建自定义 task 类使用。FutureTask 的线程安全由CAS来保证。
 
-### # FutureTask类关系
+### FutureTask类关系
 
 > ![](images/java-thread-x-juc-futuretask-1.png)
 
 > 可以看到,FutureTask实现了RunnableFuture接口，则RunnableFuture接口继承了Runnable接口和Future接口，所以FutureTask既能当做一个Runnable直接被Thread执行，也能作为Future用来得到Callable的计算结果。
 
-### # FutureTask源码解析
+### FutureTask源码解析
 
-### # Callable接口
+### Callable接口
 
 > Callable是个泛型接口，泛型V就是要call()方法返回的类型。对比Runnable接口，Runnable不会返回数据也不能抛出异常。
 
@@ -71,7 +71,7 @@ public interface Callable<V> {
 }
 ```
 
-### # Future接口
+### Future接口
 
 > Future接口代表异步计算的结果，通过Future接口提供的方法可以查看异步计算是否执行完成，或者等待执行结果并获取执行结果，同时还可以取消执行。Future接口的定义如下:
 
@@ -138,7 +138,7 @@ private static final int INTERRUPTED  = 6;
 
 ### # 构造函数
 
-*   FutureTask(Callable<V> callable)
+*   FutureTask(Callable&lt;V&gt; callable)
 
 ```
 public FutureTask(Callable<V> callable) {
@@ -550,9 +550,8 @@ public class CallDemo {
         }
     }
 }
-```
 
-### # 参考文章
+### 参考文章
 
 *   本文主要参考了https://www.cnblogs.com/linghu-java/p/8991824.html以及https://www.jianshu.com/p/d61d7ffa6abc，在此基础上增改
 *   https://blog.csdn.net/xingzhong128/article/details/80553789

@@ -27,14 +27,14 @@ title: Java 8 - JRE精简
 
 > Oracle公司如期发布了Java 8正式版！没有让广大javaer失望。对于一个人来说，18岁是人生的转折点，从稚嫩走向成熟，法律意味着你是完全民事行为能力人，不再收益于未成年人保护法，到今年为止，java也走过了18年，java8是一个新的里程碑，带来了前所未有的诸多特性，lambda表达式，Stream API，新的Date time api，多核并发支持，重大安全问题改进等，相信java会越来越好，丰富的类库以及庞大的开源生态环境是其他语言所不具备的，说起丰富的类库，很多同学就吐槽了，java该减肥了，确实是该减肥，java8有个很好的特性，即JEP161(http://openjdk.java.net/jeps/161 ),该特性定义了Java SE平台规范的一些子集，使java应用程序不需要整个JRE平台即可部署和运行在小型设备上。开发人员可以基于目标硬件的可用资源选择一个合适的JRE运行环境。
 
-### # JRE精简好处
+### JRE精简好处
 
 *   更小的Java环境需要更少的计算资源。
 *   一个较小的运行时环境可以更好的优化性能和启动时间。
 *   消除未使用的代码从安全的角度总是好的。
 *   这些打包的应用程序可以下载速度更快。
 
-### # 概念
+### 概念
 
 > 紧凑的JRE分3种，分别是compact1、compact2、compact3，他们的关系是compact1<compact2<compact3,他们包含的API如下图所示
 
@@ -59,11 +59,11 @@ Test.java:7: error: ManagementFactory is not available in profile 'compact2'
 
 > ![](images/java8-jre-1.png)
 
-### # 使用工具开发的效果
+### 使用工具开发的效果
 
 > ![](images/java8-jre-2.png)
 
-### # JDEPS工具使用
+### JDEPS工具使用
 
 > java8新增一个工具，用来分析应用程序所依赖的profile，有三个参数比较常用 -p，-v，-r
 
@@ -143,7 +143,7 @@ Deps.class -> /Library/Java/JavaVirtualMachines/jdkjdk/Contents/Home/jre/lib/rt.
       -> javax.crypto.spec                                  JDK internal API (jce.jar)
 ```
 
-### # 在linux上构建profile
+### 在linux上构建profile
 
 ```
 $ hg clone http://hg.openjdk.java.net/jdk8/jdk8/
@@ -171,11 +171,11 @@ $ ls -d *image
 j2re-compact1-image j2re-compact2-image j2re-compact3-image j2re-image j2sdk-image
 ```
 
-### # 编译后compact大致的占用空间
+### 编译后compact大致的占用空间
 
 > ![](images/java8-jre-3.png)
 
-### # 总结
+### 总结
 
 > 如今，物联网正风行一时。我们看到大量不同的设备在市场上出现，每一种的更新速度都越来越快。java需要一个占用资源少的JRE运行环境，紧凑的JRE特性的出现，希望能带来以后的物联网的发展，甚至还是会有大量的java应用程序出现在物联网上面。目前oracle也发布了针对raspberry pi的JRE了。
 

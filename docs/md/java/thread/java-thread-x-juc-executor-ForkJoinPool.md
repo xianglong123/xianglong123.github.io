@@ -25,11 +25,11 @@ title: JUC线程池:Fork/Join框架详解
 *   写一个例子: 用ForkJoin方式实现1+2+3+...+100000?
 *   Fork/Join在使用时有哪些注意事项? 结合JDK中的斐波那契数列实例具体说明。
 
-### # Fork/Join框架简介
+### Fork/Join框架简介
 
 > Fork/Join框架是Java并发工具包中的一种可以将一个大任务拆分为很多小任务来异步执行的工具，自JDK1.7引入。
 
-### # 三个模块及关系
+### 三个模块及关系
 
 > Fork/Join框架主要包含三个模块:
 
@@ -57,15 +57,15 @@ Result solve(Problem problem) {
 
 > 在实际运用中，我们一般都会继承 `RecursiveTask` 、`RecursiveAction` 或 `CountedCompleter` 来实现我们的业务需求，而不会直接继承 ForkJoinTask 类。
 
-### # 核心思想: 分治算法(Divide-and-Conquer)
+### 核心思想: 分治算法(Divide-and-Conquer)
 
 > 分治算法(Divide-and-Conquer)把任务递归的拆分为各个子任务，这样可以更好的利用系统资源，尽可能的使用所有可用的计算能力来提升应用性能。首先看一下 Fork/Join 框架的任务运行机制:
 
-> ![](./JUC线程池_ Fork_Join框架详解 _ Java 全栈知识体系_files/java-thread-x-forkjoin-2.png)
+> 
 
 *   这里也可以一并看下: 算法思想 - 分治算法
 
-### # 核心思想: work-stealing(工作窃取)算法
+### 核心思想: work-stealing(工作窃取)算法
 
 > work-stealing(工作窃取)算法: 线程池内的所有工作线程都尝试找到并执行已经提交的任务，或者是被其他活动任务创建的子任务(如果不存在就阻塞等待)。这种特性使得 ForkJoinPool 在运行多个可以产生子任务的任务，或者是提交的许多小任务时效率更高。尤其是构建异步模型的 ForkJoinPool 时，对不需要合并(join)的事件类型任务也非常适用。
 
@@ -80,9 +80,9 @@ Result solve(Problem problem) {
 *   默认情况下，工作线程从自己的双端队列获出任务并执行。
 *   当自己的队列为空时，线程随机从另一个线程的队列末尾调用poll方法窃取任务。
 
-> ![](./JUC线程池_ Fork_Join框架详解 _ Java 全栈知识体系_files/java-thread-x-forkjoin-3.png)
+> 
 
-### # Fork/Join 框架的执行流程
+### Fork/Join 框架的执行流程
 
 > 上图可以看出ForkJoinPool 中的任务执行分两种:
 
@@ -91,15 +91,15 @@ Result solve(Problem problem) {
 
 > 那Fork/Join 框架的执行流程是什么样的?
 
-> ![](./JUC线程池_ Fork_Join框架详解 _ Java 全栈知识体系_files/java-thread-x-forkjoin-5.png)
+> 
 
 > > 后续的源码解析将围绕上图进行。
 
-### # Fork/Join类关系
+### Fork/Join类关系
 
-### # ForkJoinPool继承关系
+### ForkJoinPool继承关系
 
-> ![](./JUC线程池_ Fork_Join框架详解 _ Java 全栈知识体系_files/java-thread-x-forkjoin-1.png)
+> 
 
 > 内部类介绍:
 
@@ -119,13 +119,13 @@ Result solve(Problem problem) {
     *   工作线程在处理自己的工作队列同时，会尝试窃取一个任务(可能是来自于刚刚提交到 pool 的任务，或是来自于其他工作线程的队列任务)，此时可以把 WorkQueue 的数据结构视为一个 FIFO 的队列，窃取的任务位于其他线程的工作队列的队首(base位)。
 *   > 伪共享状态: 缓存系统中是以缓存行(cache line)为单位存储的。缓存行是2的整数幂个连续字节，一般为32-256个字节。最常见的缓存行大小是64个字节。当多线程修改互相独立的变量时，如果这些变量共享同一个缓存行，就会无意中影响彼此的性能，这就是伪共享。
 
-### # ForkJoinTask继承关系
+### ForkJoinTask继承关系
 
-> ![](./JUC线程池_ Fork_Join框架详解 _ Java 全栈知识体系_files/java-thread-x-forkjoin-4.png)
+> 
 
 > ForkJoinTask 实现了 Future 接口，说明它也是一个可取消的异步运算任务，实际上ForkJoinTask 是 Future 的轻量级实现，主要用在纯粹是计算的函数式任务或者操作完全独立的对象计算任务。fork 是主运行方法，用于异步执行；而 join 方法在任务结果计算完毕之后才会运行，用来合并或返回计算结果。 其内部类都比较简单，ExceptionNode 是用于存储任务执行期间的异常信息的单向链表；其余四个类是为 Runnable/Callable 任务提供的适配器类，用于把 Runnable/Callable 转化为 ForkJoinTask 类型的任务(因为 ForkJoinPool 只可以运行 ForkJoinTask 类型的任务)。
 
-### # Fork/Join框架源码解析
+### Fork/Join框架源码解析
 
 > > 分析思路: 在对类层次结构有了解以后，我们先看下内部核心参数，然后分析上述流程图。会分4个部分:
 
@@ -134,9 +134,9 @@ Result solve(Problem problem) {
 *   再分析任务的执行过程(ForkJoinWorkerThread.run()到ForkJoinTask.doExec()这一部分)；
 *   最后介绍任务的结果获取(ForkJoinTask.join()和ForkJoinTask.invoke())
 
-### # ForkJoinPool
+### ForkJoinPool
 
-#### # 核心参数
+#### 核心参数
 
 > 在后面的源码解析中，我们会看到大量的位运算，这些位运算都是通过我们接下来介绍的一些常量参数来计算的。
 
@@ -238,7 +238,7 @@ private static final int SEED_INCREMENT = 0x9e3779b9;
 
 > 在后面的源码解析中，某些地方也提取了ctl的低32位(sp=(int)ctl)来检查工作线程状态，例如，当sp不为0时说明当前还有空闲工作线程。
 
-#### # ForkJoinPool.WorkQueue 中的相关属性:
+#### ForkJoinPool.WorkQueue 中的相关属性:
 
 ```
 //初始队列容量，2的幂
@@ -263,9 +263,9 @@ volatile ForkJoinTask<?> currentJoin;  // 记录被join过来的任务
 volatile ForkJoinTask<?> currentSteal; // 记录从其他工作队列偷取过来的任务
 ```
 
-### # ForkJoinTask
+### ForkJoinTask
 
-#### # 核心参数
+#### 核心参数
 
 ```
 /** 任务运行状态 */
@@ -278,9 +278,9 @@ static final int SIGNAL      = 0x00010000;  // must be >= 1 << 16 等待信号
 static final int SMASK       = 0x0000ffff;  //  低位掩码
 ```
 
-### # Fork/Join框架源码解析
+### Fork/Join框架源码解析
 
-### # 构造函数
+### 构造函数
 
 ```
 public ForkJoinPool(int parallelism,
@@ -345,7 +345,7 @@ private static ForkJoinPool makeCommonPool() {
 
 > 使用common pool的优点就是我们可以通过指定系统参数的方式定义并行度、线程工厂和异常处理类；并且它使用的是同步模式，也就是说可以支持任务合并(join)。
 
-### # 执行流程 - 外部任务(external/submissions task)提交
+### 执行流程 - 外部任务(external/submissions task)提交
 
 > 向 ForkJoinPool 提交任务有三种方式:
 
@@ -355,7 +355,7 @@ private static ForkJoinPool makeCommonPool() {
 
 > 这三种提交方式都都是调用externalPush()方法来完成，所以接下来我们将从externalPush()方法开始逐步分析外部任务的执行过程。
 
-#### # externalPush(ForkJoinTask<?> task)
+#### externalPush(ForkJoinTask<?> task)
 
 ```
 //添加给定任务到submission队列中
@@ -390,7 +390,7 @@ final void externalPush(ForkJoinTask<?> task) {
 
 > externalPush的执行流程很简单: 首先找到一个随机偶数槽位的 workQueue，然后把任务放入这个 workQueue 的任务数组中，并更新top位。如果队列的剩余任务数小于1，则尝试创建或激活一个工作线程来运行任务(防止在externalSubmit初始化时发生异常导致工作线程创建失败)。
 
-#### # externalSubmit(ForkJoinTask<?> task)
+#### externalSubmit(ForkJoinTask<?> task)
 
 ```
 //任务提交
@@ -486,7 +486,7 @@ private void externalSubmit(ForkJoinTask<?> task) {
 *   如果在步骤3中获取到的 workQueue 为null，会在这一步中创建一个 workQueue，创建成功继续自旋执行第三步操作；
 *   如果非上述情况，或者有线程争用资源导致获取锁失败，就重新获取线程探针值继续自旋。
 
-#### # signalWork(WorkQueue[] ws, WorkQueue q)
+#### signalWork(WorkQueue[] ws, WorkQueue q)
 
 ```
 final void signalWork(WorkQueue[] ws, WorkQueue q) {
@@ -525,7 +525,7 @@ final void signalWork(WorkQueue[] ws, WorkQueue q) {
 
 > 说明: 新建或唤醒一个工作线程，在externalPush、externalSubmit、workQueue.push、scan中调用。如果还有空闲线程，则尝试唤醒索引到的 WorkQueue 的parker线程；如果工作线程过少((ctl & ADD_WORKER) != 0L)，则调用tryAddWorker添加一个新的工作线程。
 
-#### # tryAddWorker(long c)
+#### tryAddWorker(long c)
 
 ```
 private void tryAddWorker(long c) {
@@ -551,7 +551,7 @@ private void tryAddWorker(long c) {
 
 > 说明: 尝试添加一个新的工作线程，首先更新ctl中的工作线程数，然后调用createWorker()创建工作线程。
 
-#### # createWorker()
+#### createWorker()
 
 ```
 private boolean createWorker() {
@@ -586,7 +586,7 @@ protected ForkJoinWorkerThread(ForkJoinPool pool) {
 
 > 可以看到 ForkJoinWorkerThread 在构造时首先调用父类 Thread 的方法，然后为工作线程注册pool和workQueue，而workQueue的注册任务由ForkJoinPool.registerWorker来完成。
 
-#### # registerWorker()
+#### registerWorker()
 
 ```
 final WorkQueue registerWorker(ForkJoinWorkerThread wt) {
@@ -634,15 +634,15 @@ final WorkQueue registerWorker(ForkJoinWorkerThread wt) {
 
 > 说明: registerWorker是 ForkJoinWorkerThread 构造器的回调函数，用于创建和记录工作线程的 WorkQueue。比较简单，就不多赘述了。注意在此为工作线程创建的 WorkQueue 是放在奇数索引的(代码行: i = ((s << 1) | 1) & m;)
 
-#### # 小结
+#### 小结
 
 > OK，外部任务的提交流程就先讲到这里。在createWorker()中启动工作线程后(wt.start())，当为线程分配到CPU执行时间片之后会运行 ForkJoinWorkerThread 的run方法开启线程来执行任务。工作线程执行任务的流程我们在讲完内部任务提交之后会统一讲解。
 
-### # 执行流程: 子任务(Worker task)提交
+### 执行流程: 子任务(Worker task)提交
 
 > 子任务的提交相对比较简单，由任务的fork()方法完成。通过上面的流程图可以看到任务被分割(fork)之后调用了ForkJoinPool.WorkQueue.push()方法直接把任务放到队列中等待被执行。
 
-#### # ForkJoinTask.fork()
+#### ForkJoinTask.fork()
 
 ```
 public final ForkJoinTask<V> fork() {
@@ -657,7 +657,7 @@ public final ForkJoinTask<V> fork() {
 
 > 说明: 如果当前线程是 Worker 线程，说明当前任务是fork分割的子任务，通过ForkJoinPool.workQueue.push()方法直接把任务放到自己的等待队列中；否则调用ForkJoinPool.externalPush()提交到一个随机的等待队列中(外部任务)。
 
-#### # ForkJoinPool.WorkQueue.push()
+#### ForkJoinPool.WorkQueue.push()
 
 ```
 final void push(ForkJoinTask<?> task) {
@@ -706,15 +706,15 @@ final ForkJoinTask<?>[] growArray() {
 }
 ```
 
-#### # 小结
+#### 小结
 
 > 到此，两种任务的提交流程都已经解析完毕，下一节我们来一起看看任务提交之后是如何被运行的。
 
-### # 执行流程: 任务执行
+### 执行流程: 任务执行
 
 > 回到我们开始时的流程图，在ForkJoinPool .createWorker()方法中创建工作线程后，会启动工作线程，系统为工作线程分配到CPU执行时间片之后会执行 ForkJoinWorkerThread 的run()方法正式开始执行任务。
 
-#### # ForkJoinWorkerThread.run()
+#### ForkJoinWorkerThread.run()
 
 ```
 public void run() {
@@ -741,7 +741,7 @@ public void run() {
 
 > 说明: 方法很简单，在工作线程运行前后会调用自定义钩子函数(onStart和onTermination)，任务的运行则是调用了ForkJoinPool.runWorker()。如果全部任务执行完毕或者期间遭遇异常，则通过ForkJoinPool.deregisterWorker关闭工作线程并处理异常信息(deregisterWorker方法我们后面会详细讲解)。
 
-#### # ForkJoinPool.runWorker(WorkQueue w)
+#### ForkJoinPool.runWorker(WorkQueue w)
 
 ```
 final void runWorker(WorkQueue w) {
@@ -762,7 +762,7 @@ final void runWorker(WorkQueue w) {
 
 > 说明: runWorker是 ForkJoinWorkerThread 的主运行方法，用来依次执行当前工作线程中的任务。函数流程很简单: 调用scan方法依次获取任务，然后调用WorkQueue .runTask运行任务；如果未扫描到任务，则调用awaitWork等待，直到工作线程/线程池终止或等待超时。
 
-#### # ForkJoinPool.scan(WorkQueue w, int r)
+#### ForkJoinPool.scan(WorkQueue w, int r)
 
 ```
 private ForkJoinTask<?> scan(WorkQueue w, int r) {
@@ -871,7 +871,7 @@ private ForkJoinTask<?> scan(WorkQueue w, int r) {
 
 *   > 如果扫描整个workQueues之后没有获取到任务，则设置当前工作线程为INACTIVE状态；然后重置checkSum，再次扫描一圈之后如果还没有任务则跳出循环返回null。
 
-#### # ForkJoinPool.awaitWork(WorkQueue w, int r)
+#### ForkJoinPool.awaitWork(WorkQueue w, int r)
 
 ```
 private boolean awaitWork(WorkQueue w, int r) {
@@ -938,7 +938,7 @@ private boolean awaitWork(WorkQueue w, int r) {
 
 *   在等待获取任务期间，如果工作线程或线程池已经终止则直接返回false。如果当前无 active 线程，尝试终止线程池并返回false，如果终止失败并且当前是最后一个等待的 Worker，就阻塞指定的时间(IDLE_TIMEOUT)；等到届期或被唤醒后如果发现自己是scanning(scanState >= 0)状态，说明已经等到任务，跳出等待返回true继续 scan，否则的更新ctl并返回false。
 
-#### # WorkQueue.runTask()
+#### WorkQueue.runTask()
 
 ```
 final void runTask(ForkJoinTask<?> task) {
@@ -1007,7 +1007,7 @@ final void runTask(ForkJoinTask<?> task) {
 *   更新偷取任务数；
 *   还原scanState并执行钩子函数。
 
-#### # ForkJoinPool.deregisterWorker(ForkJoinWorkerThread wt, Throwable ex)
+#### ForkJoinPool.deregisterWorker(ForkJoinWorkerThread wt, Throwable ex)
 
 ```
 final void deregisterWorker(ForkJoinWorkerThread wt, Throwable ex) {
@@ -1064,11 +1064,11 @@ final void deregisterWorker(ForkJoinWorkerThread wt, Throwable ex) {
 
 > 说明: deregisterWorker方法用于工作线程运行完毕之后终止线程或处理工作线程异常，主要就是清除已关闭的工作线程或回滚创建线程之前的操作，并把传入的异常抛给 ForkJoinTask 来处理。具体步骤见源码注释。
 
-#### # 小结
+#### 小结
 
 > 本节我们对任务的执行流程进行了说明，后面我们将继续介绍任务的结果获取(join/invoke)。
 
-### # 获取任务结果 - ForkJoinTask.join() / ForkJoinTask.invoke()
+### 获取任务结果 - ForkJoinTask.join() / ForkJoinTask.invoke()
 
 *   join() :
 
@@ -1121,11 +1121,11 @@ private int doInvoke() {
 
 > 在这些方法中，join()相对比较全面，所以之后的讲解我们将从join()开始逐步向下分析，首先看一下join()的执行流程:
 
-> ![](./JUC线程池_ Fork_Join框架详解 _ Java 全栈知识体系_files/java-thread-x-forkjoin-6.png)
+> 
 
 > 后面的源码分析中，我们首先讲解比较简单的外部 join 任务(externalAwaitDone)，然后再讲解内部 join 任务(从ForkJoinPool.awaitJoin()开始)。
 
-#### # ForkJoinTask.externalAwaitDone()
+#### ForkJoinTask.externalAwaitDone()
 
 ```
 private int externalAwaitDone() {
@@ -1193,7 +1193,7 @@ private int externalAwaitDone() {
 
     > tryExternalUnpush的作用就是判断当前任务是否在top位，如果是则弹出任务，然后在externalAwaitDone中调用doExec()执行任务。
 
-#### # ForkJoinPool.awaitJoin()
+#### ForkJoinPool.awaitJoin()
 
 ```
 final int awaitJoin(WorkQueue w, ForkJoinTask<?> task, long deadline) {
@@ -1264,7 +1264,7 @@ final int awaitJoin(WorkQueue w, ForkJoinTask<?> task, long deadline) {
 
 > 在awaitJoin中，我们总共调用了三个比较复杂的方法: tryRemoveAndExec、helpStealer和tryCompensate，下面我们依次讲解。
 
-#### # WorkQueue.tryRemoveAndExec(ForkJoinTask<?> task)
+#### WorkQueue.tryRemoveAndExec(ForkJoinTask<?> task)
 
 ```
 final boolean tryRemoveAndExec(ForkJoinTask<?> task) {
@@ -1309,7 +1309,7 @@ final boolean tryRemoveAndExec(ForkJoinTask<?> task) {
 
 > 说明: 从top位开始自旋向下找到给定任务，如果找到把它从当前 Worker 的任务队列中移除并执行它。注意返回的参数: 如果任务队列为空或者任务未执行完毕返回true；任务执行完毕返回false。
 
-#### # ForkJoinPool.helpStealer(WorkQueue w, ForkJoinTask<?> task)
+#### ForkJoinPool.helpStealer(WorkQueue w, ForkJoinTask<?> task)
 
 ```
 private void helpStealer(WorkQueue w, ForkJoinTask<?> task) {
@@ -1385,7 +1385,7 @@ private void helpStealer(WorkQueue w, ForkJoinTask<?> task) {
 
 > 循环定位偷取者，由于Worker是在奇数索引位，所以每次会跳两个索引位。定位到偷取者之后，更新调用者 WorkQueue 的hint为偷取者的索引，方便下次定位； 定位到偷取者后，开始帮助偷取者执行任务。从偷取者的base索引开始，每次偷取一个任务执行。在帮助偷取者执行任务后，如果调用者发现本身已经有任务(w.top != top)，则依次弹出自己的任务(LIFO顺序)并执行(也就是说自己偷自己的任务执行)。
 
-#### # ForkJoinPool.tryCompensate(WorkQueue w)
+#### ForkJoinPool.tryCompensate(WorkQueue w)
 
 ```
 //执行补偿操作: 尝试缩减活动线程量，可能释放或创建一个补偿线程来准备阻塞
@@ -1450,11 +1450,11 @@ private boolean tryCompensate(WorkQueue w) {
 *   调用者已终止或池处于不稳定状态
 *   总线程数大于并行度 && 活动线程数大于1 && 调用者任务队列为空
 
-### # Fork/Join的陷阱与注意事项
+### Fork/Join的陷阱与注意事项
 
 > 使用Fork/Join框架时，需要注意一些陷阱, 在下面 `斐波那契数列`例子中你将看到示例:
 
-### # 避免不必要的fork()
+### 避免不必要的fork()
 
 > 划分成两个子任务后，不要同时调用两个子任务的fork()方法。
 
@@ -1462,7 +1462,7 @@ private boolean tryCompensate(WorkQueue w) {
 
 > > 当一个大任务被划分成两个以上的子任务时，尽可能使用前面说到的三个衍生的invokeAll方法，因为使用它们能避免不必要的fork()。
 
-### # 注意fork()、compute()、join()的顺序
+### 注意fork()、compute()、join()的顺序
 
 > 为了两个任务并行，三个方法的调用顺序需要万分注意。
 
@@ -1493,7 +1493,7 @@ return leftAns + rightAns;
 
 > 这两种实际上都没有并行。
 
-### # 选择合适的子任务粒度
+### 选择合适的子任务粒度
 
 > 选择划分子任务的粒度(顺序执行的阈值)很重要，因为使用Fork/Join框架并不一定比顺序执行任务的效率高: 如果任务太大，则无法提高并行的吞吐量；如果任务太小，子任务的调度开销可能会大于并行计算的性能提升，我们还要考虑创建子任务、fork()子任务、线程调度以及合并子任务处理结果的耗时以及相应的内存消耗。
 
@@ -1501,17 +1501,17 @@ return leftAns + rightAns;
 
 > > 和其他Java代码一样，Fork/Join框架测试时需要预热或者说执行几遍才会被JIT(Just-in-time)编译器优化，所以测试性能之前跑几遍程序很重要。
 
-### # 避免重量级任务划分与结果合并
+### 避免重量级任务划分与结果合并
 
 > Fork/Join的很多使用场景都用到数组或者List等数据结构，子任务在某个分区中运行，最典型的例子如并行排序和并行查找。拆分子任务以及合并处理结果的时候，应该尽量避免System.arraycopy这样耗时耗空间的操作，从而最小化任务的处理开销。
 
-### # 再深入理解
+### 再深入理解
 
-### # 有哪些JDK源码中使用了Fork/Join思想?
+### 有哪些JDK源码中使用了Fork/Join思想?
 
 > 我们常用的数组工具类 Arrays 在JDK 8之后新增的并行排序方法(parallelSort)就运用了 ForkJoinPool 的特性，还有 ConcurrentHashMap 在JDK 8之后添加的函数式方法(如forEach等)也有运用。
 
-### # 使用Executors工具类创建ForkJoinPool
+### 使用Executors工具类创建ForkJoinPool
 
 > Java8在Executors工具类中新增了两个工厂方法:
 
@@ -1523,7 +1523,7 @@ public static ExecutorService newWorkStealingPool(int parallelism);
 public static ExecutorService newWorkStealingPool();
 ```
 
-### # 关于Fork/Join异常处理
+### 关于Fork/Join异常处理
 
 > Java的受检异常机制一直饱受诟病，所以在ForkJoinTask的invoke()、join()方法及其衍生方法中都没有像get()方法那样抛出个ExecutionException的受检异常。
 
@@ -1547,9 +1547,9 @@ static <T extends Throwable> void uncheckedThrow(Throwable t) throws T {
 
 > 使用quitelyInvoke()和quietlyJoin()时可以配合isCompletedAbnormally()和isCompletedNormally()方法使用。
 
-### # 一些Fork/Join例子
+### 一些Fork/Join例子
 
-### # 采用Fork/Join来异步计算1+2+3+…+10000的结果
+### 采用Fork/Join来异步计算1+2+3+…+10000的结果
 
 ```
 public class Test {
@@ -1616,7 +1616,7 @@ ForkJoinPool-1-worker-1 开始执行: 3126-3750
 50005000
 ```
 
-### # 实现斐波那契数列
+### 实现斐波那契数列
 
 > > 斐波那契数列: 1、1、2、3、5、8、13、21、34、…… 公式 : F(1)=1，F(2)=1, F(n)=F(n-1)+F(n-2)(n>=3，n∈N*)
 
@@ -1689,7 +1689,7 @@ public static void invokeAll(ForkJoinTask<?>... tasks) {
 }
 ```
 
-### # 参考文章
+### 参考文章
 
 *   首先推荐阅读ForkJoinPool的作者Doug Lea的一篇文章《A Java Fork/Join Framework》英文原文地址在新窗口打开
 *   本文主要参考自泰迪的bagwell的https://www.jianshu.com/p/32a15ef2f1bf和https://www.jianshu.com/p/6a14d0b54b8d，在此基础上参考了如下文章

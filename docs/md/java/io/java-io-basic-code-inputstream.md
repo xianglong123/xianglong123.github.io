@@ -23,13 +23,13 @@ title: Java IO - 源码:InputStream
         *   BufferedInputStream
     *   参考文章
 
-### # InputStream 类实现关系
+### InputStream 类实现关系
 
 > > InputStream是输入字节流，具体的实现类层次结构如下：
 
 > ![](images/io-inputstream-1.png)
 
-### # InputStream 抽象类
+### InputStream 抽象类
 
 > InputStream 类重要方法设计如下：
 
@@ -74,11 +74,11 @@ public boolean markSupported()
 public long transferTo(OutputStream out)
 ```
 
-### # 源码实现
+### 源码实现
 
 > > 梳理部分InputStream及其实现类的源码分析。
 
-### # InputStream
+### InputStream
 
 > InputStream抽象类源码如下：
 
@@ -436,7 +436,7 @@ public class MyParser implements Parser {
 ParserFactory.getParser().findAction(someInput).doSomething();
 ```
 
-### # FilterInputStream
+### FilterInputStream
 
 > FilterInputStream 源码如下
 
@@ -486,7 +486,7 @@ public class FilterInputStream extends InputStream {
 
 > 请参看： 关键字: volatile详解
 
-### # ByteArrayInputStream
+### ByteArrayInputStream
 
 > ByteArrayInputStream源码如下
 
@@ -590,7 +590,7 @@ public class ByteArrayInputStream extends InputStream {
 }
 ```
 
-### # BufferedInputStream
+### BufferedInputStream
 
 > BufferedInputStream源码如下
 
@@ -844,7 +844,7 @@ public class BufferedInputStream extends FilterInputStream {
 
 > AtomicReferenceFieldUpdater具体可以参考：JUC原子类: CAS, Unsafe和原子类详解
 
-### # 参考文章
+### 参考文章
 
 *   JDK 11 源码
 *   https://www.cnblogs.com/winterfells/p/8745297.html

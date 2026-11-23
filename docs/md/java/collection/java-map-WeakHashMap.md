@@ -19,9 +19,9 @@ title: Map - WeakHashMap源码解析
         *   Weak HashSet?
         *   参考文章
 
-### # Java 7- WeakHashMap
+### Java 7- WeakHashMap
 
-### # 总体介绍
+### 总体介绍
 
 > 在Java集合框架系列文章的最后，笔者打算介绍一个特殊的成员: _WeakHashMap_，从名字可以看出它是某种 _Map_。它的特殊之处在于 _WeakHashMap_ 里的`entry`可能会被GC自动删除，即使程序员没有调用`remove()`或者`clear()`方法。
 
@@ -40,13 +40,13 @@ title: Map - WeakHashMap源码解析
 
 > 关于强引用，弱引用等概念以后再具体讲解，这里只需要知道Java中引用也是分种类的，并且不同种类的引用对GC的影响不同就够了。
 
-### # 具体实现
+### 具体实现
 
 > WeakHashMap的存储结构类似于Map - HashSet & HashMap 源码解析，这里不再赘述。
 
 > 关于强弱引用的管理方式，博主将会另开专题单独讲解。
 
-### # Weak HashSet?
+### Weak HashSet?
 
 > 如果你看过前几篇关于 _Map_ 和 _Set_ 的讲解，一定会问: 既然有 _WeakHashMap_，是否有 _WeekHashSet_ 呢? 答案是没有:( 。不过Java _Collections_工具类给出了解决方案，
 
@@ -101,7 +101,7 @@ private static class SetFromMap<E> extends AbstractSet<E>
 }
 ```
 
-### # 参考文章
+### 参考文章
 
 *   浅谈WeakHashMap https://www.cnblogs.com/CarpenterLee/p/5544598.html
 

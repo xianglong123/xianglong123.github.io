@@ -10,47 +10,10 @@ title: Java 基础 - 知识点
 本文主要对Java基础知识点进行总结。@123
 :::
 
-* [Java 基础 - 知识点](#Java-基础--知识点)
-  * [数据类型](#数据类型)
-    * [包装类型](#包装类型)
-    * [缓存池](#缓存池)
-  * [String](#String)
-    * [概览](#概览)
-    * [不可变的好处](#不可变的好处)
-    * [String, StringBuffer and StringBuilder](#string-stringbuffer-and-stringbuilder)
     * [String.intern()](#String.intern())
-  * [运算](#运算)
-    * [参数传递](#参数传递)
-    * [float 与 double](#float-与-double)
-    * [隐式类型转换](#隐式类型转换)
-    * [switch](#switch)
-  * [继承](#继承)
-    * [访问权限](#访问权限)
-    * [抽象类与接口](#抽象类与接口)
-    * [super](#super)
-    * [重写与重载](#重写与重载)
-  * [Object 通用方法](#object-通用方法)
-    * [概览](#概览)
-    * [equals()](#equals)
-    * [hashCode()](#hashCode)
-    * [toString()](#toString)
-    * [clone()](#clone)
-  * [关键字](#关键字)
-    * [final](#final)
-    * [static](#static)
-  * [反射](#反射)
-  * [异常](#异常)
-  * [泛型](#泛型)
-  * [注解](#注解)
-  * [特性](#特性)
-    * [Java 各版本的新特性](#java-各版本的新特性)
-    * [Java 与 C++ 的区别](#java-与-c-的区别)
-    * [JRE or JDK](#jre-or-jdk)
-  * [参考资料](#参考资料)
 
-
-### 数据类型
-#### 包装类型
+## 数据类型
+### 包装类型
 八个基本类型:
 
 * boolean/1
@@ -69,7 +32,7 @@ Integer x = 2;     // 装箱
 int y = x;         // 拆箱
 ```
 
-#### 缓存池
+### 缓存池
 new Integer(123) 与 Integer.valueOf(123) 的区别在于:
 
 * new Integer(123) 每次都会新建一个对象
@@ -155,8 +118,8 @@ System.out.println(m == n); // false
 ```
 
 
-### String
-#### 概览
+## String
+### 概览
 String 被声明为 final，因此它不可被继承。
 
 内部使用 char 数组存储数据，该数组被声明为 final，这意味着 value 数组初始化之后就不能再引用其它数组。并且 String 内部没有改变 value 数组的方法，因此可以保证 String 不可变。
@@ -168,7 +131,7 @@ public final class String
     private final char value[];
 ```
 
-#### 不可变的好处
+### 不可变的好处
 1. 可以缓存 hash 值
 
 因为 String 的 hash 值经常被使用，例如 String 用做 HashMap 的 key。不可变的特性可以使得 hash 值也不可变，因此只需要进行一次计算。
@@ -187,7 +150,7 @@ String 经常作为参数，String 不可变性可以保证参数不可变。例
 
 String 不可变性天生具备线程安全，可以在多个线程中安全地使用。
 
-#### String, StringBuffer and StringBuilder
+### String, StringBuffer and StringBuilder
 1. 可变性
 
 * String 不可变
@@ -199,7 +162,7 @@ String 不可变性天生具备线程安全，可以在多个线程中安全地�
 * StringBuilder 不是线程安全的
 * StringBuffer 是线程安全的，内部使用 synchronized 进行同步
 
-#### String.intern()
+### String.intern()
 使用 String.intern() 可以保证相同内容的字符串变量引用同一的内存对象。
 
 下面示例中，s1 和 s2 采用 new String() 的方式新建了两个不同对象，而 s3 是通过 s1.intern() 方法取得一个对象引用。intern() 首先把 s1 引用的对象放到 String Pool(字符串常量池)中，然后返回这个对象引用。因此 s3 和 s1 引用的是同一个字符串常量池的对象。
@@ -225,16 +188,16 @@ System.out.println(s4 == s5);  // true
 2. 不同的虚拟机对虚拟机的规范（比如方法区）是不一样的，只有 HotSpot 才有永久代的概念。
 3. HotSpot也是发展的，由于一些问题在新窗口打开的存在，HotSpot考虑逐渐去永久代，对于不同版本的JDK，实际的存储位置是有差异的，具体看如下表格：
 
-### # 构造内部类和静态内部类对象
+### 构造内部类和静态内部类对象
 | JDK版本 | 是否有永久代，字符串常量池放在哪里？ | 方法区逻辑上规范，由哪些实际的部分实现的？ |
 | --- | --- | --- |
 | jdk1.6及之前 | 有永久代，运行时常量池（包括字符串常量池），静态变量存放在永久代上 | 这个时期方法区在HotSpot中是由永久代来实现的，以至于`这个时期说方法区就是指永久代` |
 | jdk1.7 | 有永久代，但已经逐步“去永久代”，字符串常量池、静态变量移除，保存在堆中； | 这个时期方法区在HotSpot中由`永久代`（类型信息、字段、方法、常量）和`堆`（字符串常量池、静态变量）共同实现 |
 | jdk1.8及之后 | 取消永久代，类型信息、字段、方法、常量保存在本地内存的元空间，但字符串常量池、静态变量仍在堆中 | 这个时期方法区在HotSpot中由本地内存的`元空间`（类型信息、字段、方法、常量）和`堆`（字符串常量池、静态变量）共同实现 |
 
-### # 运算
+### 运算
 
-### # 参数传递
+### 参数传递
 
 > Java 的参数是以值传递的形式传入方法中，而不是引用传递。
 
@@ -299,7 +262,7 @@ class PassByValueExample {
 
 > StackOverflow: Is Java pass-by-reference or pass-by-value?在新窗口打开
 
-### # float 与 double
+### float 与 double
 
 > 1.1 字面量属于 double 类型，不能直接将 1.1 直接赋值给 float 变量，因为这是向下转型。Java 不能隐式执行向下转型，因为这会使得精度降低。
 
@@ -309,7 +272,7 @@ class PassByValueExample {
 
 `float f = 1.1f;`
 
-### # 隐式类型转换
+### 隐式类型转换
 
 > 因为字面量 1 是 int 类型，它比 short 类型精度要高，因此不能隐式地将 int 类型下转型为 short 类型。
 
@@ -330,7 +293,7 @@ s1 = (short) (s1 + 1);
 
 > StackOverflow : Why dont Javas +=, -=, *=, /= compound assignment operators require casting?在新窗口打开
 
-### # switch
+### switch
 
 > 从 Java 7 开始，可以在 switch 条件判断语句中使用 String 对象。
 
@@ -362,9 +325,9 @@ switch (s) {
 
 > StackOverflow : Why cant your switch statement data type be long, Java?在新窗口打开
 
-### # 继承
+### 继承
 
-### # 访问权限
+### 访问权限
 
 > Java 中有三个访问权限修饰符: private、protected 以及 public，如果不加访问修饰符，表示包级可见。
 
@@ -424,7 +387,7 @@ public class AccessWithInnerClassExample {
 }
 ```
 
-### # 抽象类与接口
+### 抽象类与接口
 
 > `1. 抽象类`
 
@@ -529,7 +492,7 @@ System.out.println(InterfaceExample.x);
 *   深入理解 abstract class 和 interface在新窗口打开
 *   When to Use Abstract Class and Interface在新窗口打开
 
-### # super
+### super
 
 *   访问父类的构造函数: 可以使用 super() 函数访问父类的构造函数，从而委托父类完成一些初始化的工作。
 *   访问父类的成员: 如果子类重写了父类的中某个方法的实现，可以通过使用 super 关键字来引用父类的方法实现。
@@ -579,7 +542,7 @@ SuperExtendExample.func()
 
 > Using the Keyword super在新窗口打开
 
-### # 重写与重载
+### 重写与重载
 
 > `1. 重写(Override)`
 
@@ -598,9 +561,9 @@ SuperExtendExample.func()
 
 > 应该注意的是，返回值不同，其它都相同不算是重载。
 
-### # Object 通用方法
+### Object 通用方法
 
-### # 概览
+### 概览
 
 ```java
 public final native Class<?> getClass()
@@ -626,7 +589,7 @@ public final void wait() throws InterruptedException
 protected void finalize() throws Throwable {}
 ```
 
-### # equals()
+### equals()
 
 > `1. 等价关系`
 
@@ -710,7 +673,7 @@ public class EqualExample {
 }
 ```
 
-### # hashCode()
+### hashCode()
 
 > hashCode() 返回散列值，而 equals() 是用来判断两个对象是否等价。等价的两个对象散列值一定相同，但是散列值相同的两个对象不一定等价。
 
@@ -743,7 +706,7 @@ public int hashCode() {
 }
 ```
 
-### # toString()
+### toString()
 
 > 默认返回 ToStringExample@4554617c 这种形式，其中 @ 后面的数值为散列码的无符号十六进制表示。
 
@@ -766,7 +729,7 @@ System.out.println(example.toString());
 ToStringExample@4554617c
 ```
 
-### # clone()
+### clone()
 
 > `1. cloneable`
 
@@ -955,9 +918,9 @@ eset(2, 222);
 System.out.println(eget(2)); // 2
 ```
 
-### # 关键字
+### 关键字
 
-### # final
+### final
 
 > `1. 数据`
 
@@ -983,7 +946,7 @@ y.a = 1;
 
 > 声明类不允许被继承。
 
-### # static
+### static
 
 > `1. 静态变量`
 
@@ -1122,7 +1085,7 @@ public InitialOrderTest() {
 *   子类(实例变量、普通语句块)
 *   子类(构造函数)
 
-### # 反射
+### 反射
 
 > 每个类都有一个 `Class` 对象，包含了与类有关的信息。当编译一个新类时，会产生一个同名的 .class 文件，该文件内容保存着 Class 对象。
 
@@ -1158,7 +1121,7 @@ Class.forName("com.mysql.jdbc.Driver")
 
 > 相关文章：Java 基础 - 反射机制详解
 
-### # 异常
+### 异常
 
 > Throwable 可以用来表示任何可以作为异常抛出的类，分为两种: `Error` 和 `Exception`。其中 Error 用来表示 JVM 无法处理的错误，Exception 分为两种:
 
@@ -1169,7 +1132,7 @@ Class.forName("com.mysql.jdbc.Driver")
 
 > 相关文章：Java 基础 - 异常机制详解
 
-### # 泛型
+### 泛型
 
 ```
 public class Box<T> {
@@ -1182,15 +1145,15 @@ public class Box<T> {
 
 > 相关文章：Java 基础 - 泛型机制详解
 
-### # 注解
+### 注解
 
 > Java 注解是附加在代码中的一些元信息，用于一些工具在编译、运行时进行解析和使用，起到说明、配置的功能。注解不会也不能影响代码的实际逻辑，仅仅起到辅助性的作用。
 
 > 相关文章：Java 基础 - 注解机制详解
 
-### # 特性
+### 特性
 
-### # Java 各版本的新特性
+### Java 各版本的新特性
 
 > `New highlights in Java SE 8`
 
@@ -1218,7 +1181,7 @@ public class Box<T> {
 *   Difference between Java 1.8 and Java 1.7?在新窗口打开
 *   Java 8 特性在新窗口打开
 
-### # Java 与 C++ 的区别
+### Java 与 C++ 的区别
 
 *   Java 是纯粹的面向对象语言，所有的对象都继承自 java.lang.Object，C++ 为了兼容 C 即支持面向对象也支持面向过程。
 *   Java 通过虚拟机从而实现跨平台特性，但是 C++ 依赖于特定的平台。
@@ -1231,12 +1194,12 @@ public class Box<T> {
 
 > What are the main differences between Java and C++?在新窗口打开
 
-### # JRE or JDK
+### JRE or JDK
 
 *   JRE is the JVM program, Java application need to run on JRE.
 *   JDK is a superset of JRE, JRE + tools for developing java programs. e.g, it provides the compiler "javac"
 
-### # 参考资料
+### 参考资料
 
 *   Eckel B. Java 编程思想[M]. 机械工业出版社, 2002.
 *   Bloch J. Effective java[M]. Addison-Wesley Professional, 2017.

@@ -35,7 +35,7 @@ SPI（Service Provider Interface），是JDK内置的一种 服务提供发现�
         *   SPI机制的缺陷
     *   参考文章
 
-### # 什么是SPI机制
+### 什么是SPI机制
 
 > SPI（Service Provider Interface），是JDK内置的一种 服务提供发现机制，可以用来启用框架扩展和替换组件，主要是被框架的开发人员使用，比如java.sql.Driver接口，其他不同厂商可以针对同一接口做出不同的实现，MySQL和PostgreSQL都有不同的实现提供给用户，而Java的SPI机制可以为某个接口寻找服务实现。Java中SPI机制主要思想是将装配的控制权移到程序之外，在模块化设计中这个机制尤其重要，其核心思想就是 `解耦`。
 
@@ -51,7 +51,7 @@ java.util.ServiceLoader
 
 。
 
-### # SPI机制的简单示例
+### SPI机制的简单示例
 
 > > 网上找了个例子：这里在新窗口打开
 
@@ -136,17 +136,17 @@ ServiceLoader.load(Search.class)
 
 > 这就是spi的思想，接口的实现由provider实现，provider只用在提交的jar包里的`META-INF/services`下根据平台定义的接口新建文件，并添加进相应的实现类内容就好。
 
-### # SPI机制的广泛应用
+### SPI机制的广泛应用
 
-### # SPI机制 - JDBC DriverManager
+### SPI机制 - JDBC DriverManager
 
 > > 在JDBC4.0之前，我们开发有连接数据库的时候，通常会用Class.forName("com.mysql.jdbc.Driver")这句先加载数据库相关的驱动，然后再进行获取连接等的操作。`而JDBC4.0之后不需要用Class.forName("com.mysql.jdbc.Driver")来加载驱动，直接获取连接就可以了，现在这种方式就是使用了Java的SPI扩展机制来实现`。
 
-#### # JDBC接口定义
+#### JDBC接口定义
 
 > 首先在java中定义了接口`java.sql.Driver`，并没有具体的实现，具体的实现都是由不同厂商来提供的。
 
-#### # mysql实现
+#### mysql实现
 
 > 在mysql的jar包
 
@@ -162,7 +162,7 @@ com.mysql.cj.jdbc.Driver
 
 ，这里面的内容就是针对Java中定义的接口的实现。
 
-#### # postgresql实现
+#### postgresql实现
 
 > 同样在postgresql的jar包
 
@@ -178,7 +178,7 @@ org.postgresql.Driver
 
 ，这是postgresql对Java的`java.sql.Driver`的实现。
 
-#### # 使用方法
+#### 使用方法
 
 > 上面说了，现在使用SPI扩展来加载具体的驱动，我们在Java中写连接数据库的代码的时候，不需要再使用
 
@@ -196,7 +196,7 @@ Connection conn = DriverManager.getConnection(url,username,password);
 
 > 这里并没有涉及到spi的使用，接着看下面的解析。
 
-#### # 源码实现
+#### 源码实现
 
 > 上面的使用方法，就是我们普通的连接数据库的代码，并没有涉及到SPI的东西，但是有一点我们可以确定的是，我们没有写有关具体驱动的硬编码
 
@@ -325,7 +325,7 @@ postgresql-jar
 
 > 可以看到此时迭代器中有两个驱动，mysql和postgresql的都被加载了。
 
-### # SPI机制 - Common-Logging
+### SPI机制 - Common-Logging
 
 > > common-logging（也称Jakarta Commons Logging，缩写 JCL）是常用的日志库门面，具体日志库相关可以看这篇。我们看下它是怎么解耦的。
 
@@ -586,7 +586,7 @@ public static org.apache.commons.logging.LogFactory getFactory() throws LogConfi
 
 > > LogFactory的getLog()方法返回类型是org.apache.commons.logging.Log接口，提供了从trace到fatal方法。可以确定，如果日志实现提供者只要实现该接口，并且使用继承自org.apache.commons.logging.LogFactory的子类创建Log，必然可以构建一个松耦合的日志系统。
 
-### # SPI机制 - 插件体系
+### SPI机制 - 插件体系
 
 > > 其实最具spi思想的应该属于插件开发，我们项目中也用到的这种思想，后面再说，这里具体说一下eclipse的插件思想。
 
@@ -602,7 +602,7 @@ public static org.apache.commons.logging.LogFactory getFactory() throws LogConfi
 
 > 这也意味着是eclipse制定了一系列的规则，像是文件结构、类型、参数等。插件开发者遵循这些规则去开发自己的插件，eclipse并不需要知道插件具体是怎样开发的，只需要在启动的时候根据配置文件解析、加载到系统里就好了，是spi思想的一种体现。
 
-### # SPI机制 - Spring中SPI机制
+### SPI机制 - Spring中SPI机制
 
 > 在springboot的自动装配过程中，最终会加载
 
@@ -647,13 +647,13 @@ public static List<String> loadFactoryNames(Class<?> factoryClass, ClassLoader c
 }
 ```
 
-### # SPI机制深入理解
+### SPI机制深入理解
 
 > 提示
 
 > 接下来，我们深入理解下SPI相关内容
 
-### # SPI机制通常怎么使用
+### SPI机制通常怎么使用
 
 > 看完上面的几个例子解析，应该都能知道大概的流程了：
 
@@ -661,11 +661,11 @@ public static List<String> loadFactoryNames(Class<?> factoryClass, ClassLoader c
 *   具体厂商或者框架开发者实现。
 *   程序猿使用。
 
-#### # 定义标准
+#### 定义标准
 
 > 定义标准，就是定义接口。比如接口`java.sql.Driver`
 
-#### # 具体厂商或者框架开发者实现
+#### 具体厂商或者框架开发者实现
 
 > 厂商或者框架开发者开发具体的实现：
 
@@ -673,7 +673,7 @@ public static List<String> loadFactoryNames(Class<?> factoryClass, ClassLoader c
 
 > 写具体的实现`me.cxis.sql.MyDriver`，都是对接口Driver的实现。
 
-#### # 程序猿使用
+#### 程序猿使用
 
 > 我们会引用具体厂商的jar包来实现我们的功能：
 
@@ -688,13 +688,13 @@ while(driversIterator.hasNext()) {
 }
 ```
 
-#### # 使用规范
+#### 使用规范
 
 > 最后总结一下jdk spi需要遵循的规范
 
 > ![](images/java-advanced-spi-2.jpg)
 
-### # SPI和API的区别是什么
+### SPI和API的区别是什么
 
 > > 这里实际包含两个问题，第一个SPI和API的区别？第二个什么时候用API，什么时候用SPI？
 
@@ -720,9 +720,9 @@ while(driversIterator.hasNext()) {
 
 > ![](images/java-advanced-spi-6.png)
 
-### # SPI机制实现原理
+### SPI机制实现原理
 
-> 不妨看下JDK中`ServiceLoader<S>`方法的具体实现：
+> 不妨看下JDK中`ServiceLoader&lt;S&gt;`方法的具体实现：
 
 ```java
 //ServiceLoader实现了Iterable接口，可以遍历所有的服务实现者
@@ -1001,7 +1001,7 @@ LinkedHashMap<String,S>
 
 > 所有的配置文件只会加载一次，服务提供者也只会被实例化一次，重新加载配置文件可使用`reload`方法。
 
-### # SPI机制的缺陷
+### SPI机制的缺陷
 
 > 通过上面的解析，可以发现，我们使用SPI机制的缺陷：
 
@@ -1011,7 +1011,7 @@ LinkedHashMap<String,S>
 
 *   > 多个并发多线程使用 ServiceLoader 类的实例是不安全的。
 
-### # 参考文章
+### 参考文章
 
 *   https://cxis.me/2017/04/17/Java%E4%B8%ADSPI%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%85%A5%E5%8F%8A%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/
 *   https://stackoverflow.com/questions/2954372/difference-between-spi-and-api?answertab=votes#tab-top

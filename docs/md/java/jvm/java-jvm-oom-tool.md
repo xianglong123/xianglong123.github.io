@@ -20,7 +20,7 @@ title: 调试排错 - Java 问题排查之JVM可视化工具
         *   运行测试
     *   Eclipse Memory Analyzer (MAT)
 
-### # JConsole
+### JConsole
 
 > > Jconsole （Java Monitoring and Management Console），JDK自带的基于JMX的可视化监视、管理工具。 官方文档可以参考这里在新窗口打开
 
@@ -71,7 +71,7 @@ javap		jimage		jrunscript	rmic
 
 > ![](images/java-jvm-tool-6.png)
 
-### # Visual VM
+### Visual VM
 
 > > VisualVM 是一款免费的，集成了多个 JDK 命令行工具的可视化工具，它能为您提供强大的分析能力，对 Java 应用程序做性能分析和调优。这些功能包括生成和分析海量数据、跟踪内存泄漏、监控垃圾回收器、执行内存和 CPU 分析，同时它还支持在 MBeans 上进行浏览和操作。
 
@@ -91,7 +91,7 @@ javap		jimage		jrunscript	rmic
 
 > ![](images/java-jvm-visualvm-4.png)
 
-### # Visual GC
+### Visual GC
 
 > > visual gc 是 visualvm 中的图形化查看 gc 状况的插件。官方文档可以参考这里在新窗口打开
 
@@ -99,13 +99,13 @@ javap		jimage		jrunscript	rmic
 
 > ![](images/java-jvm-tool-10.png)
 
-### # JProfile
+### JProfile
 
 > > Profiler 是一个商业的主要用于检查和跟踪系统（限于Java开发的）的性能的工具。JProfiler可以通过时时的监控系统的内存使用情况，随时监视垃圾回收，线程运行状况等手段，从而很好的监视JVM运行情况及其性能。
 
 > JProfiler 是一个全功能的Java剖析工具（profiler），专用于分析J2SE和J2EE应用程序。它把CPU、执行绪和内存的剖析组合在一个强大的应用中。 JProfiler可提供许多IDE整合和应用服务器整合用途。JProfiler直觉式的GUI让你可以找到效能瓶颈、抓出内存漏失(memory leaks)、并解决执行绪的问题。它让你得以对heap walker作资源回收器的root analysis，可以轻易找出内存漏失；heap快照（snapshot）模式让未被参照（reference）的对象、稍微被参照的对象、或在终结（finalization）队列的对象都会被移除；整合精灵以便剖析浏览器的Java外挂功能。
 
-### # 核心组件
+### 核心组件
 
 > JProfiler 包含用于采集目标 JVM 分析数据的 JProfiler agent、用于可视化分析数据的 JProfiler UI、提供各种功能的命令行工具，它们之间的关系如下图所示。
 
@@ -136,7 +136,7 @@ javap		jimage		jrunscript	rmic
 3.  jpdump - 用于获取正在运行的 JVM 的堆快照。
 4.  jpexport & jpcompare - 用于从保存的快照中提取数据并创建 HTML 报告。
 
-### # 运行测试
+### 运行测试
 
 > `我们运行一个SpringBoot测试工程，选择attach到JVM`
 
@@ -201,7 +201,7 @@ javap		jimage		jrunscript	rmic
 
 > ![](images/java-jvm-jprofile-17.png)
 
-### # Eclipse Memory Analyzer (MAT)
+### Eclipse Memory Analyzer (MAT)
 
 > > MAT 是一种快速且功能丰富的 Java 堆分析器，可帮助你发现内存泄漏并减少内存消耗。 MAT在的堆内存分析问题使用极为广泛，需要重点掌握。
 

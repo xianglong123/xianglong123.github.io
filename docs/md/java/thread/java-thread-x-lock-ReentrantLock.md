@@ -22,13 +22,13 @@ title: JUC锁:ReentrantLock详解
 *   RentrantReadWriteLock为什么不支持锁升级?
 *   什么是锁的升降级? RentrantReadWriteLock为什么不支持锁升级?
 
-### # ReentrantReadWriteLock数据结构
+### ReentrantReadWriteLock数据结构
 
 > ReentrantReadWriteLock底层是基于ReentrantLock和AbstractQueuedSynchronizer来实现的，所以，ReentrantReadWriteLock的数据结构也依托于AQS的数据结构。
 
-### # ReentrantReadWriteLock源码分析
+### ReentrantReadWriteLock源码分析
 
-### # 类的继承关系
+### 类的继承关系
 
 ```
 public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializable {}
@@ -36,7 +36,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializab
 
 > 说明: 可以看到，ReentrantReadWriteLock实现了ReadWriteLock接口，ReadWriteLock接口定义了获取读锁和写锁的规范，具体需要实现类去实现；同时其还实现了Serializable接口，表示可以进行序列化，在源代码中可以看到ReentrantReadWriteLock实现了自己的序列化逻辑。
 
-### # 类的内部类
+### 类的内部类
 
 > ReentrantReadWriteLock有五个内部类，五个内部类之间也是相互关联的。内部类的关系如下图所示。
 
@@ -44,7 +44,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock, java.io.Serializab
 
 > 说明: 如上图所示，Sync继承自AQS、NonfairSync继承自Sync类、FairSync继承自Sync类；ReadLock实现了Lock接口、WriteLock也实现了Lock接口。
 
-### # 内部类 - Sync类
+### 内部类 - Sync类
 
 *   类的继承关系
 
@@ -125,7 +125,7 @@ Sync() {
 
 > 说明: 在Sync的构造函数中设置了本地线程计数器和AQS的状态state。
 
-### # 内部类 - Sync核心函数分析
+### 内部类 - Sync核心函数分析
 
 > 对ReentrantReadWriteLock对象的操作绝大多数都转发至Sync对象进行处理。下面对Sync类中的重点函数进行分析
 
@@ -402,7 +402,7 @@ final int fullTryAcquireShared(Thread current) {
 
 > 而其他内部类的操作基本上都是转化到了对Sync对象的操作，在此不再累赘。
 
-### # 类的属性
+### 类的属性
 
 ```
 public class ReentrantReadWriteLock
@@ -435,7 +435,7 @@ public class ReentrantReadWriteLock
 
 > 说明: 可以看到ReentrantReadWriteLock属性包括了一个ReentrantReadWriteLock.ReadLock对象，表示读锁；一个ReentrantReadWriteLock.WriteLock对象，表示写锁；一个Sync对象，表示同步队列。
 
-### # 类的构造函数
+### 类的构造函数
 
 *   ReentrantReadWriteLock()型构造函数
 
@@ -462,11 +462,11 @@ public ReentrantReadWriteLock(boolean fair) {
 
 > 说明: 可以指定设置公平策略或者非公平策略，并且该构造函数中生成了读锁与写锁两个对象。
 
-### # 核心函数分析
+### 核心函数分析
 
 > 对ReentrantReadWriteLock的操作基本上都转化为了对Sync对象的操作，而Sync的函数已经分析过，不再累赘。
 
-### # ReentrantReadWriteLock示例
+### ReentrantReadWriteLock示例
 
 > 下面给出了一个使用ReentrantReadWriteLock的示例，源代码如下。
 
@@ -589,9 +589,9 @@ wt1 unlock successfully
 
 > 说明: 此时，AQS的state为0，表示没有任何读线程或者写线程了。并且Sync queue结构与上一个状态的结构相同，没有变化。
 
-### # 更深入理解
+### 更深入理解
 
-### # 什么是锁升降级?
+### 什么是锁升降级?
 
 > 锁降级指的是写锁降级成为读锁。如果当前线程拥有写锁，然后将其释放，最后再获取读锁，这种分段完成的过程不能称之为锁降级。锁降级是指把持住(当前拥有的)写锁，再获取到读锁，随后释放(先前拥有的)写锁的过程。
 
@@ -630,7 +630,7 @@ public void processData() {
 
 > RentrantReadWriteLock不支持锁升级(把持读锁、获取写锁，最后释放读锁的过程)。目的也是保证数据可见性，如果读锁已被多个线程获取，其中任意线程成功获取了写锁并更新了数据，则其更新对其他获取到读锁的线程是不可见的。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5419132.html，在此基础上做了增改。
 *   https://blog.csdn.net/jiankunking/article/details/83954263

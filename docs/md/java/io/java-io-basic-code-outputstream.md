@@ -21,13 +21,13 @@ title: Java IO - 源码:OutputStream
         *   BufferedOutputStream
     *   参考文章
 
-### # OutputStream 类实现关系
+### OutputStream 类实现关系
 
 > > OutputStream是输出字节流，具体的实现类层次结构如下：
 
 > ![](images/io-outputstream-1.png)
 
-### # OutputStream 抽象类
+### OutputStream 抽象类
 
 > OutputStream 类重要方法设计如下：
 
@@ -48,11 +48,11 @@ public void flush()
 public void close()
 ```
 
-### # 源码实现
+### 源码实现
 
 > > 梳理部分OutputStream及其实现类的源码分析。
 
-### # OutputStream
+### OutputStream
 
 > OutputStream抽象类源码如下：
 
@@ -144,7 +144,7 @@ public class MyParser implements Parser {
 ParserFactory.getParser().findAction(someInput).doSomething();
 ```
 
-### # FilterOutputStream
+### FilterOutputStream
 
 > FilterOutputStream 源码如下
 
@@ -252,7 +252,7 @@ public void close() throws IOException {
 }
 ```
 
-### # ByteArrayOutputStream
+### ByteArrayOutputStream
 
 > ByteArrayOutputStream 源码如下
 
@@ -375,7 +375,7 @@ public class ByteArrayOutputStream extends OutputStream {
 }
 ```
 
-### # BufferedOutputStream
+### BufferedOutputStream
 
 > BufferedOutputStream 源码如下
 
@@ -445,7 +445,7 @@ public class BufferedOutputStream extends FilterOutputStream {
 }
 ```
 
-### # 参考文章
+### 参考文章
 
 *   JDK 11
 

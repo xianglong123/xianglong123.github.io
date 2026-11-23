@@ -22,7 +22,7 @@ title: Java NIO - IO多路复用详解
     *   为什么还有Netty
     *   参考文章
 
-### # 异步IO
+### 异步IO
 
 > 上面两篇文章中，我们分别讲解了阻塞式同步IO、非阻塞式同步IO、多路复用IO 这三种IO模型，以及JAVA对于这三种IO模型的支持。重点说明了IO模型是由操作系统提供支持，且这三种IO模型都是同步IO，都是采用的应用程序不询问我，我绝不会主动通知的方式。
 
@@ -34,9 +34,9 @@ title: Java NIO - IO多路复用详解
 
 > Linux下由于没有这种异步IO技术，所以使用的是epoll(上文介绍过的一种多路复用IO技术的实现)对异步IO进行模拟。
 
-### # JAVA对AIO的支持
+### JAVA对AIO的支持
 
-### # JAVA AIO框架简析
+### JAVA AIO框架简析
 
 > ![](images/java-io-aio-2.png)
 
@@ -57,7 +57,7 @@ title: Java NIO - IO多路复用详解
 
 > ![](images/java-io-aio-3.png)
 
-### # 代码实例
+### 代码实例
 
 > 下面，我们通过一个代码示例，来讲解JAVA AIO框架的具体使用，先上代码，在针对代码编写和运行中的要点进行讲解:
 
@@ -261,7 +261,7 @@ class SocketChannelReadHandle implements CompletionHandler<Integer, StringBuffer
 }
 ```
 
-### # 要点讲解
+### 要点讲解
 
 > 注意在JAVA NIO框架中，我们说到了一个重要概念selector(选择器)。它负责代替应用查询中所有已注册的通道到操作系统中进行IO事件轮询、管理当前注册的通道集合，定位发生事件的通道等操操作；但是在JAVA AIO框架中，由于应用程序不是轮询方式，而是订阅-通知方式，所以不再需要selector(选择器)了，改由channel通道直接到操作系统注册监听。
 
@@ -291,7 +291,7 @@ class SocketChannelReadHandle implements CompletionHandler<Integer, StringBuffer
 
 > JAVA NIO和JAVA AIO框架，除了因为操作系统的实现不一样而去掉了Selector外，其他的重要概念都是存在的，例如上文中提到的Channel的概念，还有演示代码中使用的Buffer缓存方式。实际上JAVA NIO和JAVA AIO框架您可以看成是一套完整的高并发IO处理的实现。
 
-### # 还有改进可能
+### 还有改进可能
 
 > 当然，以上代码是示例代码，目标是为了让您了解JAVA AIO框架的基本使用。所以它还有很多改造的空间，例如:
 
@@ -301,7 +301,7 @@ class SocketChannelReadHandle implements CompletionHandler<Integer, StringBuffer
 
 > 最好的改进方式，当然就是使用Netty或者Mina咯。
 
-### # 为什么还有Netty
+### 为什么还有Netty
 
 *   > 那么有的读者可能就会问，既然JAVA NIO / JAVA AIO已经实现了各主流操作系统的底层支持，那么为什么现在主流的JAVA NIO技术会是Netty和MINA呢? 答案很简单: 因为更好用，这里举几个方面的例子:
 
@@ -315,7 +315,7 @@ class SocketChannelReadHandle implements CompletionHandler<Integer, StringBuffer
 
 *   > 其他原因，用过Netty后，您就可以自己进行比较了。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要来源于: 银文杰，笔名“说好不能打脸”，博客地址在新窗口打开。他的书《高性能服务系统构建与实战》。
 *   https://blog.csdn.net/yinwenjie/article/details/48784375

@@ -1,0 +1,192 @@
+/* 样式以「读得住」为唯一标准：正文宽、行高松、装饰少。 */
+
+:root {
+  --vp-c-brand-1: #1a5fb4;
+  --vp-c-brand-2: #2170d0;
+  --vp-c-brand-3: #2b7fe0;
+  --vp-c-brand-soft: rgba(33, 112, 208, 0.12);
+
+  --vp-font-family-base: -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --vp-font-family-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  --vp-layout-max-width: 1520px;
+}
+
+.dark {
+  --vp-c-brand-1: #63a6ff;
+  --vp-c-brand-2: #4d94f5;
+  --vp-c-brand-3: #3d84e0;
+  --vp-c-brand-soft: rgba(99, 166, 255, 0.14);
+
+  --vp-c-bg: #0d1117;
+  --vp-c-bg-alt: #090c10;
+  --vp-c-bg-soft: #161b22;
+  --vp-c-border: #21262d;
+  --vp-c-divider: #21262d;
+}
+
+/* ---------- 正文排版 ---------- */
+
+.vp-doc {
+  line-height: 1.78;
+  font-size: 16px;
+}
+
+.vp-doc h1 {
+  font-size: 30px;
+  letter-spacing: -0.2px;
+}
+
+.vp-doc h2 {
+  margin-top: 44px;
+  padding-bottom: 8px;
+  font-size: 22px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc h3 {
+  margin-top: 32px;
+  font-size: 18px;
+}
+
+.vp-doc p {
+  margin: 14px 0;
+}
+
+.vp-doc a {
+  font-weight: 500;
+  text-underline-offset: 3px;
+}
+
+/* 长文里的表格和图片：给边框和留白，别让内容糊成一团 */
+.vp-doc table {
+  display: table;
+  width: 100%;
+  margin: 18px 0;
+  font-size: 14.5px;
+  border-collapse: collapse;
+}
+
+.vp-doc tr:nth-child(2n) {
+  background-color: var(--vp-c-bg-soft);
+}
+
+.vp-doc img {
+  border-radius: 8px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+/* 代码块：圆角收敛，行高紧一点，代码比正文更需要密度 */
+.vp-doc div[class*='language-'] {
+  border-radius: 8px;
+  margin: 18px 0;
+}
+
+.vp-doc div[class*='language-'] code {
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+/* 手写目录那种嵌套列表，别占太多垂直空间 */
+.vp-doc ul > li {
+  margin: 4px 0;
+}
+
+/* ---------- 首页 ---------- */
+
+.VPHero .name .clip {
+  font-size: clamp(38px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.VPHero .tagline {
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 640px;
+  opacity: 0.85;
+}
+
+.VPHero .image-bg {
+  background: none;
+}
+
+.VPHero .VPImage {
+  border-radius: 50%;
+  border: 1px solid var(--vp-c-divider);
+  width: 168px;
+  height: 168px;
+  object-fit: cover;
+  max-width: none;
+}
+
+.VPHero .image-container {
+  width: 168px;
+  height: 168px;
+}
+
+@media (min-width: 640px) {
+  .VPHero .image-container {
+    width: 200px;
+    height: 200px;
+  }
+
+  .VPHero .VPImage {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+.VPFeature {
+  border-radius: 10px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-2);
+  transform: translateY(-2px);
+}
+
+/* 首页正文区块 */
+.home-block {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 8px 24px 40px;
+}
+
+.home-block h2 {
+  font-size: 20px;
+  margin: 32px 0 12px;
+  border: none;
+  padding: 0;
+}
+
+.home-block p {
+  color: var(--vp-c-text-2);
+  line-height: 1.8;
+  margin: 10px 0;
+}
+
+/* ---------- 移动端 ---------- */
+
+@media (max-width: 767px) {
+  .vp-doc {
+    font-size: 15.5px;
+    line-height: 1.75;
+  }
+
+  .vp-doc h1 {
+    font-size: 25px;
+  }
+
+  .vp-doc h2 {
+    font-size: 19px;
+    margin-top: 34px;
+  }
+
+  .vp-doc div[class*='language-'] code {
+    font-size: 12.5px;
+  }
+}

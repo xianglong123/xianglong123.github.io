@@ -37,7 +37,7 @@ JUC中多数类是通过volatile和CAS来实现的，CAS本质上提供的是一
         *   java中还有哪些类可以解决ABA的问题?
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -55,7 +55,7 @@ JUC中多数类是通过volatile和CAS来实现的，CAS本质上提供的是一
 *   AtomicStampedReference是怎么解决ABA的? 内部使用Pair来存储元素值及其版本号
 *   java中还有哪些类可以解决ABA的问题? AtomicMarkableReference
 
-### # CAS
+### CAS
 
 > 前面我们说到，线程安全的实现方法包含:
 
@@ -65,7 +65,7 @@ JUC中多数类是通过volatile和CAS来实现的，CAS本质上提供的是一
 
 > 具体可以参看：线程安全的实现方法，这里我们将对CAS重点阐释。
 
-### # 什么是CAS
+### 什么是CAS
 
 > CAS的全称为Compare-And-Swap，直译就是对比交换。是一条CPU的原子指令，其作用是让CPU先进行比较两个值是否相等，然后原子地更新某个位置的值，经过调查发现，其实现方式是基于硬件平台的汇编指令，就是说CAS是靠硬件实现的，JVM只是封装了汇编调用，那些AtomicInteger类便是使用了这些封装后的接口。   简单解释：CAS操作需要输入两个数值，一个旧值(期望操作前的值)和一个新值，在操作期间先比较下在旧值有没有发生变化，如果没有发生变化，才交换成新值，发生了变化则不交换。
 
@@ -73,7 +73,7 @@ JUC中多数类是通过volatile和CAS来实现的，CAS本质上提供的是一
 
 > 相信sql大家都熟悉，类似sql中的条件更新一样：update set id=3 from table where id=2。因为单条sql执行具有原子性，如果有多个线程同时执行此sql语句，只有一条能更新成功。
 
-### # CAS使用示例
+### CAS使用示例
 
 > 如果不使用CAS，在高并发下，多线程同时修改一个变量的值我们需要synchronized加锁(可能有人说可以用Lock加锁，Lock底层的AQS也是基于CAS进行获取锁的)。
 
@@ -97,13 +97,13 @@ public class Test {
 }
 ```
 
-### # CAS 问题
+### CAS 问题
 
 > CAS 方式为乐观锁，synchronized 为悲观锁。因此使用 CAS 解决并发问题通常情况下性能更优。
 
 > 但使用 CAS 方式也会有几个问题：
 
-#### # ABA问题
+#### ABA问题
 
 > 因为CAS需要在操作值的时候，检查值有没有发生变化，比如没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时则会发现它的值没有发生变化，但是实际上却变化了。
 
@@ -111,11 +111,11 @@ public class Test {
 
 > 从Java 1.5开始，JDK的Atomic包里提供了一个类AtomicStampedReference来解决ABA问题。这个类的compareAndSet方法的作用是首先检查当前引用是否等于预期引用，并且检查当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。
 
-#### # 循环时间长开销大
+#### 循环时间长开销大
 
 > 自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。如果JVM能支持处理器提供的pause指令，那么效率会有一定的提升。pause指令有两个作用：第一，它可以延迟流水线执行命令(de-pipeline)，使CPU不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零；第二，它可以避免在退出循环的时候因内存顺序冲突(Memory Order Violation)而引起CPU流水线被清空(CPU Pipeline Flush)，从而提高CPU的执行效率。
 
-#### # 只能保证一个共享变量的原子操作
+#### 只能保证一个共享变量的原子操作
 
 > 当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁。
 
@@ -123,7 +123,7 @@ public class Test {
 
 > 从Java 1.5开始，JDK提供了AtomicReference类来保证引用对象之间的原子性，就可以把多个变量放在一个对象里来进行CAS操作。
 
-### # UnSafe类详解
+### UnSafe类详解
 
 > > 上文我们了解到Java原子类是通过UnSafe类实现的，这节主要分析下UnSafe类。UnSafe类在J.U.C中CAS操作有很广泛的应用。
 
@@ -137,7 +137,7 @@ public class Test {
 
 > 如上图所示，Unsafe提供的API大致可分为内存操作、CAS、Class相关、对象操作、线程调度、系统信息获取、内存屏障、数组操作等几类，下面将对其相关方法和应用场景进行详细介绍。
 
-### # Unsafe与CAS
+### Unsafe与CAS
 
 > 反编译出来的代码：
 
@@ -202,7 +202,7 @@ public final native boolean compareAndSwapLong(Object paramObject, long paramLon
 
 > 我们发现Unsafe只提供了3种CAS方法：compareAndSwapObject、compareAndSwapInt和compareAndSwapLong。都是native方法。
 
-### # Unsafe底层
+### Unsafe底层
 
 > 不妨再看看Unsafe的compareAndSwap*方法来实现CAS操作，它是一个本地方法，实现位于unsafe.cpp中。
 
@@ -258,7 +258,7 @@ inline jint Atomic::cmpxchg (jint exchange_value, volatile jint* dest, jint comp
 
 > > cmpxchg(void* ptr, int old, int new)，如果ptr和old的值一样，则把new写到ptr内存，否则返回ptr的值，整个操作是原子的。在Intel平台下，会用lock cmpxchg来实现，使用lock触发缓存锁，这样另一个线程想访问ptr的内存，就会被block住。
 
-### # Unsafe其它功能
+### Unsafe其它功能
 
 > Unsafe 提供了硬件级别的操作，比如说获取某个属性在内存中的位置，比如说修改对象的字段值，即使它是私有的。不过 Java 本身就是为了屏蔽底层的差异，对于一般的开发而言也很少会有这样的需求。
 
@@ -291,9 +291,9 @@ public native void freeMemory(long paramLong);
 
 > > 更多相关功能，推荐你看下这篇文章：来自美团技术团队：Java魔法类：Unsafe应用解析在新窗口打开
 
-### # AtomicInteger
+### AtomicInteger
 
-### # 使用举例
+### 使用举例
 
 > 以 AtomicInteger 为例，常用 API：
 
@@ -332,7 +332,7 @@ public int getCount() {
 }
 ```
 
-### # 源码解析
+### 源码解析
 
 ```
 public class AtomicInteger extends Number implements java.io.Serializable {
@@ -371,11 +371,11 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 *   volatile保证线程的可见性，多线程并发时，一个线程修改数据，可以保证其它线程立马看到修改后的值
 *   CAS 保证数据更新的原子性。
 
-### # 延伸到所有原子类：共12个
+### 延伸到所有原子类：共12个
 
 > > JDK中提供了12个原子操作类。
 
-### # 原子更新基本类型
+### 原子更新基本类型
 
 > 使用原子的方式更新基本类型，Atomic包提供了以下3个类。
 
@@ -385,7 +385,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
 > 以上3个类提供的方法几乎一模一样，可以参考上面AtomicInteger中的相关方法。
 
-### # 原子更新数组
+### 原子更新数组
 
 > 通过原子的方式更新数组里的某个元素，Atomic包提供了以下的3个类：
 
@@ -419,7 +419,7 @@ public class Demo5 {
 0
 [0, 2]`
 
-### # 原子更新引用类型
+### 原子更新引用类型
 
 > Atomic包提供了以下三个类：
 
@@ -476,7 +476,7 @@ pequals(p1)=false
 *   紧接着，通过CAS函数对它进行设置。如果ar的值为p1的话，则将其设置为p2。
 *   最后，获取ar对应的对象，并打印结果。p3.equals(p1)的结果为false，这是因为Person并没有覆盖equals()方法，而是采用继承自Object.java的equals()方法；而Object.java中的equals()实际上是调用"=="去比较两个对象，即比较两个对象的地址是否相等。
 
-### # 原子更新字段类
+### 原子更新字段类
 
 > Atomic包提供了四个类进行原子字段更新：
 
@@ -549,9 +549,9 @@ class DataDemo{
 
 *   > 对于AtomicIntegerFieldUpdater和AtomicLongFieldUpdater只能修改int/long类型的字段，不能修改其包装类型(Integer/Long)。如果要修改包装类型就需要使用AtomicReferenceFieldUpdater。
 
-### # 再讲讲AtomicStampedReference解决CAS的ABA问题
+### 再讲讲AtomicStampedReference解决CAS的ABA问题
 
-### # AtomicStampedReference解决ABA问题
+### AtomicStampedReference解决ABA问题
 
 > AtomicStampedReference主要维护包含一个对象引用以及一个可以自动更新的整数"stamp"的pair对象来解决ABA问题。
 
@@ -614,7 +614,7 @@ public class AtomicStampedReference<V> {
 
 *   > 最后，外部传入元素值及版本号，而不是节点(Pair)的引用。
 
-### # 使用举例
+### 使用举例
 
 ```
 public class AtomicTester {
@@ -662,11 +662,11 @@ public class AtomicTester {
 操作线程Thread[主操作线程,5,main],CAS操作结果: false
 ```
 
-### # java中还有哪些类可以解决ABA的问题?
+### java中还有哪些类可以解决ABA的问题?
 
 > AtomicMarkableReference，它不是维护一个版本号，而是维护一个boolean类型的标记，标记值有修改，了解一下。
 
-### # 参考文章
+### 参考文章
 
 *   https://benjaminwhx.com/2018/05/03/%E3%80%90%E7%BB%86%E8%B0%88Java%E5%B9%B6%E5%8F%91%E3%80%91%E8%B0%88%E8%B0%88CAS/
 *   https://www.jianshu.com/p/9a1e6940987a

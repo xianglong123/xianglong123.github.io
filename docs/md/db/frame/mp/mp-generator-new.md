@@ -8,18 +8,18 @@ title: 代码生成器
 本章节主要讲解mybatis-plus代码生成器的使用，快速生成controller,service,dao等相关代码。@123
 :::
 
-## 代码生成器
+# 代码生成器
 >我这里采用的是MP3.5.4，如果有兼容问题，请留言告知具体版本，我这边会更新兼容的代码
 
 ---
-### 依赖导入
+## 依赖导入
 >要使用代码生成，请导入以下包，完整包请见[springboot融合mybatis-plus的环境配置](mp-base-overview.md)
 ```
     implementation "com.baomidou:mybatis-plus-generator:3.5.4"
     implementation 'org.apache.velocity:velocity-engine-core:2.0'
 ```
 
-### 代码
+## 代码
 > AbstractBaseGeneration主要配置一些变量参数，CodeGeneration的Main是启动类
 ```java
 package com.cas.generator;
@@ -115,14 +115,14 @@ public class CodeGeneration extends AbstractBaseGeneration {
 }
 ```
 
-### 效果
+## 效果
 >运行上面的方法，会自动创建controller,dao,entity,service,resources/mapper层
 ![img.png](images/generator_code.jpeg)
 
 
-### 总结
+## 总结
 > 针对大部分项目，都可以通过自动生成简化代码，上40分钟敲5分钟不是梦。当然有些报表，多表查询还是需要在mapper.xml中来实现
 
 
-### 参考
+## 参考
 无

@@ -30,7 +30,7 @@ ConcurerntLinkedQueue一个基于链接节点的无界线程安全队列。此�
         *   ConcurrentLinkedQueue适合的场景
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -49,17 +49,17 @@ ConcurerntLinkedQueue一个基于链接节点的无界线程安全队列。此�
 *   说说ConcurrentLinkedQueue的HOPS(延迟更新的策略)的设计?
 *   ConcurrentLinkedQueue适合什么样的使用场景?
 
-### # ConcurrentLinkedQueue数据结构
+### ConcurrentLinkedQueue数据结构
 
 > 通过源码分析可知，ConcurrentLinkedQueue的数据结构与LinkedBlockingQueue的数据结构相同，都是使用的链表结构。ConcurrentLinkedQueue的数据结构如下:
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-1.png)
+> 
 
 > 说明: ConcurrentLinkedQueue采用的链表结构，并且包含有一个头节点和一个尾结点。
 
-### # ConcurrentLinkedQueue源码分析
+### ConcurrentLinkedQueue源码分析
 
-### # 类的继承关系
+### 类的继承关系
 
 ```
 public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
@@ -68,7 +68,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
 
 > 说明: ConcurrentLinkedQueue继承了抽象类AbstractQueue，AbstractQueue定义了对队列的基本操作；同时实现了Queue接口，Queue定义了对队列的基本操作，同时，还实现了Serializable接口，表示可以被序列化。
 
-### # 类的内部类
+### 类的内部类
 
 ```
 private static class Node<E> {
@@ -125,7 +125,7 @@ private static class Node<E> {
 
 > 说明: Node类表示链表结点，用于存放元素，包含item域和next域，item域表示元素，next域表示下一个结点，其利用反射机制和CAS机制来更新item域和next域，保证原子性。
 
-### # 类的属性
+### 类的属性
 
 ```
 public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
@@ -160,7 +160,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
 
 > 说明: 属性中包含了head域和tail域，表示链表的头节点和尾结点，同时，ConcurrentLinkedQueue也使用了反射机制和CAS机制来更新头节点和尾结点，保证原子性。
 
-### # 类的构造函数
+### 类的构造函数
 
 *   ```
     ConcurrentLinkedQueue()
@@ -213,9 +213,9 @@ public ConcurrentLinkedQueue(Collection<? extends E> c) {
 
 > 说明: 该构造函数用于创建一个最初包含给定 collection 元素的 ConcurrentLinkedQueue，按照此 collection 迭代器的遍历顺序来添加元素。
 
-### # 核心函数分析
+### 核心函数分析
 
-#### # offer函数
+#### offer函数
 
 ```
 public boolean offer(E e) {
@@ -258,19 +258,19 @@ public boolean offer(E e) {
 
 > 说明: offer函数用于将指定元素插入此队列的尾部。下面模拟offer函数的操作，队列状态的变化(假设单线程添加元素，连续添加10、20两个元素)。
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-2.png)
+> 
 
 *   若ConcurrentLinkedQueue的初始状态如上图所示，即队列为空。单线程添加元素，此时，添加元素10，则状态如下所示
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-3.png)
+> 
 
 *   如上图所示，添加元素10后，tail没有变化，还是指向之前的结点，继续添加元素20，则状态如下所示
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-4.png)
+> 
 
 *   如上图所示，添加元素20后，tail指向了最新添加的结点。
 
-#### # poll函数
+#### poll函数
 
 ```
 public E poll() {
@@ -307,19 +307,19 @@ public E poll() {
 
 > 说明: 此函数用于获取并移除此队列的头，如果此队列为空，则返回null。下面模拟poll函数的操作，队列状态的变化(假设单线程操作，状态为之前offer10、20后的状态，poll两次)。
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-5.png)
+> 
 
 *   队列初始状态如上图所示，在poll操作后，队列的状态如下图所示
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-6.png)
+> 
 
 *   如上图可知，poll操作后，head改变了，并且head所指向的结点的item变为了null。再进行一次poll操作，队列的状态如下图所示。
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-7.png)
+> 
 
 *   如上图可知，poll操作后，head结点没有变化，只是指示的结点的item域变成了null。
 
-#### # remove函数
+#### remove函数
 
 ```
 public boolean remove(Object o) {
@@ -385,19 +385,19 @@ final Node<E> succ(Node<E> p) {
 
 > 说明: succ用于获取结点的下一个结点。如果结点的next域指向自身，则返回head头节点，否则，返回next结点。下面模拟remove函数的操作，队列状态的变化(假设单线程操作，状态为之前offer10、20后的状态，执行remove(10)、remove(20)操作)。
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-8.png)
+> 
 
 *   如上图所示，为ConcurrentLinkedQueue的初始状态，remove(10)后的状态如下图所示
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-9.png)
+> 
 
 *   如上图所示，当执行remove(10)后，head指向了head结点之前指向的结点的下一个结点，并且head结点的item域置为null。继续执行remove(20)，状态如下图所示
 
-> ![](./JUC集合_ ConcurrentLinkedQueue详解 _ Java 全栈知识体系_files/java-thread-x-juc-concurrentlinkedqueue-10.png)
+> 
 
 *   如上图所示，执行remove(20)后，head与tail指向同一个结点，item域为null。
 
-#### # size函数
+#### size函数
 
 ```
 public int size() {
@@ -415,7 +415,7 @@ public int size() {
 
 > 说明: 此函数用于返回ConcurrenLinkedQueue的大小，从第一个存活的结点(first)开始，往后遍历链表，当结点的item域不为null时，增加计数，之后返回大小。
 
-### # ConcurrentLinkedQueue示例
+### ConcurrentLinkedQueue示例
 
 > 下面通过一个示例来了解ConcurrentLinkedQueue的使用
 
@@ -499,9 +499,9 @@ poll 8
 
 > 说明: GetThread线程不会因为ConcurrentLinkedQueue队列为空而等待，而是直接返回null，所以当实现队列不空时，等待时，则需要用户自己实现等待逻辑。
 
-### # 再深入理解
+### 再深入理解
 
-### # HOPS(延迟更新的策略)的设计
+### HOPS(延迟更新的策略)的设计
 
 > 通过上面对offer和poll方法的分析，我们发现tail和head是延迟更新的，两者更新触发时机为：
 
@@ -519,11 +519,11 @@ hop two nodes at a time
 
 > 如果让tail永远作为队列的队尾节点，实现的代码量会更少，而且逻辑更易懂。但是，这样做有一个缺点，如果大量的入队操作，每次都要执行CAS进行tail的更新，汇总起来对性能也会是大大的损耗。如果能减少CAS更新的操作，无疑可以大大提升入队的操作效率，所以doug lea大师每间隔1次(tail和队尾节点的距离为1)进行才利用CAS更新tail。对head的更新也是同样的道理，虽然，这样设计会多出在循环中定位队尾节点，但总体来说读的操作效率要远远高于写的性能，因此，多出来的在循环中定位尾节点的操作的性能损耗相对而言是很小的。
 
-### # ConcurrentLinkedQueue适合的场景
+### ConcurrentLinkedQueue适合的场景
 
 > ConcurrentLinkedQueue通过无锁来做到了更高的并发量，是个高性能的队列，但是使用场景相对不如阻塞队列常见，毕竟取数据也要不停的去循环，不如阻塞的逻辑好设计，但是在并发量特别大的情况下，是个不错的选择，性能上好很多，而且这个队列的设计也是特别费力，尤其的使用的改良算法和对哨兵的处理。整体的思路都是比较严谨的，这个也是使用了无锁造成的，我们自己使用无锁的条件的话，这个队列是个不错的参考。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5539142.html，在此基础上做了增改。
 *   https://blog.csdn.net/u011521203/article/details/80214968

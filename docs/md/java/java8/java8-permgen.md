@@ -23,13 +23,13 @@ title: Java 8 - 移除Permgen
 
 > > 很多开发者都在其系统中见过java.lang.OutOfMemoryError: PermGen space这一问题。这往往是由类加载器相关的内存泄漏以及新类加载器的创建导致的，通常出现于代码热部署时。相对于正式产品，该问题在开发机上出现的频率更高，在产品中最常见的问题是默认值太低了。常用的解决方法是将其设置为256MB或更高。
 
-### # PermGen space简单介绍
+### PermGen space简单介绍
 
 > PermGen space的全称是Permanent Generation space,是指内存的永久保存区域，说说为什么会内存益出: 这一部分用于存放Class和Meta的信息,Class在被 Load的时候被放入PermGen space区域，它和和存放Instance的Heap区域不同,所以如果你的APP会LOAD很多CLASS的话,就很可能出现PermGen space错误。这种错误常见在web服务器对JSP进行pre compile的时候。
 
 > JVM 种类有很多，比如 Oralce-Sun Hotspot, Oralce JRockit, IBM J9, Taobao JVM(淘宝好样的！)等等。当然武林盟主是Hotspot了，这个毫无争议。需要注意的是，PermGen space是Oracle-Sun Hotspot才有，JRockit以及J9是没有这个区域。
 
-### # 元空间(MetaSpace)一种新的内存空间诞生
+### 元空间(MetaSpace)一种新的内存空间诞生
 
 > JDK8 HotSpot JVM 将移除永久区，使用本地内存来存储类元数据信息并称之为: 元空间(Metaspace)；这与Oracle JRockit 和IBM JVM’s很相似，如下图所示
 
@@ -75,7 +75,7 @@ title: Java 8 - 移除Permgen
 
 > 前面已经从理论上充分说明，下面让我们通过泄漏程序进行新内存空间的观察……
 
-### # PermGen vs. Metaspace 运行时比较
+### PermGen vs. Metaspace 运行时比较
 
 > 为了更好地理解Metaspace内存空间的运行时行为，
 
@@ -135,7 +135,7 @@ public class OOMTest {
 
 > 设置-verbose:gc是为了获取垃圾收集的相关信息
 
-### # JDK 1.7 @64-bit – PermGen 耗尽测试
+### JDK 1.7 @64-bit – PermGen 耗尽测试
 
 > Java1.7的PermGen默认空间为85 MB(或者可以通过-XX:MaxPermSize=XXXm指定)
 
@@ -160,7 +160,7 @@ unloaded: 0
 java.lang.OutOfMemoryError: PermGen space
 ```
 
-### # JDK 1.8 @64-bit – Metaspace大小动态调整测试
+### JDK 1.8 @64-bit – Metaspace大小动态调整测试
 
 > Java的Metaspace空间: 不受限制 (默认)
 
@@ -168,7 +168,7 @@ java.lang.OutOfMemoryError: PermGen space
 
 > 从上面的截图可以看到，JVM Metaspace进行了动态扩展，本地内存的使用由20MB增长到646MB，以满足程序中不断增长的类数据内存占用需求。我们也能观察到JVM的垃圾回收事件—试图销毁僵死的类或类加载器对象。但是，由于我们程序的泄漏，JVM别无选择只能动态扩展Metaspace内存空间。程序加载超过10万个类，而没有出现OOM事件。
 
-### # JDK 1.8 @64-bit – Metaspace 受限测试
+### JDK 1.8 @64-bit – Metaspace 受限测试
 
 > Java的Metaspace空间: 128MB(-XX:MaxMetaspaceSize=128m)
 
@@ -190,7 +190,7 @@ java.lang.OutOfMemoryError: Metaspace
 
 > 在设置了MaxMetaspaceSize的情况下，该空间的内存仍然会耗尽，进而引发java.lang.OutOfMemoryError: Metadata space错误。因为类加载器的泄漏仍然存在，而通常Java又不希望无限制地消耗本机内存，因此设置一个类似于MaxPermSize的限制看起来也是合理的。
 
-### # 总结
+### 总结
 
 *   > 之前不管是不是需要，JVM都会吃掉那块空间……如果设置得太小，JVM会死掉；如果设置得太大，这块内存就被JVM浪费了。理论上说，现在你完全可以不关注这个，因为JVM会在运行时自动调校为合适的大小；
 
@@ -198,6 +198,6 @@ java.lang.OutOfMemoryError: Metaspace
 
 *   > 隐患就是如果程序存在内存泄露，像OOMTest那样，不停的扩展metaspace的空间，会导致机器的内存不足，所以还是要有必要的调试和监控。
 
-### # 参考文章
+### 参考文章
 
 > https://wizardforcel.gitbooks.io/java8-new-features/content/9.html

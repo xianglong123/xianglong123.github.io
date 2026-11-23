@@ -42,7 +42,7 @@ title: Java 8 - 函数编程(lambda表达式)
     *   一些例子
     *   参考资料
 
-### # 简介
+### 简介
 
 > > 在Java世界里面，面向对象还是主流思想，对于习惯了面向对象编程的开发者来说，抽象的概念并不陌生。面向对象编程是对数据进行抽象，而函数式编程是对行为进行抽象。现实世界中，数据和行为并存，程序也是如此，因此这两种编程方式我们都得学。
 
@@ -56,7 +56,7 @@ title: Java 8 - 函数编程(lambda表达式)
 
 > 对核心类库的改进主要包括集合类的API和新引入的流Stream。流使程序员可以站在更高的抽象层次上对集合进行操作。
 
-### # lambda表达式
+### lambda表达式
 
 *   > lambda表达式仅能放入如下代码: 预定义使用了 @Functional 注释的函数式接口，自带一个抽象函数的方法，或者SAM(Single Abstract Method 单个抽象方法)类型。这些称为lambda表达式的目标类型，可以用作返回类型，或lambda目标代码的参数。例如，若一个方法接收Runnable、Comparable或者 Callable 接口，都有单个抽象方法，可以传入lambda表达式。类似的，如果一个方法接受声明于 java.util.function 包内的接口，例如 Predicate、Function、Consumer 或 Supplier，那么可以向其传lambda表达式。
 
@@ -101,9 +101,9 @@ int factor = 2;
 primes.forEach(element -> { System.out.println(factor*element); });
 ```
 
-### # 分类
+### 分类
 
-### # 惰性求值方法
+### 惰性求值方法
 
 ```
 lists.stream().filter(f -> f.getName().equals("p1"))
@@ -113,7 +113,7 @@ lists.stream().filter(f -> f.getName().equals("p1"))
 
 > 如果是多个条件组合，可以通过代码块{}
 
-### # 及早求值方法
+### 及早求值方法
 
 ```
 List<Person> list2 = lists.stream().filter(f -> f.getName().equals("p1")).collect(Collectors.toList());
@@ -123,9 +123,9 @@ List<Person> list2 = lists.stream().filter(f -> f.getName().equals("p1")).collec
 
 > 理想方式是形成一个惰性求值的链，最后用一个及早求值的操作返回想要的结果。与建造者模式相似，建造者模式先是使用一系列操作设置属性和配置，最后调用build方法，创建对象。
 
-### # stream & parallelStream
+### stream & parallelStream
 
-### # stream & parallelStream
+### stream & parallelStream
 
 > 每个Stream都有两种模式: 顺序执行和并行执行。
 
@@ -143,7 +143,7 @@ List <Person> people = list.getStream.parallel().collect(Collectors.toList());
 
 > 顾名思义，当使用顺序方式去遍历时，每个item读完后再读下一个item。而使用并行去遍历时，数组会被分成多个段，其中每一个都在不同的线程中处理，然后将结果一起输出。
 
-### # parallelStream原理:
+### parallelStream原理:
 
 ```
 List originalList = someData;
@@ -156,7 +156,7 @@ List revisedList = split1 + split2;//将结果合并
 
 > 大家对hadoop有稍微了解就知道，里面的 MapReduce 本身就是用于并行处理大数据集的软件框架，其 处理大数据的核心思想就是大而化小，分配到不同机器去运行map，最终通过reduce将所有机器的结果结合起来得到一个最终结果，与MapReduce不同，Stream则是利用多核技术可将大数据通过多核并行处理，而MapReduce则可以分布式的。
 
-### # stream与parallelStream性能测试对比
+### stream与parallelStream性能测试对比
 
 > 如果是多核机器，理论上并行流则会比顺序流快上一倍，下面是测试代码
 
@@ -180,7 +180,7 @@ long t2 = System.nanoTime();
 System.out.printf("serial: %.2fs, parallel %.2fs%n", (t1 - t0) * 1e-9, (t2 - t1) * 1e-9);
 ```
 
-### # Stream中常用方法如下:
+### Stream中常用方法如下:
 
 *   `stream()`, `parallelStream()`
 *   `filter()`
@@ -608,7 +608,7 @@ public final <R, A> R collect(Collector<? super P_OUT, A, R> collector) {
 }
 ```
 
-*   断定型接口: Predicate<T> boolean test(T t):有参，但是返回值类型是固定的boolean
+*   断定型接口: Predicate&lt;T&gt; boolean test(T t):有参，但是返回值类型是固定的boolean
 
 > > 比如: steam().filter()中参数就是Predicate
 
@@ -627,7 +627,7 @@ Predicate<String> isNotEmpty = isEmpty.negate();
 
 *   函数型接口: Function<T,R> R apply(T t)有参有返回值的抽象方法；
 
-> > 比如: steam().map() 中参数就是Function<? super T, ? extends R>；reduce()中参数BinaryOperator<T> (ps: BinaryOperator<T> extends BiFunction<T,T,T>)
+> > 比如: steam().map() 中参数就是Function<? super T, ? extends R>；reduce()中参数BinaryOperator&lt;T&gt; (ps: BinaryOperator&lt;T&gt; extends BiFunction<T,T,T>)
 
 ```
 Function<String, Integer> toInteger = Integer::valueOf;
@@ -838,7 +838,7 @@ adDOList.stream().map(adDo -> convertAdModel(adDo))
                 .collect(Collectors.toList());
 ```
 
-*   phones 是一个List<String>，将相同的元素分组、归类
+*   phones 是一个List&lt;String&gt;，将相同的元素分组、归类
 
 ```
 List<String> phones=new ArrayList<String>();
@@ -852,9 +852,8 @@ List<String> phones=new ArrayList<String>();
         System.out.println(phoneClassify);
 返回结果: 
 {a=[a, a, a], b=[b, b], c=[c]}
-```
 
-### # 参考资料
+### 参考资料
 
 *   Lambda 表达式的 10 个示例在新窗口打开
 *   learn-java8在新窗口打开

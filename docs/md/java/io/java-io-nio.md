@@ -31,7 +31,7 @@ title: Java NIO - 基础详解
     *   多路复用IO的优缺点
     *   参考文章
 
-### # 现实场景
+### 现实场景
 
 > 我们试想一下这样的现实场景:
 
@@ -59,7 +59,7 @@ title: Java NIO - 基础详解
     *   方法B: 使用线程进行处理的 阻塞式/非阻塞式 同步IO
     *   方法C: 阻塞式/非阻塞式 多路复用IO
 
-### # 典型的多路复用IO实现
+### 典型的多路复用IO实现
 
 > 目前流程的多路复用IO实现主要包括四种: `select`、`poll`、`epoll`、`kqueue`。下表是他们的一些重要特性的比较:
 
@@ -72,9 +72,9 @@ title: Java NIO - 基础详解
 
 > 多路复用IO技术最适用的是高并发场景，所谓高并发是指1毫秒内至少同时有上千个连接请求准备好。其他情况下多路复用IO技术发挥不出来它的优势。另一方面，使用JAVA NIO进行功能实现，相对于传统的Socket套接字实现要复杂一些，所以实际应用中，需要根据自己的业务需求进行技术选择。
 
-### # Reactor模型和Proactor模型
+### Reactor模型和Proactor模型
 
-### # 传统IO模型
+### 传统IO模型
 
 > 对于传统IO模型，其主要是一个Server对接N个客户端，在客户端连接之后，为每个客户端都分配一个执行线程。如下图是该模型的一个演示：
 
@@ -91,7 +91,7 @@ title: Java NIO - 基础详解
 *   服务端每个线程不仅要进行IO读写操作，而且还需要进行业务计算；
 *   服务端在获取客户端连接，读取数据，以及写入数据的过程都是阻塞类型的，在网络状况不好的情况下，这将极大的降低服务器每个线程的利用率，从而降低服务器吞吐量。
 
-### # Reactor事件驱动模型
+### Reactor事件驱动模型
 
 > 在传统IO模型中，由于线程在等待连接以及进行IO操作时都会阻塞当前线程，这部分损耗是非常大的。因而jdk 1.4中就提供了一套非阻塞IO的API。该API本质上是以事件驱动来处理网络事件的，而Reactor是基于该API提出的一套IO模型。如下是Reactor事件驱动模型的示意图：
 
@@ -102,7 +102,7 @@ title: Java NIO - 基础详解
 *   从模型上来讲，如果仅仅还是只使用一个线程池来处理客户端连接的网络读写，以及业务计算，那么Reactor模型与传统IO模型在效率上并没有什么提升。但是Reactor模型是以事件进行驱动的，其能够将接收客户端连接，+ 网络读和网络写，以及业务计算进行拆分，从而极大的提升处理效率；
 *   Reactor模型是异步非阻塞模型，工作线程在没有网络事件时可以处理其他的任务，而不用像传统IO那样必须阻塞等待。
 
-### # Reactor模型----业务处理与IO分离
+### Reactor模型----业务处理与IO分离
 
 > 在上面的Reactor模型中，由于网络读写和业务操作都在同一个线程中，在高并发情况下，这里的系统瓶颈主要在两方面：
 
@@ -122,7 +122,7 @@ title: Java NIO - 基础详解
 
 *   网络读写是一个比较消耗CPU的操作，在高并发的情况下，将会有大量的客户端数据需要进行网络读写，此时一个线程将不足以处理这么多请求。
 
-### # Reactor模型----并发读写
+### Reactor模型----并发读写
 
 > 对于使用线程池处理业务操作的模型，由于网络读写在高并发情况下会成为系统的一个瓶颈，因而针对该模型这里提出了一种改进后的模型，即使用线程池进行网络读写，而仅仅只使用一个线程专门接收客户端连接。如下是该模型的示意图：
 
@@ -130,7 +130,7 @@ title: Java NIO - 基础详解
 
 > 可以看到，改进后的Reactor模型将Reactor拆分为了mainReactor和subReactor。这里mainReactor主要进行客户端连接的处理，处理完成之后将该连接交由subReactor以处理客户端的网络读写。这里的subReactor则是使用一个线程池来支撑的，其读写能力将会随着线程数的增多而大大增加。对于业务操作，这里也是使用一个线程池，而每个业务请求都只需要进行编解码和业务计算。通过这种方式，服务器的性能将会大大提升，在可见情况下，其基本上可以支持百万连接。
 
-### # Reactor模型示例
+### Reactor模型示例
 
 > 对于上述Reactor模型，服务端主要有三个角色：Reactor，Acceptor和Handler。这里基于Doug Lea的文档对其进行了实现，如下是Reactor的实现代码：
 
@@ -223,8 +223,8 @@ public class Handler implements Runnable {
   public void run() {
     try {
       while (selector.isOpen() && channel.isOpen()) {
-        Set<SelectionKey> keys = select();  // 等待客户端事件发生
-        Iterator<SelectionKey> iterator = keys.iterator();
+        Set&lt;SelectionKey&gt; keys = select();  // 等待客户端事件发生
+        Iterator&lt;SelectionKey&gt; iterator = keys.iterator();
         while (iterator.hasNext()) {
           SelectionKey key = iterator.next();
           iterator.remove();
@@ -245,9 +245,9 @@ public class Handler implements Runnable {
 
   // 这里处理的主要目的是处理Jdk的一个bug，该bug会导致Selector被意外触发，但是实际上没有任何事件到达，
   // 此时的处理方式是新建一个Selector，然后重新将当前Channel注册到该Selector上
-  private Set<SelectionKey> select() throws IOException {
+  private Set&lt;SelectionKey&gt; select() throws IOException {
     selector.select();
-    Set<SelectionKey> keys = selector.selectedKeys();
+    Set&lt;SelectionKey&gt; keys = selector.selectedKeys();
     if (keys.isEmpty()) {
       int interestOps = key.interestOps();
       selector = Selector.open();
@@ -296,11 +296,11 @@ public class Handler implements Runnable {
 
 > 在Handler中，主要进行的就是为每一个客户端Channel创建一个Selector，并且监听该Channel的网络读写事件。当有事件到达时，进行数据的读写，而业务操作这交由具体的业务线程池处理。
 
-### # JAVA对多路复用IO的支持
+### JAVA对多路复用IO的支持
 
 > ![](images/java-io-nio-1.png)
 
-### # 重要概念: Channel
+### 重要概念: Channel
 
 > 通道，被建立的一个应用程序和操作系统交互事件、传递内容的渠道(注意是连接到操作系统)。一个通道会有一个专属的文件状态描述符。那么既然是和操作系统进行内容的传递，那么说明应用程序可以通过通道读取数据，也可以通过通道向操作系统写数据。
 
@@ -322,7 +322,7 @@ public class Handler implements Runnable {
 
 *   > DatagramChannel: UDP 数据报文的监听通道。
 
-### # 重要概念: Buffer
+### 重要概念: Buffer
 
 > 数据缓存区: 在JAVA NIO 框架中，为了保证每个通道的数据读写速度JAVA NIO 框架为每一种需要支持数据读写的通道集成了Buffer的支持。
 
@@ -340,7 +340,7 @@ public class Handler implements Runnable {
 
 > 在下文JAVA NIO框架的代码实例中，我们将进行Buffer缓存区操作的演示。
 
-### # 重要概念: Selector
+### 重要概念: Selector
 
 > Selector的英文含义是选择器，不过根据我们详细介绍的Selector的岗位职责，您可以把它称之为轮询代理器、事件订阅器、channel容器管理机都行。
 
@@ -371,7 +371,7 @@ private SelectionKeyImpl[] channelArray = new SelectionKeyImpl[INIT_CAP];
 
 > ![](images/java-io-nio-4.png)
 
-### # JAVA NIO 框架简要设计分析
+### JAVA NIO 框架简要设计分析
 
 > 通过上文的描述，我们知道了多路复用IO技术是操作系统的内核实现。在不同的操作系统，甚至同一系列操作系统的版本中所实现的多路复用IO技术都是不一样的。那么作为跨平台的JAVA JVM来说如何适应多种多样的多路复用IO技术实现呢? 面向对象的威力就显现出来了: 无论使用哪种实现方式，他们都会有选择器、通道、缓存这几个操作要素，那么可以为不同的多路复用IO技术创建一个统一的抽象组，并且为不同的操作系统进行具体的实现。JAVA NIO中对各种多路复用IO的支持，主要的基础是java.nio.channels.spi.SelectorProvider抽象类，其中的几个主要抽象方法包括:
 
@@ -406,7 +406,7 @@ private static ServerSocketChannel newSocket(SelectorProvider provider) {
 }
 ```
 
-### # JAVA实例
+### JAVA实例
 
 > 下面，我们使用JAVA NIO框架，实现一个支持多路复用IO的服务器端(实际上客户端是否使用多路复用IO技术，对整个系统架构的性能提升相关性不大):
 
@@ -603,7 +603,7 @@ public class SocketServer1 {
 
 > > Returns this selector’s selected-key set. Keys may be removed from, but not directly added to, the selected-key set. Any attempt to add an object to the key set will cause an UnsupportedOperationException to be thrown. The selected-key set is not thread-safe.
 
-### # JAVA实例改进
+### JAVA实例改进
 
 > 上面的代码中，我们为了讲解selector的使用，在缓存使用上就进行了简化。实际的应用中，为了节约内存资源，我们一般不会为一个通道分配那么多的缓存空间。下面的代码我们主要对其中的缓存操作进行了优化:
 
@@ -814,7 +814,7 @@ public class SocketServer2 {
 
 > 以上代码应该没有过多需要讲解的了。当然，您还是可以加入线程池技术，进行具体的业务处理。注意，一定是线程池，因为这样可以保证线程规模的可控性。
 
-### # 多路复用IO的优缺点
+### 多路复用IO的优缺点
 
 *   > 不用再使用多线程来进行IO处理了(包括操作系统内核IO管理模块和应用程序进程而言)。当然实际业务的处理中，应用程序进程还是可以引入线程池技术的
 
@@ -824,7 +824,7 @@ public class SocketServer2 {
 
 *   > 都是同步IO: 目前我们介绍的 阻塞式IO、非阻塞式IO甚至包括多路复用IO，这些都是基于操作系统级别对同步IO的实现。我们一直在说同步IO，一直都没有详细说，什么叫做同步IO。实际上一句话就可以说清楚: 只有上层(包括上层的某种代理机制)系统询问我是否有某个事件发生了，否则我不会主动告诉上层系统事件发生了:
 
-### # 参考文章
+### 参考文章
 
 *   文章主要来源于: 银文杰，笔名“说好不能打脸”，博客地址在新窗口打开。他的书《高性能服务系统构建与实战》。
 *   https://blog.csdn.net/yinwenjie/article/details/48522403

@@ -24,9 +24,9 @@ title: Map - HashSet & HashMap 源码解析
         *   get 过程分析
     *   HashSet
 
-### # Java7 HashMap
+### Java7 HashMap
 
-### # 概述
+### 概述
 
 > 之所以把_HashSet_和_HashMap_放在一起讲解，是因为二者在Java里有着相同的实现，前者仅仅是对后者做了一层包装，也就是说_HashSet_里面有一个_HashMap_(适配器模式)。因此本文将重点分析_HashMap_。
 
@@ -40,7 +40,7 @@ title: Map - HashSet & HashMap 源码解析
 
 > 将对象放入到_HashMap_或_HashSet_中时，有两个方法需要特别关心: `hashCode()`和`equals()`。``hashCode()`方法决定了对象会被放到哪个`bucket`里，当多个对象的哈希值冲突时，`equals()`方法决定了这些对象是否是同一个对象`。所以，如果要将自定义的对象放入到`HashMap`或`HashSet`中，需要**@Override** `hashCode()`和`equals()`方法。
 
-### # get()
+### get()
 
 > `get(Object key)`方法根据指定的`key`值返回对应的`value`，该方法调用了`getEntry(Object key)`得到相应的`entry`，然后返回`entry.getValue()`。因此`getEntry()`是算法的核心。 算法思想是首先通过`hash()`函数得到对应`bucket`的下标，然后依次遍历冲突链表，通过`key.equals(k)`方法来判断是否是要找的那个`entry`。
 
@@ -71,7 +71,7 @@ final Entry<K,V> getEntry(Object key) {
 }
 ```
 
-### # put()
+### put()
 
 > `put(K key, V value)`方法是将指定的`key, value`对添加到`map`里。该方法首先会对`map`做一次查找，看是否包含该元组，如果已经包含则直接返回，查找过程类似于`getEntry()`方法；如果没有找到，则会通过
 
@@ -98,7 +98,7 @@ void addEntry(int hash, K key, V value, int bucketIndex) {
 }
 ```
 
-### # remove()
+### remove()
 
 > `remove(Object key)`的作用是删除`key`值对应的`entry`，该方法的具体逻辑是在
 
@@ -134,7 +134,7 @@ final Entry<K,V> removeEntryForKey(Object key) {
 }
 ```
 
-### # Java8 HashMap
+### Java8 HashMap
 
 > Java8 对 HashMap 进行了一些修改，最大的不同就是利用了红黑树，所以其由 `数组+链表+红黑树` 组成。
 
@@ -154,7 +154,7 @@ final Entry<K,V> removeEntryForKey(Object key) {
 
 > 我们根据数组元素中，第一个节点数据类型是 Node 还是 TreeNode 来判断该位置下是链表还是红黑树的。
 
-### # put 过程分析
+### put 过程分析
 
 ```java
 public V put(K key, V value) {
@@ -224,7 +224,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 
 > 和 Java7 稍微有点不一样的地方就是，Java7 是先扩容后插入新值的，Java8 先插值再扩容，不过这个不重要。
 
-### # 数组扩容
+### 数组扩容
 
 > resize() 方法用于初始化数组或数组扩容，每次扩容后，容量为原来的 2 倍，并进行数据迁移。
 
@@ -317,7 +317,7 @@ final Node<K,V>[] resize() {
 }
 ```
 
-### # get 过程分析
+### get 过程分析
 
 > 相对于 put 来说，get 真的太简单了。
 
@@ -356,7 +356,7 @@ final Node<K,V> getNode(int hash, Object key) {
 }
 ```
 
-### # HashSet
+### HashSet
 
 > 前面已经说过_HashSet_是对_HashMap_的简单包装，对_HashSet_的函数调用都会转换成合适的_HashMap_方法，因此_HashSet_的实现非常简单，只有不到300行代码。这里不再赘述。
 

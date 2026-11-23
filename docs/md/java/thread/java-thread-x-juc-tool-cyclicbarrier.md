@@ -26,7 +26,7 @@ CyclicBarrier底层是基于ReentrantLock和AbstractQueuedSynchronizer来实现�
     *   和CountDonwLatch再对比
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -38,15 +38,15 @@ CyclicBarrier底层是基于ReentrantLock和AbstractQueuedSynchronizer来实现�
 *   CyclicBarrier的核心函数有哪些?
 *   CyclicBarrier适用于什么场景?
 
-### # CyclicBarrier简介
+### CyclicBarrier简介
 
 *   > 对于CountDownLatch，其他线程为游戏玩家，比如英雄联盟，主线程为控制游戏开始的线程。在所有的玩家都准备好之前，主线程是处于等待状态的，也就是游戏不能开始。当所有的玩家准备好之后，下一步的动作实施者为主线程，即开始游戏。
 
 *   > 对于CyclicBarrier，假设有一家公司要全体员工进行团建活动，活动内容为翻越三个障碍物，每一个人翻越障碍物所用的时间是不一样的。但是公司要求所有人在翻越当前障碍物之后再开始翻越下一个障碍物，也就是所有人翻越第一个障碍物之后，才开始翻越第二个，以此类推。类比地，每一个员工都是一个其他线程。当所有人都翻越的所有的障碍物之后，程序才结束。而主线程可能早就结束了，这里我们不用管主线程。
 
-### # CyclicBarrier源码分析
+### CyclicBarrier源码分析
 
-### # 类的继承关系
+### 类的继承关系
 
 > CyclicBarrier没有显示继承哪个父类或者实现哪个父接口, 所有AQS和重入锁不是通过继承实现的，而是通过组合实现的。
 
@@ -54,7 +54,7 @@ CyclicBarrier底层是基于ReentrantLock和AbstractQueuedSynchronizer来实现�
 public class CyclicBarrier {}
 ```　　
 
-### 类的内部类
+## 类的内部类
 
 CyclicBarrier类存在一个内部类Generation，每一次使用的CycBarrier可以当成Generation的实例，其源代码如下
 
@@ -66,7 +66,7 @@ private static class Generation {
 
 > 说明: Generation类有一个属性broken，用来表示当前屏障是否被损坏。
 
-### # 类的属性
+### 类的属性
 
 ```
 public class CyclicBarrier {
@@ -93,7 +93,7 @@ public class CyclicBarrier {
 
 > 说明: 该属性有一个为ReentrantLock对象，有一个为Condition对象，而Condition对象又是基于AQS的，所以，归根到底，底层还是由AQS提供支持。
 
-### # 类的构造函数
+### 类的构造函数
 
 *   CyclicBarrier(int, Runnable)型构造函数
 
@@ -123,7 +123,7 @@ public CyclicBarrier(int parties) {
 
 > 说明: 该构造函数仅仅执行了关联该CyclicBarrier的线程数量，没有设置执行动作。
 
-### # 核心函数 - dowait函数
+### 核心函数 - dowait函数
 
 > 此函数为CyclicBarrier类的核心函数，CyclicBarrier类对外提供的await函数在底层都是调用该了doawait函数，其源代码如下。
 
@@ -222,7 +222,7 @@ private int dowait(boolean timed, long nanos)
 
 > ![](images/java-thread-x-cyclicbarrier-1.png)
 
-### # 核心函数 - nextGeneration函数
+### 核心函数 - nextGeneration函数
 
 > 此函数在所有线程进入屏障后会被调用，即生成下一个版本，所有线程又可以重新进入到屏障中，其源代码如下
 
@@ -326,7 +326,7 @@ private Node enq(final Node node) {
 
 > ![](images/java-thread-x-cyclicbarrier-2.png)
 
-### # breakBarrier函数
+### breakBarrier函数
 
 > 此函数的作用是损坏当前屏障，会唤醒所有在屏障中的线程。源代码如下:
 
@@ -343,7 +343,7 @@ private void breakBarrier() {
 
 > 说明: 可以看到，此函数也调用了AQS的signalAll函数，由signal函数提供支持。
 
-### # CyclicBarrier示例
+### CyclicBarrier示例
 
 > 下面通过一个例子来详解CyclicBarrier的使用和内部工作机制，源代码如下
 
@@ -438,13 +438,13 @@ main continue
 
 > 注意: 在线程await过程中中断线程会抛出异常，所有进入屏障的线程都将被释放。至于CyclicBarrier的其他用法，读者可以自行查阅API，不再累赘。
 
-### # 和CountDonwLatch再对比
+### 和CountDonwLatch再对比
 
 *   CountDownLatch减计数，CyclicBarrier加计数。
 *   CountDownLatch是一次性的，CyclicBarrier可以重用。
 *   CountDownLatch和CyclicBarrier都有让多个线程等待同步然后再开始下一步动作的意思，但是CountDownLatch的下一步的动作实施者是主线程，具有不可重复性；而CyclicBarrier的下一步动作实施者还是“其他线程”本身，具有往复多次实施动作的特点。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5392816.html，在此基础上做了增改。
 

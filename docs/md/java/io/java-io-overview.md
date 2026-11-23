@@ -4,7 +4,7 @@ title: ♥Java IO知识体系详解♥
 
 ---
 
-# ♥Java IO知识体系详解♥
+# Java IO知识体系详解
 
 ::: tip 提示
 本文主要梳理Java IO/NIO/AIO的知识体系。 @123
@@ -17,11 +17,11 @@ title: ♥Java IO知识体系详解♥
     *   相关文章
     *   参考文章
 
-### # 知识体系
+### 知识体系
 
 > ![](images/java-io-overview2.png)
 
-### # 相关文章
+### 相关文章
 
 > > `A. Java进阶 - IO框架之知识体系`：首先了解下Java IO框架包含什么，同时推荐下如何学习IO框架。@pdai
 
@@ -62,7 +62,7 @@ title: ♥Java IO知识体系详解♥
 
     *   Netty是一个高性能、异步事件驱动的NIO框架，提供了对TCP、UDP和文件传输的支持。作为当前最流行的NIO框架，Netty在互联网领域、大数据分布式计算领域、游戏行业、通信行业等获得了广泛的应用，一些业界著名的开源组件也基于Netty构建，比如RPC框架、zookeeper等
 
-### # 参考文章
+### 参考文章
 
 *   Java 基础IO源码 https://blog.csdn.net/panweiwei1994/article/details/78046000
 *   Linux 网络 I/O 模型简介(图文)https://blog.csdn.net/anxpp/article/details/51503329

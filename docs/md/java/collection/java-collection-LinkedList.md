@@ -27,7 +27,7 @@ title: Collection - LinkedList源码解析
         *   Deque 方法
     *   参考
 
-### # 概述
+### 概述
 
 > _LinkedList_同时实现了_List_接口和_Deque_接口，也就是说它既可以看作一个顺序容器，又可以看作一个队列(_Queue_)，同时又可以看作一个栈(_Stack_)。这样看来，_LinkedList_简直就是个全能冠军。当你需要使用栈或者队列时，可以考虑使用_LinkedList_，一方面是因为Java官方已经声明不建议使用_Stack_类，更遗憾的是，Java里根本没有一个叫做_Queue_的类(它是个接口名字)。关于栈或队列，现在的首选是_ArrayDeque_，它有着比_LinkedList_(当作栈或队列使用时)有着更好的性能。
 
@@ -41,9 +41,9 @@ Collections.synchronizedList()
 
 方法对其进行包装。
 
-### # LinkedList实现
+### LinkedList实现
 
-### # 底层数据结构
+### 底层数据结构
 
 > _LinkedList_底层`通过双向链表实现`，本节将着重讲解插入和删除元素时双向链表的维护过程，也即是之间解跟_List_接口相关的函数，而将_Queue_和_Stack_以及_Deque_相关的知识放在下一节讲。双向链表的每个节点用内部类_Node_表示。_LinkedList_通过`first`和`last`引用分别指向链表的第一个和最后一个元素。注意这里没有所谓的哑元，当链表为空的时候`first`和`last`都指向`null`。
 
@@ -81,7 +81,7 @@ private static class Node<E> {
     }
 ```
 
-### # 构造函数
+### 构造函数
 
 ```java
 /**
@@ -104,7 +104,7 @@ private static class Node<E> {
     }
 ```
 
-### # getFirst(), getLast()
+### getFirst(), getLast()
 
 > 获取第一个元素， 和获取最后一个元素:
 
@@ -136,7 +136,7 @@ private static class Node<E> {
     }
 ```
 
-### # removeFirst(), removeLast(), remove(e), remove(index)
+### removeFirst(), removeLast(), remove(e), remove(index)
 
 > `remove()`方法也有两个版本，一个是删除跟指定元素相等的第一个元素`remove(Object o)`，另一个是删除指定下标处的元素`remove(int index)`。
 
@@ -297,7 +297,7 @@ private static class Node<E> {
     }
 ```
 
-### # add()
+### add()
 
 > _add()_方法有两个版本，一个是`add(E e)`，该方法在_LinkedList_的末尾插入元素，因为有`last`指向链表末尾，在末尾插入元素的花费是常数时间。只需要简单修改几个相关引用即可；另一个是
 
@@ -884,8 +884,7 @@ return true;
         }
         return false;
     }
-```
 
-### # 参考
+### 参考
 
 *   Java LinkedList源码剖析 结合源码对LinkedList进行讲解 http://www.cnblogs.com/CarpenterLee/p/5457150.html

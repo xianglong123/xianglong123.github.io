@@ -33,7 +33,7 @@ Java泛型这个特性是从JDK 1.5才开始加入的，因此为了兼容之前
         *   如何获取泛型的参数类型？
     *   参考文章
 
-### # 为什么会引入泛型
+### 为什么会引入泛型
 
 > > 泛型的本质是为了参数化类型（在不创建新的类型的情况下，通过泛型指定的不同类型来控制形参具体限制的类型）。也就是说在泛型使用过程中，操作的数据类型被指定为一个参数，这种参数类型可以用在类、接口和方法中，分别被称为泛型类、泛型接口、泛型方法。
 
@@ -96,13 +96,13 @@ List<String> list = new ArrayList<String>();
 // list中只能放String, 不能放其它类型的元素
 ```
 
-### # 泛型的基本使用
+### 泛型的基本使用
 
 > 提示
 
 > 我们通过一些例子来学习泛型的使用；泛型有三种使用方式，分别为：泛型类、泛型接口、泛型方法。一些例子可以参考《李兴华 - Java实战经典》。@123
 
-### # 泛型类
+### 泛型类
 
 *   从一个简单的泛型类看起：
 
@@ -157,7 +157,7 @@ public class GenericsDemo09{
 }
 ```
 
-### # 泛型接口
+### 泛型接口
 
 *   简单的泛型接口
 
@@ -186,7 +186,7 @@ public class GenericsDemo24{
 }
 ```
 
-### # 泛型方法
+### 泛型方法
 
 > 泛型方法，是在调用方法的时候指明泛型的具体类型。重点看下泛型的方法（图参考自：https://www.cnblogs.com/iyangyuan/archive/2013/04/09/3011274.html）
 
@@ -198,19 +198,19 @@ public class GenericsDemo24{
 
 > ![](images/java-basic-generic-5.png)
 
-> 说明一下，定义泛型方法时，必须在返回值前边加一个`<T>`，来声明这是一个泛型方法，持有一个泛型`T`，然后才可以用泛型T作为方法的返回值。
+> 说明一下，定义泛型方法时，必须在返回值前边加一个`&lt;T&gt;`，来声明这是一个泛型方法，持有一个泛型`T`，然后才可以用泛型T作为方法的返回值。
 
-> `Class<T>`的作用就是指明泛型的具体类型，而`Class<T>`类型的变量c，可以用来创建泛型类的对象。
+> `Class&lt;T&gt;`的作用就是指明泛型的具体类型，而`Class&lt;T&gt;`类型的变量c，可以用来创建泛型类的对象。
 
 > 为什么要用变量c来创建对象呢？既然是泛型方法，就代表着我们不知道具体的类型是什么，也不知道构造方法如何，因此没有办法去new一个对象，但可以利用变量c的newInstance方法去创建对象，也就是利用反射创建对象。
 
-> 泛型方法要求的参数是`Class<T>`类型，而`Class.forName()`方法的返回值也是`Class<T>`，因此可以用`Class.forName()`作为参数。其中，`forName()`方法中的参数是何种类型，返回的`Class<T>`就是何种类型。在本例中，`forName()`方法中传入的是User类的完整路径，因此返回的是`Class<User>`类型的对象，因此调用泛型方法时，变量c的类型就是`Class<User>`，因此泛型方法中的泛型T就被指明为User，因此变量obj的类型为User。
+> 泛型方法要求的参数是`Class&lt;T&gt;`类型，而`Class.forName()`方法的返回值也是`Class&lt;T&gt;`，因此可以用`Class.forName()`作为参数。其中，`forName()`方法中的参数是何种类型，返回的`Class&lt;T&gt;`就是何种类型。在本例中，`forName()`方法中传入的是User类的完整路径，因此返回的是`Class&lt;User&gt;`类型的对象，因此调用泛型方法时，变量c的类型就是`Class&lt;User&gt;`，因此泛型方法中的泛型T就被指明为User，因此变量obj的类型为User。
 
-> 当然，泛型方法不是仅仅可以有一个参数`Class<T>`，可以根据需要添加其他参数。
+> 当然，泛型方法不是仅仅可以有一个参数`Class&lt;T&gt;`，可以根据需要添加其他参数。
 
 > `为什么要使用泛型方法呢`？因为泛型类要在实例化的时候就指明类型，如果想换一种类型，不得不重新new一次，可能不够灵活；而泛型方法可以在调用的时候指明类型，更加灵活。
 
-### # 泛型的上下限
+### 泛型的上下限
 
 *   `先看下如下的代码，很明显是会报错的` （具体错误原因请参考后文）。
 
@@ -453,7 +453,7 @@ public ArrayWithTypeToken(Class<T> type, int size) {
 
 *   擦除类定义中的类型参数 - 无限制类型擦除
 
-> 当类定义中的类型参数没有任何限制时，在类型擦除中直接被替换为Object，即形如`<T>`和`<?>`的类型参数都被替换为Object。
+> 当类定义中的类型参数没有任何限制时，在类型擦除中直接被替换为Object，即形如`&lt;T&gt;`和`<?>`的类型参数都被替换为Object。
 
 > ![](images/java-basic-generic-1.png)
 
@@ -491,7 +491,7 @@ public class Test {
 }
 ```
 
-> 在这个例子中，我们定义了两个ArrayList数组，不过一个是`ArrayList<String>`泛型类型的，只能存储字符串；一个是`ArrayList<Integer>`泛型类型的，只能存储整数，最后，我们通过list1对象和list2对象的`getClass()`方法获取他们的类的信息，最后发现结果为true。说明泛型类型String和Integer都被擦除掉了，只剩下原始类型。
+> 在这个例子中，我们定义了两个ArrayList数组，不过一个是`ArrayList&lt;String&gt;`泛型类型的，只能存储字符串；一个是`ArrayList&lt;Integer&gt;`泛型类型的，只能存储整数，最后，我们通过list1对象和list2对象的`getClass()`方法获取他们的类的信息，最后发现结果为true。说明泛型类型String和Integer都被擦除掉了，只剩下原始类型。
 
 *   通过反射添加其它类型元素
 
@@ -550,7 +550,7 @@ class Pair {
 }
 ```
 
-> 因为在`Pair<T>`中，`T` 是一个无限定的类型变量，所以用Object替换，其结果就是一个普通的类，如同泛型加入Java语言之前的已经实现的样子。在程序中可以包含不同类型的Pair，如`Pair<String>`或`Pair<Integer>`，但是擦除类型后他们的就成为原始的Pair类型了，原始类型都是Object。
+> 因为在`Pair&lt;T&gt;`中，`T` 是一个无限定的类型变量，所以用Object替换，其结果就是一个普通的类，如同泛型加入Java语言之前的已经实现的样子。在程序中可以包含不同类型的Pair，如`Pair&lt;String&gt;`或`Pair&lt;Integer&gt;`，但是擦除类型后他们的就成为原始的Pair类型了，原始类型都是Object。
 
 > 从上面章节，我们也可以明白ArrayList被擦除类型后，原始类型也变为Object，所以通过反射我们就可以存储字符串了。
 
@@ -753,7 +753,7 @@ class DateInter extends Pair<Date> {
 }
 ```
 
-> 在这个子类中，我们设定父类的泛型类型为`Pair<Date>`，在子类中，我们覆盖了父类的两个方法，我们的原意是这样的：将父类的泛型类型限定为Date，那么父类里面的两个方法的参数都为Date类型。
+> 在这个子类中，我们设定父类的泛型类型为`Pair&lt;Date&gt;`，在子类中，我们覆盖了父类的两个方法，我们的原意是这样的：将父类的泛型类型限定为Date，那么父类里面的两个方法的参数都为Date类型。
 
 ```java
 public Date getValue() {  
@@ -810,7 +810,7 @@ public static void main(String[] args) throws ClassNotFoundException {
 
 > `为什么会这样呢`？
 
-> 原因是这样的，我们传入父类的泛型类型是Date，`Pair<Date>`，我们的本意是将泛型类变为如下：
+> 原因是这样的，我们传入父类的泛型类型是Date，`Pair&lt;Date&gt;`，我们的本意是将泛型类变为如下：
 
 ```java
 class Pair {  
@@ -902,7 +902,7 @@ public Date getValue() {
 
 ### # 如何理解基本类型不能作为泛型类型？
 
-> > 比如，我们没有`ArrayList<int>`，只有`ArrayList<Integer>`, 为何？
+> > 比如，我们没有`ArrayList<int>`，只有`ArrayList&lt;Integer&gt;`, 为何？
 
 > 因为当类型擦除后，ArrayList的原始类型变为Object，但是Object类型不能存储int值，只能引用Integer的值。
 

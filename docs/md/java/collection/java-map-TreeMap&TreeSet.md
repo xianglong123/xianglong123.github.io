@@ -18,9 +18,9 @@ title: Map - TreeSet & TreeMap 源码解析
     *   方法剖析
     *   TreeSet
 
-### # Java 7 - TreeSet & TreeMap
+### Java 7 - TreeSet & TreeMap
 
-### # 总体介绍
+### 总体介绍
 
 > 之所以把_TreeSet_和_TreeMap_放在一起讲解，是因为二者在Java里有着相同的实现，前者仅仅是对后者做了一层包装，也就是说___TreeSet_里面有一个_TreeMap_(适配器模式)**。因此本文将重点分析_TreeMap_。
 
@@ -411,4 +411,3 @@ return m.put(e, PRESENT)==null;
 }
 ......
 }
-```

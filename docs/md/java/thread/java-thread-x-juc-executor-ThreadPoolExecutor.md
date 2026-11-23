@@ -29,7 +29,7 @@ title: JUC线程池:ThreadPoolExecutor详解
     *   再深入理解
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解ScheduledThreadPoolExecutor
+### 带着BAT大厂的面试问题去理解ScheduledThreadPoolExecutor
 
 > 提示
 
@@ -43,7 +43,7 @@ title: JUC线程池:ThreadPoolExecutor详解
 *   为什么ThreadPoolExecutor 的调整策略却不适用于 ScheduledThreadPoolExecutor?
 *   Executors 提供了几种方法来构造 ScheduledThreadPoolExecutor?
 
-### # ScheduledThreadPoolExecutor简介
+### ScheduledThreadPoolExecutor简介
 
 > ScheduledThreadPoolExecutor继承自 ThreadPoolExecutor，为任务提供延迟或周期执行，属于线程池的一种。和 ThreadPoolExecutor 相比，它还具有以下几种特性:
 
@@ -51,7 +51,7 @@ title: JUC线程池:ThreadPoolExecutor详解
 *   使用专门的存储队列—DelayedWorkQueue 来存储任务，DelayedWorkQueue 是无界延迟队列DelayQueue 的一种。相比ThreadPoolExecutor也简化了执行机制(delayedExecute方法，后面单独分析)。
 *   支持可选的run-after-shutdown参数，在池被关闭(shutdown)之后支持可选的逻辑来决定是否继续运行周期或延迟任务。并且当任务(重新)提交操作与 shutdown 操作重叠时，复查逻辑也不相同。
 
-### # ScheduledThreadPoolExecutor数据结构
+### ScheduledThreadPoolExecutor数据结构
 
 > ![](images/java-thread-x-stpe-1.png)
 
@@ -65,13 +65,13 @@ title: JUC线程池:ThreadPoolExecutor详解
 
 *   > `DelayedWorkQueue`: 这是 ScheduledThreadPoolExecutor 为存储周期或延迟任务专门定义的一个延迟队列，继承了 AbstractQueue，为了契合 ThreadPoolExecutor 也实现了 BlockingQueue 接口。它内部只允许存储 RunnableScheduledFuture 类型的任务。与 DelayQueue 的不同之处就是它只允许存放 RunnableScheduledFuture 对象，并且自己实现了二叉堆(DelayQueue 是利用了 PriorityQueue 的二叉堆结构)。
 
-### # ScheduledThreadPoolExecutor源码解析
+### ScheduledThreadPoolExecutor源码解析
 
 > > 以下源码的解析是基于你已经理解了FutureTask。
 
-### # 内部类ScheduledFutureTask
+### 内部类ScheduledFutureTask
 
-#### # 属性
+#### 属性
 
 ```
 //为相同延时任务提供的顺序编号
@@ -95,7 +95,7 @@ int heapIndex;
 *   `period`: 任务的执行周期时间，纳秒级。正数表示固定速率执行(为scheduleAtFixedRate提供服务)，负数表示固定延迟执行(为scheduleWithFixedDelay提供服务)，0表示不重复任务。
 *   `outerTask`: 重新入队的任务，通过reExecutePeriodic方法入队重新排序。
 
-#### # 核心方法run()
+#### 核心方法run()
 
 ```
 public void run() {
@@ -150,7 +150,7 @@ void reExecutePeriodic(RunnableScheduledFuture<?> task) {
 
 > reExecutePeriodic与delayedExecute的执行策略一致，只不过reExecutePeriodic不会执行拒绝策略而是直接丢掉任务。
 
-#### # cancel方法
+#### cancel方法
 
 ```
 public boolean cancel(boolean mayInterruptIfRunning) {
@@ -163,7 +163,7 @@ public boolean cancel(boolean mayInterruptIfRunning) {
 
 > ScheduledFutureTask.cancel本质上由其父类 FutureTask.cancel 实现。取消任务成功后会根据removeOnCancel参数决定是否从队列中移除此任务。
 
-### # 核心属性
+### 核心属性
 
 ```
 //关闭后继续执行已经存在的周期任务 
@@ -376,11 +376,10 @@ public void shutdown() {
     }
     tryTerminate(); //终止线程池
 }
-```
 
 > 说明: 池关闭方法调用了父类ThreadPoolExecutor的shutdown，具体分析见 ThreadPoolExecutor 篇。这里主要介绍以下在shutdown方法中调用的关闭钩子onShutdown方法，它的主要作用是在关闭线程池后取消并清除由于关闭策略不应该运行的所有任务，这里主要是根据 run-after-shutdown 参数(continueExistingPeriodicTasksAfterShutdown和executeExistingDelayedTasksAfterShutdown)来决定线程池关闭后是否关闭已经存在的任务。
 
-### # 再深入理解
+### 再深入理解
 
 *   `为什么ThreadPoolExecutor 的调整策略却不适用于 ScheduledThreadPoolExecutor？`
 
@@ -392,6 +391,6 @@ public void shutdown() {
 
 > 注意: newScheduledThreadPool(1, threadFactory) 不等价于newSingleThreadScheduledExecutor。newSingleThreadScheduledExecutor创建的线程池保证内部只有一个线程执行任务，并且线程数不可扩展；而通过newScheduledThreadPool(1, threadFactory)创建的线程池可以通过setCorePoolSize方法来修改核心线程数。
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自泰迪的bagwell的https://www.jianshu.com/p/8c97953f2751，在此基础上做了增改。

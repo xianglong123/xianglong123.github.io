@@ -3,14 +3,14 @@ title: 属性加解密插件
 
 ---
 
-# ♥属性加解密插件♥
+# 属性加解密插件
 ::: tip 提示
 之前工作的时候，遇到一个数据加密的需求，大致就是平台的一些敏感数据需要进行脱敏，因为项目已经运行很长一段时间，再加上系统很多，所以就开发了这个插件，相信工作上的小伙伴都或多或少的接触过
 接下来我就将插件的能力和使用方法和大家分享下，[源码](https://github.com/xianglong123/mybatis-desensitization)自取，素质star。@123
 :::
 
 ---
-### 介绍
+## 介绍
 > 这个项目用到了mybatis提供的拦截器，初学的小伙伴可以先了解下mybatis拦截器的作用。这个需求我主要是想通过在入参和出参的节点加对应的拦截逻辑，恰好mybatis提供了对应的能力
 
 ```java
@@ -44,7 +44,7 @@ public class DecryptOutMybatisInterceptor implements Interceptor {
 > 通过上面两个方法为基础，对逻辑todo加入自己业务的处理方法，[源码](https://github.com/xianglong123/mybatis-desensitization) 已经做了适当的处理，只需要开发继承对应的方法，实现加解密方法即可
 
 
-### 使用方式
+## 使用方式
 
 ---
 > 此jar未上传公共私服，请下载本地仓库进行引用，项目已配置本地上传组件，使用gradle的upload上传本地
@@ -92,11 +92,11 @@ public class Account {
 }
 ```
 
-### 参考
+## 参考
 [源码](https://github.com/xianglong123/mybatis-desensitization)
 
 [使用插件案例](https://github.com/xianglong123/cas-druid/blob/master/src/main/java/com/cas/bean/Account.java)
 
 
-### 感谢
+## 感谢
 > 您好，如果文档能帮助到您，希望可以满足作者的小小虚荣心，在源码的项目上点一个小小的star ♥️

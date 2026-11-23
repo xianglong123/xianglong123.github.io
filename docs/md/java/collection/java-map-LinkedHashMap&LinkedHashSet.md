@@ -22,9 +22,9 @@ title: Map - LinkedHashSet&Map源码解析
         *   LinkedHashSet
         *   LinkedHashMap经典用法
 
-### # Java 7 - LinkedHashSet&Map
+### Java 7 - LinkedHashSet&Map
 
-### # 总体介绍
+### 总体介绍
 
 > 如果你已看过前面关于_HashSet_和_HashMap_，以及_TreeSet_和_TreeMap_的讲解，一定能够想到本文将要讲解的_LinkedHashSet_和_LinkedHashMap_其实也是一回事。_LinkedHashSet_和_LinkedHashMap_在Java里也有着相同的实现，前者仅仅是对后者做了一层包装，也就是说`LinkedHashSet里面有一个LinkedHashMap(适配器模式)`。因此本文将重点分析_LinkedHashMap_。
 
@@ -204,5 +204,4 @@ this.cacheSize = cacheSize;
        return size() > cacheSize;
     }
 }
-```
 

@@ -33,9 +33,9 @@ title: Java 8 - Optional类深度解析
 
 > > 这是一个可以为null的容器对象。如果值存在则isPresent()方法会返回true，调用get()方法会返回该对象。
 
-### # Optional类包含的方法
+### Optional类包含的方法
 
-### # of
+### of
 
 > > 为非null的值创建一个Optional。
 
@@ -48,7 +48,7 @@ Optional<String> name = Optional.of("Sanaulla");
 Optional<String> someNull = Optional.of(null);
 ```
 
-### # ofNullable
+### ofNullable
 
 > > 为指定的值创建一个Optional，如果指定的值为null，则返回一个空的Optional。
 
@@ -60,7 +60,7 @@ Optional<String> someNull = Optional.of(null);
 Optional empty = Optional.ofNullable(null);
 ```
 
-### # isPresent
+### isPresent
 
 > 非常容易理解
 
@@ -76,7 +76,7 @@ if (name.isPresent()) {
 }
 ```
 
-### # get
+### get
 
 > > 如果Optional有值则将其返回，否则抛出NoSuchElementException。
 
@@ -92,7 +92,7 @@ try {
 }
 ```
 
-### # ifPresent
+### ifPresent
 
 > > 如果Optional实例有值则为其调用consumer，否则不做处理
 
@@ -108,7 +108,7 @@ name.ifPresent((value) -> {
 });
 ```
 
-### # orElse
+### orElse
 
 > > 如果有值则将其返回，否则返回指定的其它值。
 
@@ -123,7 +123,7 @@ System.out.println(empty.orElse("There is no value present!"));
 System.out.println(name.orElse("There is some value!"));
 ```
 
-### # orElseGet
+### orElseGet
 
 > > orElseGet与orElse方法类似，区别在于得到的默认值。orElse方法将传入的字符串作为默认值，orElseGet方法可以接受Supplier接口的实现用来生成默认值。示例如下:
 
@@ -136,7 +136,7 @@ System.out.println(empty.orElseGet(() -> "Default Value"));
 System.out.println(name.orElseGet(() -> "Default Value"));
 ```
 
-### # orElseThrow
+### orElseThrow
 
 > > 如果有值则将其返回，否则抛出supplier接口创建的异常。
 
@@ -174,7 +174,7 @@ class ValueAbsentException extends Throwable {
 }
 ```
 
-### # map
+### map
 
 > map方法文档说明如下:
 
@@ -189,7 +189,7 @@ Optional<String> upperName = name.map((value) -> value.toUpperCase());
 System.out.println(upperName.orElse("No value found"));
 ```
 
-### # flatMap
+### flatMap
 
 > > 如果有值，为其执行mapping函数返回Optional类型返回值，否则返回空Optional。flatMap与map(Funtion)方法类似，区别在于flatMap中的mapper返回值必须是Optional。调用结束时，flatMap不会对结果用Optional封装。
 
@@ -205,7 +205,7 @@ upperName = name.flatMap((value) -> Optional.of(value.toUpperCase()));
 System.out.println(upperName.orElse("No value found"));//输出SANAULLA
 ```
 
-### # filter
+### filter
 
 > filter个方法通过传入限定条件对Optional实例的值进行过滤。文档描述如下:
 
@@ -228,7 +228,7 @@ Optional<String> shortName = anotherName.filter((value) -> value.length() > 6);
 System.out.println(shortName.orElse("The name is less than 6 characters"));
 ```
 
-### # 一些例子
+### 一些例子
 
 *   一个综合例子
 
@@ -388,7 +388,7 @@ public static <T> Optional<T> resolve(Supplier<T> resolver) {
 
 > 请记住，这两个解决方案可能没有传统 null 检查那么高的性能。不过在大多数情况下不会有太大问题。
 
-### # 参考
+### 参考
 
 > 原文链接: javacodegeeks
 

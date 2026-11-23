@@ -9,7 +9,7 @@ title: 增删改查(service)
 或者参考[源码](https://github.com/xianglong123/cas-mybatis-plus/tree/master/src/test/java/com/cas)@123
 :::
 
-## Save
+# Save
 > 这里就提供了3个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -64,8 +64,8 @@ public class InsertServiceTest {
 }
 ```
 
-## SaveOrUpdate
-> 有四个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select) *boolean saveOrUpdate(T entity, Wrapper<T> updateWrapper); 存在安全问题，已计划移除*
+# SaveOrUpdate
+> 有四个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select) *boolean saveOrUpdate(T entity, Wrapper&lt;T&gt; updateWrapper); 存在安全问题，已计划移除*
 
 ---
 
@@ -137,7 +137,7 @@ public class InsertAndUpdateServiceTest {
 }
 ```
 
-## Remove
+# Remove
 > 一共4个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 
@@ -192,7 +192,7 @@ public class RemoveTest {
 
 ```
 
-## Update
+# Update
 > 一共5个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -269,7 +269,7 @@ public class UpdateServiceTest {
 }
 ```
 
-## Get
+# Get
 > 一共5个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -347,7 +347,7 @@ public class GetServiceTest {
 }
 ```
 
-## List
+# List
 > 一共10个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -461,7 +461,7 @@ public class ListServiceTest {
 }
 ```
 
-## Page
+# Page
 > 一共4个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -515,7 +515,7 @@ public class PageServiceTest {
 }
 ```
 
-## Count
+# Count
 > 一共2个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -549,7 +549,7 @@ public class CountServiceTest {
 }
 ```
 
-## [链式]query
+# [链式]query
 > 一共2个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -582,7 +582,7 @@ public class QueryChainServiceTest {
 
 ```
 
-## [链式]update
+# [链式]update
 > 一共2个方法参考 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 ---
@@ -615,10 +615,10 @@ public class UpdateChainServiceTest {
 ```
 
 
-## 参考
+# 参考
 [官方文档](https://baomidou.com/pages/49cc81/#select)
 
 [源码](https://github.com/xianglong123/cas-mybatis-plus)
 
-## 感谢
+# 感谢
 > 您好，如果文档能帮助到您，希望可以满足作者的小小虚荣心，在源码的项目上点一个小小的star ♥️

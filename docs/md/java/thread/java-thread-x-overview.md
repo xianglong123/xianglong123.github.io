@@ -15,11 +15,11 @@ Java 并发相关知识体系详解，包含理论基础，线程基础，synchr
     *   相关文章
     *   参考文档
 
-### # 知识体系
+### 知识体系
 
 > ![](images/java-concurrent-overview-1.png)
 
-### # 相关文章
+### 相关文章
 
 > > `A. Java进阶 - Java 并发之基础`：首先全局的了解并发的知识体系，同时了解并发理论基础和线程基础，并发关键字等，这些是你理解Java并发框架的基础。@123
 
@@ -153,7 +153,7 @@ Java 并发相关知识体系详解，包含理论基础，线程基础，synchr
     *   请先说说非并发集合中Fail-fast机制?
     *   再为什么说ArrayList查询快而增删慢?
     *   对比ArrayList说说CopyOnWriteArrayList的增删改查实现原理? COW基于拷贝
-    *   再说下弱一致性的迭代器原理是怎么样的? `COWIterator<E>`
+    *   再说下弱一致性的迭代器原理是怎么样的? `COWIterator&lt;E&gt;`
     *   CopyOnWriteArrayList为什么并发安全且性能比Vector好?
     *   CopyOnWriteArrayList有何缺陷，说说其应用场景?
 *   JUC集合: ConcurrentLinkedQueue详解
@@ -282,7 +282,7 @@ Java 并发相关知识体系详解，包含理论基础，线程基础，synchr
 *   TODO：Java 并发 - 并发的本质：协作,分工和互斥
 *   TODO：Java 并发 - 并发的模式梳理
 
-### # 参考文档
+### 参考文档
 
 > 官方文档 https://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html
 

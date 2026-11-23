@@ -45,7 +45,7 @@ Java异常是Java提供的一种识别及响应错误的一致性机制，java�
     *   参考文章
 
 
-### # 异常的层次结构
+### 异常的层次结构
 
 > 异常指不期而至的各种状况，如：文件找不到、网络连接失败、非法参数等。异常是一个事件，它发生在程序运行期间，干扰了正常的指令流程。Java通 过API中Throwable类的众多子类描述各种不同的异常。因而，Java异常都是对象，是Throwable子类的实例，描述了出现在一段编码中的 错误条件。当条件生成时，错误将引发异常。
 
@@ -53,7 +53,7 @@ Java异常是Java提供的一种识别及响应错误的一致性机制，java�
 
 > ![](images/java-basic-exception-1.png)
 
-### # Throwable
+### Throwable
 
 > Throwable 是 Java 语言中所有错误与异常的超类。
 
@@ -61,7 +61,7 @@ Java异常是Java提供的一种识别及响应错误的一致性机制，java�
 
 > Throwable 包含了其线程创建时线程执行堆栈的快照，它提供了 printStackTrace() 等接口用于获取堆栈跟踪数据等信息。
 
-### # Error（错误）
+### Error（错误）
 
 > Error 类及其子类：程序中无法处理的错误，表示运行应用程序中出现了严重的错误。
 
@@ -69,7 +69,7 @@ Java异常是Java提供的一种识别及响应错误的一致性机制，java�
 
 > 这些错误是不受检异常，非代码性错误。因此，当此类错误发生时，应用程序不应该去处理此类错误。按照Java惯例，我们是不应该实现任何新的Error子类的！
 
-### # Exception（异常）
+### Exception（异常）
 
 > 程序本身可以捕获并且可以处理的异常。Exception 这种异常又分为两类：运行时异常和编译时异常。
 
@@ -83,7 +83,7 @@ Java异常是Java提供的一种识别及响应错误的一致性机制，java�
 
 > 是RuntimeException以外的异常，类型上都属于Exception类及其子类。从程序语法角度讲是必须进行处理的异常，如果不处理，程序就不能编译通过。如IOException、SQLException等以及用户自定义的Exception异常，一般情况下不自定义检查异常。
 
-### # 可查的异常（checked exceptions）和不可查的异常（unchecked exceptions）
+### 可查的异常（checked exceptions）和不可查的异常（unchecked exceptions）
 
 *   `可查异常`（编译器要求必须处置的异常）：
 
@@ -95,13 +95,13 @@ Java异常是Java提供的一种识别及响应错误的一致性机制，java�
 
 > 包括运行时异常（RuntimeException与其子类）和错误（Error）。
 
-### # 异常基础
+### 异常基础
 
 > 提示
 
 > 接下来我们看下异常使用的基础。
 
-### # 异常关键字
+### 异常关键字
 
 *   `try` – 用于监听。将要被监听的代码(可能抛出异常的代码)放在try语句块之内，当try语句块内发生异常时，异常就被抛出。
 *   `catch` – 用于捕获异常。catch用来捕获try语句块中发生的异常。
@@ -109,7 +109,7 @@ Java异常是Java提供的一种识别及响应错误的一致性机制，java�
 *   `throw` – 用于抛出异常。
 *   `throws` – 用在方法签名中，用于声明该方法可能抛出的异常。
 
-### # 异常的申明(throws)
+### 异常的申明(throws)
 
 > 在Java中，当前执行的语句必属于某个方法，Java解释器调用main方法执行开始执行程序。若方法中存在检查异常，如果不对其捕获，那必须在方法头中显式声明该异常，以便于告知方法调用者此方法有异常，需要进行处理。 在方法中声明一个异常，方法头中使用关键字throws，后面接上要声明的异常。若声明多个异常，则使用逗号分割。如下所示：
 
@@ -142,7 +142,7 @@ private static void readFile(String filePath) throws IOException {
 *   仅当抛出了异常，该方法的调用者才必须处理或者重新抛出该异常。当方法的调用者无力处理该异常的时候，应该继续抛出，而不是囫囵吞枣。
 *   调用方法必须遵循任何可查异常的处理和声明规则。若覆盖一个方法，则不能声明与覆盖方法不同的异常。声明的任何异常必须是被覆盖方法所声明异常的同类或子类。
 
-### # 异常的抛出(throw)
+### 异常的抛出(throw)
 
 > 如果代码可能会引发某种错误，可以创建一个合适的异常类实例并抛出它，这就是抛出异常。如下所示：
 
@@ -171,7 +171,7 @@ private static void readFile(String filePath) throws MyException {
 }
 ```
 
-### # 异常的自定义
+### 异常的自定义
 
 > 习惯上，定义一个异常类应包含两个构造函数，一个无参构造函数和一个带有详细描述信息的构造函数（Throwable 的 toString 方法会打印这些详细信息，调试时很有用）, 比如上面用到的自定义MyException：
 
@@ -185,7 +185,7 @@ public class MyException extends Exception {
 }
 ```
 
-### # 异常的捕获
+### 异常的捕获
 
 > 异常捕获处理的方法通常有：
 
@@ -194,7 +194,7 @@ public class MyException extends Exception {
 *   try-finally
 *   try-with-resource
 
-#### # try-catch
+#### try-catch
 
 > 在一个 try-catch 语句块中可以捕获多个异常类型，并对不同类型的异常做出不同的处理
 
@@ -224,7 +224,7 @@ private static void readFile(String filePath) {
 }
 ```
 
-#### # try-catch-finally
+#### try-catch-finally
 
 *   常规语法
 
@@ -275,7 +275,7 @@ private static void readFile(String filePath) throws MyException {
 }
 ```
 
-#### # try-finally
+#### try-finally
 
 > > 可以直接用try-finally吗？ 可以。
 
@@ -300,7 +300,7 @@ try {
 *   程序所在的线程死亡。
 *   关闭CPU。
 
-#### # try-with-resource
+#### try-with-resource
 
 > > try-with-resource是Java 7中引入的，很容易被忽略。
 
@@ -331,7 +331,7 @@ public interface Closeable extends AutoCloseable {
 
 > try 代码块退出时，会自动调用 scanner.close 方法，和把 scanner.close 方法放在 finally 代码块中不同的是，若 scanner.close 抛出异常，则会被抑制，抛出的仍然为原始异常。被抑制的异常会由 addSusppressed 方法添加到原来的异常，如果想要获取被抑制的异常列表，可以调用 getSuppressed 方法来获取。
 
-### # 异常基础总结
+### 异常基础总结
 
 *   try、catch和finally都不能单独使用，只能是try-catch、try-finally或者try-catch-finally。
 *   try语句块监控代码，出现异常就停止执行下面的代码，然后将异常移交给catch语句块来处理。
@@ -351,7 +351,7 @@ public interface Closeable extends AutoCloseable {
 *   进行简化（如果你的异常模式使问题变得太复杂，那么用起来会非常痛苦）。
 *   让类库和程序更安全。
 
-### # 常用的异常
+### 常用的异常
 
 > 在Java中提供了一些异常用来描述经常发生的错误，对于这些异常，有的需要程序员进行捕获处理或声明抛出，有的是由Java虚拟机自动进行捕获处理。Java中常见的异常类:
 
@@ -382,7 +382,7 @@ public interface Closeable extends AutoCloseable {
     *   IllegalAccessException 不允许访问某类异常
     *   InstantiationException 当应用程序试图使用Class类中的newInstance()方法创建一个类的实例，而指定的类对象无法被实例化时，抛出该异常
 
-### # 异常实践
+### 异常实践
 
 > 提示
 
@@ -394,7 +394,7 @@ public interface Closeable extends AutoCloseable {
 
 > 这里给出几个被很多团队使用的异常处理最佳实践。
 
-### # 只针对不正常的情况才使用异常
+### 只针对不正常的情况才使用异常
 
 > > 异常只应该被用于不正常的条件，它们永远不应该被用于正常的控制流。《阿里手册》中：【强制】Java 类库中定义的可以通过预检查方式规避的RuntimeException异常不应该通过catch 的方式来处理，比如：NullPointerException，IndexOutOfBoundsException等等。
 
@@ -424,7 +424,7 @@ try {
 *   把代码放在try-catch中返回阻止了JVM实现本来可能要执行的某些特定的优化。
 *   对数组进行遍历的标准模式并不会导致冗余的检查，有些现代的JVM实现会将它们优化掉。
 
-### # 在 finally 块中清理资源或者使用 try-with-resource 语句
+### 在 finally 块中清理资源或者使用 try-with-resource 语句
 
 > 当使用类似InputStream这种需要使用后关闭的资源时，一个常见的错误就是在try块的最后关闭资源。
 
@@ -493,7 +493,7 @@ public void automaticallyCloseResource() {
 }
 ```
 
-### # 尽量使用标准的异常
+### 尽量使用标准的异常
 
 > > 代码重用是值得提倡的，这是一条通用规则，异常也不例外。
 
@@ -518,7 +518,7 @@ public void automaticallyCloseResource() {
 
 > 最后，一定要清楚，选择重用哪一种异常并没有必须遵循的规则。例如，考虑纸牌对象的情形，假设有一个用于发牌操作的方法，它的参数(handSize)是发一手牌的纸牌张数。假设调用者在这个参数中传递的值大于整副牌的剩余张数。那么这种情形既可以被解释为IllegalArgumentException(handSize的值太大)，也可以被解释为IllegalStateException(相对客户的请求而言，纸牌对象的纸牌太少)。
 
-### # 对异常进行文档说明
+### 对异常进行文档说明
 
 > > 当在方法上声明抛出异常时，也需要进行文档说明。目的是为了给调用者提供尽可能多的信息，从而可以更好地避免或处理异常。
 
@@ -537,7 +537,7 @@ public void doSomething(String input) throws MyBusinessException {
 
 > 同时，在抛出MyBusinessException 异常时，需要尽可能精确地描述问题和相关信息，这样无论是打印到日志中还是在监控工具中，都能够更容易被人阅读，从而可以更好地定位具体错误信息、错误的严重程度等。
 
-### # 优先捕获最具体的异常
+### 优先捕获最具体的异常
 
 > > 大多数 IDE 都可以帮助你实现这个最佳实践。当你尝试首先捕获较不具体的异常时，它们会报告无法访问的代码块。
 
@@ -559,7 +559,7 @@ public void catchMostSpecificExceptionFirst() {
 }
 ```
 
-### # 不要捕获 Throwable 类
+### 不要捕获 Throwable 类
 
 > > Throwable 是所有异常和错误的超类。你可以在 catch 子句中使用它，但是你永远不应该这样做！
 
@@ -577,7 +577,7 @@ public void doNotCatchThrowable() {
 }
 ```
 
-### # 不要忽略异常
+### 不要忽略异常
 
 > > 很多时候，开发者很有自信不会抛出异常，因此写了一个catch块，但是没有做任何处理或者记录日志。
 
@@ -605,7 +605,7 @@ public void logAnException() {
 }
 ```
 
-### # 不要记录并抛出异常
+### 不要记录并抛出异常
 
 > > 这可能是本文中最常被忽略的最佳实践。
 
@@ -646,7 +646,7 @@ public void wrapException(String input) throws MyBusinessException {
 
 > 因此，仅仅当想要处理异常时才去捕获，否则只需要在方法签名中声明让调用者去处理。
 
-### # 包装异常时不要抛弃原始的异常
+### 包装异常时不要抛弃原始的异常
 
 > 捕获标准异常并包装为自定义异常是一个很常见的做法。这样可以添加更为具体的异常信息并能够做针对的异常处理。 在你这样做时，请确保将原始异常设置为原因（注：参考下方代码 NumberFormatException e 中的原始异常 e ）。Exception 类提供了特殊的构造函数方法，它接受一个 Throwable 作为参数。否则，你将会丢失堆栈跟踪和原始异常的消息，这将会使分析导致异常的异常事件变得困难。
 
@@ -660,11 +660,11 @@ public void wrapException(String input) throws MyBusinessException {
 }
 ```
 
-### # 不要使用异常控制程序的流程
+### 不要使用异常控制程序的流程
 
 > 不应该使用异常控制应用的执行流程，例如，本应该使用if语句进行条件判断的情况下，你却使用异常处理，这是非常不好的习惯，会严重影响应用的性能。
 
-### # 不要在finally块中使用return。
+### 不要在finally块中使用return。
 
 > try块中的return语句执行成功后，并不马上返回，而是继续执行finally块中的语句，如果此处存在return语句，则在此直接返回，无情丢弃掉try块中的返回点。
 
@@ -683,13 +683,13 @@ public int checkReturn() {
 }
 ```
 
-### # 深入理解异常
+### 深入理解异常
 
 > 提示
 
 > 我们再深入理解下异常，看下底层实现。
 
-### # JVM处理异常的机制？
+### JVM处理异常的机制？
 
 > 提到JVM处理异常的机制，就需要提及Exception Table，以下称为异常表。我们暂且不急于介绍异常表，先看一个简单的 Java 处理异常的小例子。
 
@@ -896,7 +896,7 @@ public static java.lang.String tryCatchReturn();
       40: athrow  如果catch有未处理的异常，抛出去。
 ```
 
-### # 异常是否耗时？为什么会耗时？
+### 异常是否耗时？为什么会耗时？
 
 > 说用异常慢，首先来看看异常慢在哪里？有多慢？下面的测试用例简单的测试了建立对象、建立异常对象、抛出并接住异常对象三者的耗时对比：
 
@@ -959,7 +959,7 @@ public class ExceptionTest {
 
 *   https://www.iteye.com/blog/icyfenix-857722
 
-### # 参考文章
+### 参考文章
 
 *   https://blog.csdn.net/MacWx/article/details/90204111
 *   https://blog.csdn.net/hguisu/article/details/6155636

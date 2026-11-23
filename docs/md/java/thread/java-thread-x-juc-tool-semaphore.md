@@ -24,9 +24,9 @@ title: JUC工具类:Semaphore详解
 *   Semaphore初始化有1个令牌，1个线程调用一次acquire方法，然后调用两次release方法，之后另外一个线程调用acquire(2)方法，此线程能够获取到足够的令牌并继续运行吗?
 *   Semaphore初始化有2个令牌，一个线程调用1次release方法，然后一次性获取3个令牌，会获取到吗?
 
-### # Semaphore源码分析
+### Semaphore源码分析
 
-### # 类的继承关系
+### 类的继承关系
 
 ```
 public class Semaphore implements java.io.Serializable {}
@@ -34,7 +34,7 @@ public class Semaphore implements java.io.Serializable {}
 
 > 说明: Semaphore实现了Serializable接口，即可以进行序列化。
 
-### # 类的内部类
+### 类的内部类
 
 > Semaphore总共有三个内部类，并且三个内部类是紧密相关的，下面先看三个类的关系。
 
@@ -42,7 +42,7 @@ public class Semaphore implements java.io.Serializable {}
 
 > 说明: Semaphore与ReentrantLock的内部类的结构相同，类内部总共存在Sync、NonfairSync、FairSync三个类，NonfairSync与FairSync类继承自Sync类，Sync类继承自AbstractQueuedSynchronizer抽象类。下面逐个进行分析。
 
-### # 类的内部类 - Sync类
+### 类的内部类 - Sync类
 
 > Sync类的源码如下
 
@@ -120,7 +120,7 @@ abstract static class Sync extends AbstractQueuedSynchronizer {
 
 > ![](images/java-thread-x-semaphore-2.png)
 
-### # 类的内部类 - NonfairSync类
+### 类的内部类 - NonfairSync类
 
 > NonfairSync类继承了Sync类，表示采用非公平策略获取资源，其只有一个tryAcquireShared方法，重写了AQS的该方法，其源码如下:
 
@@ -142,7 +142,7 @@ static final class NonfairSync extends Sync {
 
 > 说明: 从tryAcquireShared方法的源码可知，其会调用父类Sync的nonfairTryAcquireShared方法，表示按照非公平策略进行资源的获取。
 
-### # 类的内部类 - FairSync类
+### 类的内部类 - FairSync类
 
 > FairSync类继承了Sync类，表示采用公平策略获取资源，其只有一个tryAcquireShared方法，重写了AQS的该方法，其源码如下。
 
@@ -164,7 +164,7 @@ protected int tryAcquireShared(int acquires) {
 
 > 说明: 从tryAcquireShared方法的源码可知，它使用公平策略来获取资源，它会判断同步队列中是否存在其他的等待节点。
 
-### # 类的属性
+### 类的属性
 
 ```
 public class Semaphore implements java.io.Serializable {
@@ -177,7 +177,7 @@ public class Semaphore implements java.io.Serializable {
 
 > 说明: Semaphore自身只有两个属性，最重要的是sync属性，基于Semaphore对象的操作绝大多数都转移到了对sync的操作。
 
-### # 类的构造函数
+### 类的构造函数
 
 *   Semaphore(int)型构造函数
 
@@ -199,7 +199,7 @@ public Semaphore(int permits, boolean fair) {
 
 > 说明: 该构造函数会创建具有给定的许可数和给定的公平设置的Semaphore。
 
-### # 核心函数分析 - acquire函数
+### 核心函数分析 - acquire函数
 
 > 此方法从信号量获取一个(多个)许可，在提供一个许可前一直将线程阻塞，或者线程被中断，其源码如下
 
@@ -217,7 +217,7 @@ public void acquire() throws InterruptedException {
 
 > 说明: 上图只是给出了大体会调用到的方法，和具体的示例可能会有些差别，之后会根据具体的示例进行分析。
 
-### # 核心函数分析 - release函数
+### 核心函数分析 - release函数
 
 > 此方法释放一个(多个)许可，将其返回给信号量，源码如下。
 
@@ -235,7 +235,7 @@ public void release() {
 
 > 说明: 上图只是给出了大体会调用到的方法，和具体的示例可能会有些差别，之后会根据具体的示例进行分析。
 
-### # Semaphore示例
+### Semaphore示例
 
 > 下面给出了一个使用Semaphore的示例。
 
@@ -353,27 +353,27 @@ t2 release successfully
 
 > 说明: t2线程经过release后，此时信号量的许可又变为10个了，此时Sync queue中的结点还是没有变化。
 
-### # 更深入理解
+### 更深入理解
 
-### # 单独使用Semaphore是不会使用到AQS的条件队列的
+### 单独使用Semaphore是不会使用到AQS的条件队列的
 
 > 不同于CyclicBarrier和ReentrantLock，单独使用Semaphore是不会使用到AQS的条件队列的，其实，只有进行await操作才会进入条件队列，其他的都是在同步队列中，只是当前线程会被park。
 
-### # 场景问题
+### 场景问题
 
-#### # semaphore初始化有10个令牌，11个线程同时各调用1次acquire方法，会发生什么?
+#### semaphore初始化有10个令牌，11个线程同时各调用1次acquire方法，会发生什么?
 
 > 答案：拿不到令牌的线程阻塞，不会继续往下运行。
 
-#### # semaphore初始化有10个令牌，一个线程重复调用11次acquire方法，会发生什么?
+#### semaphore初始化有10个令牌，一个线程重复调用11次acquire方法，会发生什么?
 
 > 答案：线程阻塞，不会继续往下运行。可能你会考虑类似于锁的重入的问题，很好，但是，令牌没有重入的概念。你只要调用一次acquire方法，就需要有一个令牌才能继续运行。
 
-#### # semaphore初始化有1个令牌，1个线程调用一次acquire方法，然后调用两次release方法，之后另外一个线程调用acquire(2)方法，此线程能够获取到足够的令牌并继续运行吗?
+#### semaphore初始化有1个令牌，1个线程调用一次acquire方法，然后调用两次release方法，之后另外一个线程调用acquire(2)方法，此线程能够获取到足够的令牌并继续运行吗?
 
 > 答案：能，原因是release方法会添加令牌，并不会以初始化的大小为准。
 
-#### # semaphore初始化有2个令牌，一个线程调用1次release方法，然后一次性获取3个令牌，会获取到吗?
+#### semaphore初始化有2个令牌，一个线程调用1次release方法，然后一次性获取3个令牌，会获取到吗?
 
 > 答案：能，原因是release会添加令牌，并不会以初始化的大小为准。Semaphore中release方法的调用并没有限制要在acquire后调用。
 
@@ -395,7 +395,7 @@ public class TestSemaphore2 {
 }
 ```
 
-### # 参考文章
+### 参考文章
 
 *   文章主要参考自leesf的https://www.cnblogs.com/leesf456/p/5414778.html，在此基础上做了增改。
 *   https://blog.csdn.net/u010412719/article/details/94986327

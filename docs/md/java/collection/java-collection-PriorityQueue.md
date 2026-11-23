@@ -21,7 +21,7 @@ title: Collection - PriorityQueue源码解析
         *   remove(Object o)
     *   参考
 
-### # 概述
+### 概述
 
 > 前面以Java _ArrayDeque_为例讲解了_Stack_和_Queue_，其实还有一种特殊的队列叫做_PriorityQueue_，即优先队列。`优先队列的作用是能保证每次取出的元素都是队列中权值最小的`(Java的优先队列每次取最小元素，C++的优先队列每次取最大元素)。这里牵涉到了大小关系，`元素大小的评判可以通过元素本身的自然顺序(_natural ordering_)，也可以通过构造时传入的比较器`(_Comparator_，类似于C++的仿函数)。
 
@@ -181,8 +181,7 @@ siftDown(i, moved);//情况2
 }
 return true;
 }
-```
 
-### # 参考
+### 参考
 
 *   深入理解Java PriorityQueue 结合源码对PriorityQueue进行讲解 http://www.cnblogs.com/CarpenterLee/p/5488070.html

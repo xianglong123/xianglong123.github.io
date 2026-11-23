@@ -21,18 +21,18 @@ title: 调试排错 - Java 内存分析之堆内存和MetaSpace内存
         *   堆内存dump
         *   使用MAT分析内存
 
-### # 常见的内存溢出问题(内存和MetaSpace内存)
+### 常见的内存溢出问题(内存和MetaSpace内存)
 
 > > 常见的内存溢出问题(内存和MetaSpace内存)。
 
-### # Java 堆内存溢出
+### Java 堆内存溢出
 
 > Java 堆内存（Heap Memory)主要有两种形式的错误：
 
 1.  OutOfMemoryError: Java heap space
 2.  OutOfMemoryError: GC overhead limit exceeded
 
-#### # OutOfMemoryError: Java heap space
+#### OutOfMemoryError: Java heap space
 
 > 在 Java 堆中只要不断的创建对象，并且 `GC-Roots` 到对象之间存在引用链，这样 `JVM` 就不会回收对象。
 
@@ -399,7 +399,6 @@ java.lang.OutOfMemoryError: Metaspace
 
 -agentlib:hprof=heap=dump,format=b
 
-```
 
 
 *   `jmap获取` (常用)
@@ -427,7 +426,7 @@ jmap -dump:format=b file=<文件名XX.hprof> <pid>
 > Acquire Heap Dump
 
 
-### # 使用MAT分析内存
+### 使用MAT分析内存
 
 
 > MAT 等工具可以看：Java 问题排查之JVM可视化工具 - MAT

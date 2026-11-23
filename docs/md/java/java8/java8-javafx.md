@@ -26,7 +26,7 @@ JavaFX主要致力于富客户端开发，以弥补swing的缺陷，主要提供
     *   总结
     *   参考
 
-### # JavaFX历史
+### JavaFX历史
 
 > 跟java在服务器端和web端成绩相比，桌面一直是java的软肋，于是Sun公司在2008年推出JavaFX，弥补桌面软件的缺陷，请看下图JavaFX一路走过来的改进
 
@@ -40,29 +40,29 @@ JavaFX主要致力于富客户端开发，以弥补swing的缺陷，主要提供
 
 > 从JDK 7u6开始，JavaFx就与JDK捆绑在一起了，JavaFX团队称，下一个版本将是8.0，目前所有的工作都已经围绕8.0库进行。这是因为JavaFX将捆绑在Java 8中，因此该团队决定跳过几个版本号，迎头赶上Java 8。
 
-### # JavaFx8的新特性
+### JavaFx8的新特性
 
-#### # 全新现代主题: Modena
+#### 全新现代主题: Modena
 
 > 新的Modena主题来替换原来的Caspian主题。不过在Application的start()方法中，可以通过setUserAgentStylesheet(STYLESHEET_CASPIAN)来继续使用Caspian主题。
 
 > 参考http://fxexperience.com/2013/03/modena-theme-update/
 
-#### # JavaFX 3D
+#### JavaFX 3D
 
 > 在JavaFX8中提供了3D图像处理API，包括Shape3D (Box, Cylinder, MeshView, Sphere子类),SubScene, Material, PickResult, LightBase (AmbientLight 和PointLight子类),SceneAntialiasing等。Camera类也得到了更新。从JavaDoc中可以找到更多信息。
 
-#### # 富文本
+#### 富文本
 
 > 强化了富文本的支持
 
-#### # TreeTableView
+#### TreeTableView
 
-#### # 日期控件DatePicker
+#### 日期控件DatePicker
 
 > 增加日期控件
 
-#### # 用于 CSS 结构的公共 API
+#### 用于 CSS 结构的公共 API
 
 ```
 CSS 样式设置是 JavaFX 的一项主要特性
@@ -71,13 +71,13 @@ CSS 已专门在私有 API 中实现(com.sun.javafx.css 软件包)
 开发人员将能够定义自定义 CSS 样式
 ```
 
-#### # WebView 增强功能
+#### WebView 增强功能
 
 *   Nashorn JavaScript 引擎 https://blogs.oracle.com/nashorn/entry/open_for_business
 *   WebSocket http://javafx-jira.kenai.com/browse/RT-14947
 *   Web Workers http://javafx-jira.kenai.com/browse/RT-9782
 
-#### # JavaFX Scene Builder 2.0
+#### JavaFX Scene Builder 2.0
 
 > 可视化工具，加速JavaFX图形界面的开发，下载地址
 
@@ -96,7 +96,7 @@ Caspian Embedded (FX2).
 Caspian Embedded QVGA (FX2).
 ```
 
-### # JavaFX 8开发2048游戏
+### JavaFX 8开发2048游戏
 
 > 2048虽然不像前段时间那么火了，但个人还是非常喜欢玩2048，空闲时间都忍不住来一发，感谢 Gabriele Cirulli 发明了这了不起 (并且会上瘾)的2048游戏，因为是用MIT协议开源出来，各种语言版本的2048游戏横空出世，下图是用JavaFX 8来开发的一款2048。
 
@@ -119,13 +119,13 @@ RecordManager，SessionManager，纪录游戏分数，会话类
 
 > 这里是源码地址，大家感兴趣的可以去学习下git.oschina.net/benhail/javase8-sample/tree/master/src/main/java/javase8sample/chapter13/javafx8/fx2048
 
-### # 总结
+### 总结
 
 > 比起AWT和SWING，JavaFX的优势很明显，各大主流IDE已经支持JavaFX的开发了，最佳的工具莫过于NetBeans，且随着lambda带来的好处，JavaFX的事件处理简洁了不少，以前需要写匿名函数类。另外JavaFX开源以来，JavaFX的生态环境也越来越活跃了，包括各种教程，嵌入式尝试，还有一些开源项目，比如: ControlsFX，JRebirth，DataFX Flow，mvvmFX，TestFX 等等。还有JavaFX是可以运行在Android和ios上面，这个很赞！
 
 > 好了，总结到这里也差不多了，在RIA平台上面，有HTML5、Flex和微软的Sliverlight，JavaFX能否表现优秀，在于大家的各位，只要我们多用JavaFX，那么JavaFX也会越来越优秀，任何语言都是这样, THE END .
 
-### # 参考
+### 参考
 
 *   > https://github.com/oimchat/oim-fx
 

@@ -49,9 +49,9 @@ Java 在线问题排查主要分两篇：本文是第一篇，通过linux常用�
     *   查看系统，设备，环境信息
     *   tsar
 
-### # 文本操作
+### 文本操作
 
-### # 文本查找 - grep
+### 文本查找 - grep
 
 > grep常用命令：
 
@@ -92,7 +92,7 @@ seq 10 | grep 5 -C 3    #上下匹配，平时用这个就妥了
 -C, --context=NUM：print NUM lines of output context           前后各#行
 ```
 
-### # 文本分析 - awk
+### 文本分析 - awk
 
 > awk基本命令：
 
@@ -124,7 +124,7 @@ awk '$5 ~ /ldb/ {print}' f.txt #第五列匹配ldb
 
 > 更多请参考：Linux awk 命令在新窗口打开
 
-### # 文本处理 - sed
+### 文本处理 - sed
 
 > sed常用：
 
@@ -159,9 +159,9 @@ find . -name  "*.txt" |xargs cat
 
 > 更多请参考：Linux sed 命令在新窗口打开 或者 Linux sed命令详解在新窗口打开
 
-### # 文件操作
+### 文件操作
 
-### # 文件监听 - tail
+### 文件监听 - tail
 
 > 最常用的`tail -f filename`
 
@@ -198,7 +198,7 @@ tailf xxx.log #等同于tail -f -n 10 打印最后10行，然后追踪文件
 -s, --sleep-interval=S 与-f合用,表示在每次反复的间隔休眠S秒
 ```
 
-### # 文件查找 - find
+### 文件查找 - find
 
 ```bash
 sudo -u admin find /home/admin /tmp /usr -name \\*.log(多个目录去找)
@@ -216,7 +216,7 @@ find /home/admin -cmin -1  1分钟内状态改变过的文件
 find /home/admin -mmin -1  1分钟内修改过的文件
 ```
 
-### # pgm
+### pgm
 
 > 批量查询vm-shopbase满足条件的日志
 
@@ -224,9 +224,9 @@ find /home/admin -mmin -1  1分钟内修改过的文件
 pgm -A -f vm-shopbase 'cat /home/admin/shopbase/logs/shopbase.log.2017-01-17|grep 2069861630'
 ```
 
-### # 查看网络和进程
+### 查看网络和进程
 
-### # 查看所有网络接口的属性
+### 查看所有网络接口的属性
 
 ```bash
 [root@pdai.tech ~]# ifconfig
@@ -247,7 +247,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
-### # 查看防火墙设置
+### 查看防火墙设置
 
 ```bash
 [root@pdai.tech ~]# iptables -L
@@ -261,7 +261,7 @@ Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination
 ```
 
-### # 查看路由表
+### 查看路由表
 
 ```bash
 [root@pdai.tech ~]# route -n
@@ -272,7 +272,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 110    0         2220   U     0      0        0 eth0
 ```
 
-### # netstat
+### netstat
 
 > 查看所有监听端口
 
@@ -357,7 +357,7 @@ Tcp:
 
 > netstat 请参考这篇文章: Linux netstat命令详解在新窗口打开
 
-### # 查看所有进程
+### 查看所有进程
 
 ```bash
 [root@pdai.tech ~]# ps -ef | grep java
@@ -365,7 +365,7 @@ root      1249     1  0 Nov04 ?        00:58:05 java -jar /opt/tech_doc/bin/tech
 root     32718 32518  0 08:36 pts/0    00:00:00 grep --color=auto java
 ```
 
-### # top
+### top
 
 > top除了看一些基本信息之外，剩下的就是配合来查询vm的各种问题了
 
@@ -384,9 +384,9 @@ KiB Swap:  2097148 total,  1835392 free,   261756 used.  1502036 avail Mem
 ...
 ```
 
-### # 查看磁盘和内存相关
+### 查看磁盘和内存相关
 
-### # 查看内存使用 - free -m
+### 查看内存使用 - free -m
 
 ```bash
 [root@pdai.tech ~]# free -m
@@ -395,7 +395,7 @@ Mem:           1837         196         824           0         816        1469
 Swap:          2047         255        1792
 ```
 
-### # 查看各分区使用情况
+### 查看各分区使用情况
 
 ```bash
 [root@pdai.tech ~]# df -h
@@ -408,42 +408,42 @@ tmpfs           919M     0  919M   0% /sys/fs/cgroup
 tmpfs           184M     0  184M   0% /run/user/0
 ```
 
-### # 查看指定目录的大小
+### 查看指定目录的大小
 
 ```bash
 [root@pdai.tech ~]# du -sh
 803M
 ```
 
-### # 查看内存总量
+### 查看内存总量
 
 ```bash
 [root@pdai.tech ~]# grep MemTotal /proc/meminfo
 MemTotal:        1882088 kB
 ```
 
-### # 查看空闲内存量
+### 查看空闲内存量
 
 ```bash
 [root@pdai.tech ~]# grep MemFree /proc/meminfo
 MemFree:           74120 kB
 ```
 
-### # 查看系统负载磁盘和分区
+### 查看系统负载磁盘和分区
 
 ```bash
 [root@pdai.tech ~]# grep MemFree /proc/meminfo
 MemFree:           74120 kB
 ```
 
-### # 查看系统负载磁盘和分区
+### 查看系统负载磁盘和分区
 
 ```bash
 [root@pdai.tech ~]# cat /proc/loadavg
 01 04 05 2/174 32751
 ```
 
-### # 查看挂接的分区状态
+### 查看挂接的分区状态
 
 ```bash
 [root@pdai.tech ~]# mount | column -t
@@ -454,7 +454,7 @@ securityfs  on  /sys/kernel/security             type  securityfs  (rw,nosuid,no
 ...
 ```
 
-### # 查看所有分区
+### 查看所有分区
 
 ```bash
 [root@pdai.tech ~]# fdisk -l
@@ -470,7 +470,7 @@ Disk identifier: 0x0008d73a
 /dev/vda1   *        2048    83884031    41940992   83  Linux
 ```
 
-### # 查看所有交换分区
+### 查看所有交换分区
 
 ```bash
 [root@pdai.tech ~]# swapon -s
@@ -478,7 +478,7 @@ Filename                                Type            Size    Used    Priority
 /etc/swap                               file    2097148 261756  -2
 ```
 
-### # 查看硬盘大小
+### 查看硬盘大小
 
 ```bash
 [root@pdai.tech ~]# fdisk -l |grep Disk
@@ -487,9 +487,9 @@ Disk label type: dos
 Disk identifier: 0x0008d73a
 ```
 
-### # 查看用户和组相关
+### 查看用户和组相关
 
-### # 查看活动用户
+### 查看活动用户
 
 ```bash
 [root@pdai.tech ~]# w
@@ -498,14 +498,14 @@ USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
 root     pts/0    xxx.1200    08:32    00s  32s  32s -bash
 ```
 
-### # 查看指定用户信息
+### 查看指定用户信息
 
 ```bash
 [root@pdai.tech ~]# id
 uid=0(root) gid=0(root) groups=0(root)
 ```
 
-### # 查看用户登录日志
+### 查看用户登录日志
 
 ```bash
 [root@pdai.tech ~]# last
@@ -517,7 +517,7 @@ root     pts/0        xxx.1173    Tue Dec 17 13:35 - 17:37  (04:02)
 ...
 ```
 
-### # 查看系统所有用户
+### 查看系统所有用户
 
 ```bash
 [root@pdai.tech ~]# cut -d: -f1 /etc/passwd
@@ -528,13 +528,13 @@ adm
 ...
 ```
 
-### # 查看系统所有组
+### 查看系统所有组
 
 ```bash
 cut -d: -f1 /etc/group
 ```
 
-### # 查看服务，模块和包相关
+### 查看服务，模块和包相关
 
 ```bash
 # 查看当前用户的计划任务服务
@@ -553,7 +553,7 @@ rpm -qa
 lsmod
 ```
 
-### # 查看系统，设备，环境信息
+### 查看系统，设备，环境信息
 
 ```bash
 # 常用
@@ -576,7 +576,7 @@ cat /proc/swaps ：查看所有swap分区的信息
 cat /proc/cpuinfo |grep "model name" && cat /proc/cpuinfo |grep "physical id"
 ```
 
-### # tsar
+### tsar
 
 > tsar是淘宝开源的的采集工具。很好用, 将历史收集到的数据持久化在磁盘上，所以我们快速来查询历史的系统数据。当然实时的应用情况也是可以查询的啦。大部分机器上都有安装。
 

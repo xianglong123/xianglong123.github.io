@@ -29,11 +29,11 @@ Java8关于时间和日期有哪些类和方法，变比Java8之前它的特点�
     *   其它语言时间
     *   总结
 
-### # Java8之前的Date有哪些槽点
+### Java8之前的Date有哪些槽点
 
 > > Tiago Fernandez做过一次投票，选举最烂的JAVA API，排第一的EJB2.X，第二的就是日期API。
 
-#### # 槽点一
+#### 槽点一
 
 > 最开始的时候，Date既要承载日期信息，又要做日期之间的转换，还要做不同日期格式的显示，职责较繁杂(不懂单一职责，你妈妈知道吗? 纯属恶搞~哈哈)
 
@@ -47,7 +47,7 @@ Java8关于时间和日期有哪些类和方法，变比Java8之前它的特点�
 
 > 原有Date中的相应方法已废弃。不过，无论是Date，还是Calendar，都用着太不方便了，这是API没有设计好的地方。
 
-#### # 槽点二
+#### 槽点二
 
 > 坑爹的year和month
 
@@ -76,7 +76,7 @@ calendar.set(2013, Calendar.AUGUST, 2);
 
 > 有些人可能知道，Calendar相关的API是IBM捐出去的，所以才导致不一致。
 
-#### # 槽点三
+#### 槽点三
 
 > java.util.Date与java.util.Calendar中的所有属性都是可变的
 
@@ -115,13 +115,13 @@ public static long daysBetween(Calendar begin, Calendar end) {
 }
 ```
 
-#### # 槽点四
+#### 槽点四
 
 > SimpleDateTimeFormat是非线程安全的。
 
-### # Java8时间和日期
+### Java8时间和日期
 
-### # 类概览
+### 类概览
 
 > Java 8仍然延用了ISO的日历体系，并且与它的前辈们不同，java.time包中的类是不可变且线程安全的。新的时间及日期API位于java.time包中，下面是里面的一些关键的类:
 
@@ -133,7 +133,7 @@ public static long daysBetween(Calendar begin, Calendar end) {
 
 > 新的库还增加了ZoneOffset及Zoned，可以为时区提供更好的支持。有了新的DateTimeFormatter之后日期的解析及格式化也变得焕然一新了。
 
-### # 方法概览
+### 方法概览
 
 > 该包的API提供了大量相关的方法，这些方法一般有一致的方法前缀:
 
@@ -147,7 +147,7 @@ public static long daysBetween(Calendar begin, Calendar end) {
 *   to: 转换到另一个类型。
 *   at: 把这个对象与另一个对象组合起来，例如: date.atTime(time)。
 
-### # 一些例子
+### 一些例子
 
 ```
 public class TimeIntroduction {
@@ -299,7 +299,7 @@ public class TimeIntroduction {
 }
 ```
 
-### # 其它语言时间
+### 其它语言时间
 
 > 日期与时间处理API，在各种语言中，可能都只是个不起眼的API，如果你没有较复杂的时间处理需求，可能只是利用日期与时间处理API取得系统时间，简单做些显示罢了，然而如果认真看待日期与时间，其复杂程度可能会远超过你的想象，天文、地理、历史、政治、文化等因素，都会影响到你对时间的处理。所以在处理时间上，最好选用JSR310(如果你用java8的话就实现310了)，或者Joda-Time。
 
@@ -311,7 +311,7 @@ public class TimeIntroduction {
 
 > Noda-Time: .NET 阵营的 Joda-Time 的复制
 
-### # 总结
+### 总结
 
 > 看完了这些例子后，我相信你已经对Java 8这套新的时间日期API有了一定的了解了。现在我们来回顾下关于这个新的API的一些关键的要素。
 

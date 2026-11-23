@@ -27,7 +27,7 @@ Exchanger是用于线程协作的工具类, 主要用于两个线程之间的数
         *   arenaExchange(Object item, boolean timed, long ns)
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解Exchanger
+### 带着BAT大厂的面试问题去理解Exchanger
 
 > 提示
 
@@ -42,11 +42,11 @@ Exchanger是用于线程协作的工具类, 主要用于两个线程之间的数
 *   什么是伪共享，Exchanger中如何体现的?
 *   Exchanger实现举例
 
-### # Exchanger简介
+### Exchanger简介
 
 > Exchanger用于进行两个线程之间的数据交换。它提供一个同步点，在这个同步点，两个线程可以交换彼此的数据。这两个线程通过exchange()方法交换数据，当一个线程先执行exchange()方法后，它会一直等待第二个线程也执行exchange()方法，当这两个线程到达同步点时，这两个线程就可以交换数据了。
 
-### # Exchanger实现机制
+### Exchanger实现机制
 
 ```
 for (;;) {
@@ -73,9 +73,9 @@ for (;;) {
 
 > 比如有2条线程A和B，A线程交换数据时，发现slot为空，则将需要交换的数据放在slot中等待其它线程进来交换数据，等线程B进来，读取A设置的数据，然后设置线程B需要交换的数据，然后唤醒A线程，原理就是这么简单。但是当多个线程之间进行交换数据时就会出现问题，所以Exchanger加入了slot数组。
 
-### # Exchanger源码解析
+### Exchanger源码解析
 
-### # 内部类 - Participant
+### 内部类 - Participant
 
 ```
 static final class Participant extends ThreadLocal<Node> {
@@ -85,7 +85,7 @@ static final class Participant extends ThreadLocal<Node> {
 
 > Participant的作用是为每个线程保留唯一的一个Node节点, 它继承ThreadLocal，说明每个线程具有不同的状态。
 
-### # 内部类 - Node
+### 内部类 - Node
 
 ```
 @sun.misc.Contended static final class Node {
@@ -108,7 +108,7 @@ static final class Participant extends ThreadLocal<Node> {
 
 > 在Node定义中有两个变量值得思考：bound以及collides。前面提到了数组area是为了避免竞争而产生的，如果系统不存在竞争问题，那么完全没有必要开辟一个高效的arena来徒增系统的复杂性。首先通过单个slot的exchanger来交换数据，当探测到竞争时将安排不同的位置的slot来保存线程Node，并且可以确保没有slot会在同一个缓存行上。如何来判断会有竞争呢? CAS替换slot失败，如果失败，则通过记录冲突次数来扩展arena的尺寸，我们在记录冲突的过程中会跟踪bound的值，以及会重新计算冲突次数在bound的值被改变时。
 
-### # 核心属性
+### 核心属性
 
 ```
 private final Participant participant;
@@ -124,7 +124,7 @@ private volatile Node slot;
 
 > Participant，Participant 的作用就是为每个线程保留唯一的一个Node节点，它继承ThreadLocal，同时在Node节点中记录在arena中的下标index。
 
-### # 构造函数
+### 构造函数
 
 ```
 /**
@@ -137,7 +137,7 @@ public Exchanger() {
 
 > 初始化participant对象。
 
-### # 核心方法 - exchange(V x)
+### 核心方法 - exchange(V x)
 
 > 等待另一个线程到达此交换点(除非当前线程被中断)，然后将给定的对象传送给该线程，并接收该线程的对象。
 
@@ -160,7 +160,7 @@ public V exchange(V x) throws InterruptedException {
 
 > NULL_ITEM 为一个空节点，其实就是一个Object对象而已，slotExchange()为单个slot交换。
 
-### # slotExchange(Object item, boolean timed, long ns)
+### slotExchange(Object item, boolean timed, long ns)
 
 ```
 private final Object slotExchange(Object item, boolean timed, long ns) {
@@ -282,7 +282,7 @@ private final Object slotExchange(Object item, boolean timed, long ns) {
 
 > match不为空时跳出循环。
 
-### # arenaExchange(Object item, boolean timed, long ns)
+### arenaExchange(Object item, boolean timed, long ns)
 
 > 此方法被执行时表示多个线程进入交换区交换数据，arena数组已被初始化，此方法中的一些处理方式和slotExchange比较类似，它是通过遍历arena数组找到需要交换的数据。
 
@@ -434,7 +434,7 @@ ABASE = U.arrayBaseOffset(ak) + (1 << ASHIFT);
 *   如果q等于null且下标在bound & MMASK范围之内，则尝试占领该位置，如果成功，则采用自旋 + 阻塞的方式进行等待交换数据。
 *   如果下标不在bound & MMASK范围之内获取由于q不为null但是竞争失败的时候：消除p。加入bound 不等于当前节点的bond(b != p.bound)，则更新p.bound = b，collides = 0 ，i = m或者m - 1。如果冲突的次数不到m 获取m 已经为最大值或者修改当前bound的值失败，则通过增加一次collides以及循环递减下标i的值；否则更新当前bound的值成功：我们令i为m+1即为此时最大的下标。最后更新当前index的值。
 
-### # 更深入理解
+### 更深入理解
 
 *   `SynchronousQueue对比？`
 
@@ -447,7 +447,7 @@ ABASE = U.arrayBaseOffset(ak) + (1 << ASHIFT);
 
 > JDK1.6实现可以参考 这里在新窗口打开
 
-### # Exchanger示例
+### Exchanger示例
 
 > 来一个非常经典的并发问题：你有相同的数据buffer，一个或多个数据生产者，和一个或多个数据消费者。只是Exchange类只能同步2个线程，所以你只能在你的生产者和消费者问题中只有一个生产者和一个消费者时使用这个类。
 
@@ -533,7 +533,7 @@ Consumer- 交换后:4
 Consumer- 交换前:0
 ```
 
-### # 参考文章
+### 参考文章
 
 *   https://cloud.tencent.com/developer/article/1529492
 *   https://coderbee.net/index.php/concurrent/20140424/897

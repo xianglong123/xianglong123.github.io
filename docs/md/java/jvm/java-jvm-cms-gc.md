@@ -94,11 +94,11 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
     *   7. 参考资料
     *   8. 作者简介
 
-### # 1. 写在前面
+### 1. 写在前面
 
 > > 本文主要针对 Hotspot VM 中CMS + ParNew组合的一些使用场景进行总结。重点通过部分源码对根因进行分析以及对排查方法进行总结，排查过程会省略较多，另外本文专业术语较多，有一定的阅读门槛，如未介绍清楚，还请自行查阅相关材料。
 
-### # 1.1 引言
+### 1.1 引言
 
 > 自 Sun 发布 Java 语言以来，开始使用 GC 技术来进行内存自动管理，避免了手动管理带来的悬挂指针（Dangling Pointer）问题，很大程度上提升了开发效率，从此 GC 技术也一举成名。GC 有着非常悠久的历史，1960 年有着Lisp 之父和人工智能之父之称的 John McCarthy 就在论文中发布了 GC 算法，60 年以来， GC 技术的发展也突飞猛进，但不管是多么前沿的收集器也都是基于三种基本算法的组合或应用，也就是说 GC 要解决的根本问题这么多年一直都没有变过。笔者认为，在不太远的将来， GC 技术依然不会过时，比起日新月异的新技术，GC 这门古典技术更值得我们学习。
 
@@ -106,7 +106,7 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 > GC 问题处理能力能不能系统性掌握？一些影响因素都是互为因果的问题该怎么分析？比如一个服务 RT 突然上涨，有 GC 耗时增大、线程 Block 增多、慢查询增多、CPU 负载高四个表象，到底哪个是诱因？如何判断 GC 有没有问题？使用 CMS 有哪些常见问题？如何判断根因是什么？如何解决或避免这些问题？阅读完本文，相信你将会对 CMS GC 的问题处理有一个系统性的认知，更能游刃有余地解决这些问题，下面就让我们开始吧！
 
-### # 1.2 概览
+### 1.2 概览
 
 > 想要系统性地掌握 GC 问题处理，笔者这里给出一个学习路径，整体文章的框架也是按照这个结构展开，主要分四大步。
 
@@ -120,11 +120,11 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 > `总结优化经验`： 对整体过程做总结并提出笔者的几点建议，同时将总结到的经验完善到知识体系之中。
 
-### # 2. GC 基础
+### 2. GC 基础
 
 > 在正式开始前，先做些简要铺垫，介绍下 JVM 内存划分、收集算法、收集器等常用概念介绍，基础比较好的同学可以直接跳过这部分。
 
-### # 2.1 基础概念
+### 2.1 基础概念
 
 *   > `GC`： GC 本身有三种语义，下文需要根据具体场景带入不同的语义：
 
@@ -140,7 +140,7 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 *   > `Card Table`： 中文翻译为卡表，主要是用来标记卡页的状态，每个卡表项对应一个卡页。当卡页中一个对象引用有写操作时，写屏障将会标记对象所在的卡表状态改为 dirty，卡表的本质是用来解决跨代引用的问题。具体怎么解决的可以参考 StackOverflow 上的这个问题 how-actually-card-table-and-writer-barrier-works在新窗口打开，或者研读一下 cardTableRS.app 中的源码。
 
-### # 2.2 JVM 内存划分
+### 2.2 JVM 内存划分
 
 > 从 JCP（Java Community Process）的官网中可以看到，目前 Java 版本最新已经到了 Java 16，未来的 Java 17 以及现在的 Java 11 和 Java 8 是 LTS 版本，JVM 规范也在随着迭代在变更，由于本文主要讨论 CMS，此处还是放 Java 8 的内存结构。
 
@@ -150,7 +150,7 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 > 任何自动内存管理系统都会面临的步骤：为新对象分配空间，然后收集垃圾对象空间，下面我们就展开介绍一下这些基础知识。
 
-### # 2.3 分配对象
+### 2.3 分配对象
 
 > Java 中对象地址操作主要使用 Unsafe 调用了 C 的 allocate 和 free 两个方法，分配方法有两种：
 
@@ -158,9 +158,9 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 *   > `碰撞指针`（bump pointer）： 通过一个指针作为分界点，需要分配内存时，仅需把指针往空闲的一端移动与对象大小相等的距离，分配效率较高，但使用场景有限。
 
-### # 2.4 收集对象
+### 2.4 收集对象
 
-#### # 2.4.1 识别垃圾
+#### 2.4.1 识别垃圾
 
 > `引用计数法`（Reference Counting）： 对每个对象的引用进行计数，每当有一个地方引用它时计数器 +1、引用失效则 -1，引用的计数放到对象头中，大于 0 的对象被认为是存活对象。虽然循环引用的问题可通过 Recycler 算法解决，但是在多线程环境下，引用计数变更也要进行昂贵的同步操作，性能较低，早期的编程语言会采用此算法。
 
@@ -168,7 +168,7 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 > > 备注：引用计数法是可以处理循环引用问题的，下次面试时不要再这么说啦~ ~
 
-#### # 2.4.2 收集算法
+#### 2.4.2 收集算法
 
 > 自从有自动内存管理出现之时就有的一些收集算法，不同的收集器也是在不同场景下进行组合。
 
@@ -188,7 +188,7 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 > 虽然 compaction 与 copying 都涉及移动对象，但取决于具体算法，compaction 可能要先计算一次对象的目标地址，然后修正指针，最后再移动对象。copying 则可以把这几件事情合为一体来做，所以可以快一些。另外，还需要留意 GC 带来的开销不能只看 Collector 的耗时，还得看 Allocator 。如果能保证内存没碎片，分配就可以用 pointer bumping 方式，只需要挪一个指针就完成了分配，非常快。而如果内存有碎片就得用 freelist 之类的方式管理，分配速度通常会慢一些。
 
-### # 2.5 收集器
+### 2.5 收集器
 
 > 目前在 Hotspot VM 中主要有分代收集和分区收集两大类，具体可以看下面的这个图，不过未来会逐渐向分区收集发展。在美团内部，有部分业务尝试用了 ZGC（感兴趣的同学可以学习下这篇文章 新一代垃圾回收器ZGC的探索与实践在新窗口打开），其余基本都停留在 CMS 和 G1 上。另外在 JDK11 后提供了一个不执行任何垃圾回收动作的回收器 Epsilon（A No-Op Garbage Collector）用作性能分析。另外一个就是 Azul 的 Zing JVM，其 C4（Concurrent Continuously Compacting Collector）收集器也在业内有一定的影响力。
 
@@ -196,7 +196,7 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 > > 备注：值得一提的是，早些年国内 GC 技术的布道者 RednaxelaFX （江湖人称 R 大）也曾就职于 Azul，本文的一部分材料也参考了他的一些文章。
 
-#### # 2.5.1 分代收集器
+#### 2.5.1 分代收集器
 
 *   > `ParNew`： 一款多线程的收集器，采用复制算法，主要工作在 Young 区，可以通过
 
@@ -208,7 +208,7 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 *   > `CMS`： 以获取最短回收停顿时间为目标，采用标记-清除算法，分 4 大步进行垃圾收集，其中初始标记和重新标记会 STW ，多数应用于互联网站或者 B/S 系统的服务器端上，JDK9 被标记弃用，JDK14 被删除，详情可见 JEP 363在新窗口打开。
 
-#### # 2.5.2 分区收集器
+#### 2.5.2 分区收集器
 
 *   > `G1`： 一种服务器端的垃圾收集器，应用在多处理器和大容量内存环境中，在实现高吞吐量的同时，尽可能地满足垃圾收集暂停时间的要求。
 
@@ -218,38 +218,38 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 > ![](images/cms-gc-6.jpg)
 
-#### # 2.5.3 常用收集器
+#### 2.5.3 常用收集器
 
 > 目前使用最多的是 CMS 和 G1 收集器，二者都有分代的概念，主要内存结构如下：
 
 > ![](images/cms-gc-7.png)
 
-#### # 2.5.4 其他收集器
+#### 2.5.4 其他收集器
 
 > 以上仅列出常见收集器，除此之外还有很多，如 Metronome、Stopless、Staccato、Chicken、Clover 等实时回收器，Sapphire、Compressor、Pauseless 等并发复制/整理回收器，Doligez-Leroy-Conthier 等标记整理回收器，由于篇幅原因，不在此一一介绍。
 
-### # 2.6 常用工具
+### 2.6 常用工具
 
 > 工欲善其事，必先利其器，此处列出一些笔者常用的工具，具体情况大家可以自由选择，本文的问题都是使用这些工具来定位和分析的。
 
-#### # 2.6.1 命令行终端
+#### 2.6.1 命令行终端
 
 *   标准终端类：jps、jinfo、jstat、jstack、jmap
 *   功能整合类：jcmd、vjtools、arthas、greys
 
-#### # 2.6.2 可视化界面
+#### 2.6.2 可视化界面
 
 *   简易：JConsole、JVisualvm、HA、GCHisto、GCViewer
 *   进阶：MAT、JProfiler
 *   命令行推荐 arthas ，可视化界面推荐 JProfiler，此外还有一些在线的平台 gceasy、heaphero、fastthread ，美团内部的 Scalpel（一款自研的 JVM 问题诊断工具，暂时未开源）也比较好用。
 
-### # 3. GC 问题判断
+### 3. GC 问题判断
 
 > 在做 GC 问题排查和优化之前，我们需要先来明确下到底是不是 GC 直接导致的问题，或者应用代码导致的 GC 异常，最终出现问题。
 
-### # 3.1 判断 GC 有没有问题？
+### 3.1 判断 GC 有没有问题？
 
-#### # 3.1.1 设定评价标准
+#### 3.1.1 设定评价标准
 
 > 评判 GC 的两个核心指标：
 
@@ -265,7 +265,7 @@ title: GC - Java 垃圾回收器之CMS GC问题分析与解决
 
 > > 备注：除了这两个指标之外还有 Footprint（资源量大小测量）、反应速度等指标，互联网这种实时系统追求低延迟，而很多嵌入式系统则追求 Footprint。
 
-#### # 3.1.2 读懂 GC Cause
+#### 3.1.2 读懂 GC Cause
 
 > 拿到 GC 日志，我们就可以简单分析 GC 情况了，通过一些工具，我们可以比较直观地看到 Cause 的分布情况，如下图就是使用 gceasy 绘制的图表：
 
@@ -487,7 +487,7 @@ bool CMSCollector::shouldConcurrentCollect() {
 }
 ```
 
-### # 3.2 判断是不是 GC 引发的问题？
+### 3.2 判断是不是 GC 引发的问题？
 
 > 到底是结果（现象）还是原因，在一次 GC 问题处理的过程中，如何判断是 GC 导致的故障，还是系统本身引发 GC 问题。这里继续拿在本文开头提到的一个 Case：GC 耗时增大、线程 Block 增多、慢查询增多、CPU 负载高等四个表象，如何判断哪个是根因？，笔者这里根据自己的经验大致整理了四种判断方法供参考：
 
@@ -501,9 +501,9 @@ bool CMSCollector::shouldConcurrentCollect() {
 
 > 不同的根因，后续的分析方法是完全不同的。如果是 CPU 负载高那可能需要用火焰图看下热点、如果是慢查询增多那可能需要看下 DB 情况、如果是线程 Block 引起那可能需要看下锁竞争的情况，最后如果各个表象证明都没有问题，那可能 GC 确实存在问题，可以继续分析 GC 问题了。
 
-### # 3.3 问题分类导读
+### 3.3 问题分类导读
 
-#### # 3.3.1 Mutator 类型
+#### 3.3.1 Mutator 类型
 
 > Mutator 的类型根据对象存活时间比例图来看主要分为两种，在弱分代假说中也提到类似的说法，如下图所示 Survival Time 表示对象存活时间，Rate 表示对象分配比例：
 
@@ -515,7 +515,7 @@ bool CMSCollector::shouldConcurrentCollect() {
 
 > ![](images/cms-gc-10.jpg)
 
-#### # 3.3.2 GC 问题分类
+#### 3.3.2 GC 问题分类
 
 > 笔者选取了九种不同类型的 GC 问题，覆盖了大部分场景，如果有更好的场景，欢迎在评论区给出。
 
@@ -538,21 +538,21 @@ bool CMSCollector::shouldConcurrentCollect() {
 
 *   > `JNI`： 本地 Native 方法引发问题，参见场景九：JNI 引发的 GC 问题。
 
-#### # 3.3.3 排查难度
+#### 3.3.3 排查难度
 
 > 一个问题的`解决难度跟它的常见程度成反比`，大部分我们都可以通过各种搜索引擎找到类似的问题，然后用同样的手段尝试去解决。当一个问题在各种网站上都找不到相似的问题时，那么可能会有两种情况，一种这不是一个问题，另一种就是遇到一个隐藏比较深的问题，遇到这种问题可能就要深入到源码级别去调试了。以下 GC 问题场景，排查难度从上到下依次递增。
 
-### # 4. 常见场景分析与解决
+### 4. 常见场景分析与解决
 
-### # 4.1 场景一：动态扩容引起的空间震荡
+### 4.1 场景一：动态扩容引起的空间震荡
 
-#### # 4.1.1 现象
+#### 4.1.1 现象
 
 > 服务刚刚启动时 GC 次数较多，最大空间剩余很多但是依然发生 GC，这种情况我们可以通过观察 GC 日志或者通过监控工具来观察堆的空间变化情况即可。GC Cause 一般为 Allocation Failure，且在 GC 日志中会观察到经历一次 GC ，堆内各个空间的大小会被调整，如下图所示：
 
 > ![](images/cms-gc-11.png)
 
-#### # 4.1.2 原因
+#### 4.1.2 原因
 
 > 在 JVM 的参数中 `-Xms` 和 `-Xmx` 设置的不一致，在初始化时只会初始 `-Xms` 大小的空间存储信息，每当空间不够用时再向操作系统申请，这样的话必然要进行一次 GC。具体是通过
 
@@ -614,21 +614,21 @@ HeapWord* GenCollectedHeap::expand_heap_and_allocate(size_t size, bool   is_tlab
 
 > ![](images/cms-gc-12.jpg)
 
-#### # 4.1.3 策略
+#### 4.1.3 策略
 
 > `定位`：观察 CMS GC 触发时间点 `Old/MetaSpace` 区的 committed 占比是不是一个固定的值，或者像上文提到的观察总的内存使用率也可以。
 
 > `解决`：尽量将`成对出现的空间大小配置参数设置成固定`的，如 `-Xms` 和 `-Xmx`，`-XX:MaxNewSize` 和 `-XX:NewSize`，`-XX:MetaSpaceSize` 和 `-XX:MaxMetaSpaceSize` 等。
 
-#### # 4.1.4 小结
+#### 4.1.4 小结
 
 > 一般来说，我们需要保证 Java 虚拟机的堆是稳定的，确保 `-Xms` 和 `-Xmx` 设置的是一个值（即初始值和最大值一致），获得一个稳定的堆，同理在 MetaSpace 区也有类似的问题。不过在不追求停顿时间的情况下震荡的空间也是有利的，可以动态地伸缩以节省空间，例如作为富客户端的 Java 应用。
 
 > 这个问题虽然初级，但是发生的概率还真不小，尤其是在一些规范不太健全的情况下。
 
-### # 4.2 场景二：显式 GC 的去与留
+### 4.2 场景二：显式 GC 的去与留
 
-#### # 4.2.1 现象
+#### 4.2.1 现象
 
 > 除了扩容缩容会触发 CMS GC 之外，还有 Old 区达到回收阈值、MetaSpace 空间不足、Young 区晋升失败、大对象担保失败等几种触发条件，如果这些情况都没有发生却触发了 GC ？这种情况有可能是代码中手动调用了 System.gc 方法，此时可以找到 GC 日志中的 GC Cause 确认下。那么这种 GC 到底有没有问题，翻看网上的一些资料，有人说可以添加
 
@@ -638,7 +638,7 @@ HeapWord* GenCollectedHeap::expand_heap_and_allocate(size_t size, bool   is_tlab
 
 参数来避免这种 GC，也有人说不能加这个参数，加了就会影响 Native Memory 的回收。先说结论，笔者这里建议保留 System.gc，那为什么要保留？我们一起来分析下。
 
-#### # 4.2.2 原因
+#### 4.2.2 原因
 
 > 找到 System.gc 在 Hotspot 中的源码，可以发现增加
 
@@ -727,11 +727,11 @@ static void reserveMemory(long size) {
 
 > HotSpot VM 只会在 Old GC 的时候才会对 Old 中的对象做 Reference Processing，而在 Young GC 时只会对 Young 里的对象做 Reference Processing。Young 中的 DirectByteBuffer 对象会在 Young GC 时被处理，也就是说，做 CMS GC 的话会对 Old 做 Reference Processing，进而能触发 Cleaner 对已死的 DirectByteBuffer 对象做清理工作。但如果很长一段时间里没做过 GC 或者只做了 Young GC 的话则不会在 Old 触发 Cleaner 的工作，那么就可能让本来已经死亡，但已经晋升到 Old 的 DirectByteBuffer 关联的 Native Memory 得不到及时释放。这几个实现特征使得依赖于 System.gc 触发 GC 来保证 DirectByteMemory 的清理工作能及时完成。如果打开了 -XX:+DisableExplicitGC，清理工作就可能得不到及时完成，于是就有发生 Direct Memory 的 OOM。
 
-#### # 4.2.3 策略
+#### 4.2.3 策略
 
 > 通过上面的分析看到，无论是保留还是去掉都会有一定的风险点，不过目前互联网中的 RPC 通信会大量使用 NIO，所以笔者在这里建议保留。此外 JVM 还提供了 -XX:+ExplicitGCInvokesConcurrent 和 -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses 参数来将 System.gc 的触发类型从 Foreground 改为 Background，同时 Background 也会做 Reference Processing，这样的话就能大幅降低了 STW 开销，同时也不会发生 NIO Direct Memory OOM。
 
-#### # 4.2.4 小结
+#### 4.2.4 小结
 
 > 不止 CMS，在 G1 或 ZGC中开启
 
@@ -749,13 +749,13 @@ ExplicitGCInvokesConcurrent
 >
 >  参数，默认是 false）。
 
-### # 4.3 场景三：MetaSpace 区 OOM
+### 4.3 场景三：MetaSpace 区 OOM
 
-#### # 4.3.1 现象
+#### 4.3.1 现象
 
 > JVM 在启动后或者某个时间点开始，`MetaSpace 的已使用大小在持续增长，同时每次 GC 也无法释放，调大 MetaSpace 空间也无法彻底解决`。
 
-#### # 4.3.2 原因
+#### 4.3.2 原因
 
 > 在讨论为什么会 OOM 之前，我们先来看一下这个区里面会存什么数据，Java7 之前字符串常量池被放到了 Perm 区，所有被 intern 的 String 都会被存在这里，由于 String.intern 是不受控的，所以 `-XX:MaxPermSize` 的值也不太好设置，经常会出现
 
@@ -985,7 +985,7 @@ void MetaspaceGC::compute_new_size() {
 
 > 由场景一可知，为了避免弹性伸缩带来的额外 GC 消耗，我们会将 `-XX:MetaSpaceSize` 和 `-XX:MaxMetaSpaceSize` 两个值设置为固定的，但是这样也会导致在空间不够的时候无法扩容，然后频繁地触发 GC，最终 OOM。所以关键原因就是 ClassLoader 不停地在内存中 load 了新的 Class ，一般这种问题都发生在动态类加载等情况上。
 
-#### # 4.3.3 策略
+#### 4.3.3 策略
 
 > 了解大概什么原因后，如何定位和解决就很简单了，可以 dump 快照之后通过 JProfiler 或 MAT 观察 Classes 的 Histogram（直方图） 即可，或者直接通过命令即可定位， jcmd 打几次 Histogram 的图，看一下具体是哪个包下的 Class 增加较多就可以定位了。不过有时候也要结合InstBytes、KlassBytes、Bytecodes、MethodAll 等几项指标综合来看下。如下图便是笔者使用 jcmd 排查到一个 Orika 的问题。
 
@@ -1009,13 +1009,13 @@ jcmd <PID> GC.class_stats|awk '{print$13}'|sed  's/\\(.*\\)\.\\(.*\\)/\\1/g'|sor
 
 参数观察详细的类加载和卸载信息。
 
-#### # 4.3.4 小结
+#### 4.3.4 小结
 
 > 原理理解比较复杂，但定位和解决问题会比较简单，经常会出问题的几个点有 Orika 的 classMap、JSON 的 ASMSerializer、Groovy 动态加载类等，基本都集中在反射、Javasisit 字节码增强、CGLIB 动态代理、OSGi 自定义类加载器等的技术点上。另外就是及时给 MetaSpace 区的使用率加一个监控，如果指标有波动提前发现并解决问题。
 
-### # 4.4 场景四：过早晋升 *
+### 4.4 场景四：过早晋升 *
 
-#### # 4.4.1 现象
+#### 4.4.1 现象
 
 > 这种场景主要发生在分代的收集器上面，专业的术语称为Premature Promotion。90% 的对象朝生夕死，只有在 Young 区经历过几次 GC 的洗礼后才会晋升到 Old 区，每经历一次 GC 对象的 GC Age 就会增长 1，最大通过
 
@@ -1048,7 +1048,7 @@ Desired survivor size 107347968 bytes, new threshold 1(max 6)
 *   Young GC 频繁，总的吞吐量下降。
 *   Full GC 频繁，可能会有较大停顿。
 
-#### # 4.4.2 原因
+#### 4.4.2 原因
 
 > 主要的原因有以下两点：
 
@@ -1139,7 +1139,7 @@ uint ageTable::compute_tenuring_threshold(size_t survivor_capacity) {
 
 > 可以看到 Hotspot 遍历所有对象时，从所有年龄为 0 的对象占用的空间开始累加，如果加上年龄等于 n 的所有对象的空间之后，使用 Survivor 区的条件值（TargetSurvivorRatio / 100，TargetSurvivorRatio 默认值为 50）进行判断，若大于这个值则结束循环，将 n 和 MaxTenuringThreshold 比较，若 n 小，则阈值为 n，若 n 大，则只能去设置最大阈值为 MaxTenuringThreshold。`动态年龄触发后导致更多的对象进入了 Old 区，造成资源浪费`。
 
-#### # 4.4.3 策略
+#### 4.4.3 策略
 
 > 知道问题原因后我们就有解决的方向，如果是 `Young/Eden 区过小`，我们可以在总的 Heap 内存不变的情况下适当增大 Young 区，具体怎么增加？一般情况下 Old 的大小应当为活跃对象的 2~3 倍左右，考虑到浮动垃圾问题最好在 3 倍左右，剩下的都可以分给 Young 区。
 
@@ -1153,13 +1153,13 @@ uint ageTable::compute_tenuring_threshold(size_t survivor_capacity) {
 
 *   > `一直较大`：当前的 Collector 已经不满足 Mutator 的期望了，这种情况要么扩容 Mutator 的 VM，要么调整 GC 收集器类型或加大空间。
 
-#### # 4.4.4 小结
+#### 4.4.4 小结
 
 > 过早晋升问题一般不会特别明显，但日积月累之后可能会爆发一波收集器退化之类的问题，所以我们还是要提前避免掉的，可以看看自己系统里面是否有这些现象，如果比较匹配的话，可以尝试优化一下。一行代码优化的 ROI 还是很高的。
 
 > 如果在观察 Old 区前后比例变化的过程中，发现可以回收的比例非常小，如从 80% 只回收到了 60%，说明我们大部分对象都是存活的，Old 区的空间可以适当调大些。
 
-#### # 4.4.5 加餐
+#### 4.4.5 加餐
 
 > 关于在调整 Young 与 Old 的比例时，如何选取具体的 NewRatio 值，这里将问题抽象成为一个蓄水池模型，找到以下关键衡量指标，大家可以根据自己场景进行推算。
 
@@ -1173,13 +1173,13 @@ uint ageTable::compute_tenuring_threshold(size_t survivor_capacity) {
 
 *   > 忽略掉 GC 时间后，两次 Young GC 的时间间隔要大于 TP9999 时间，这样尽量让对象在 Eden 区就被回收，可以减少很多停顿。
 
-### # 4.5 场景五：CMS Old GC 频繁*
+### 4.5 场景五：CMS Old GC 频繁*
 
-#### # 4.5.1 现象
+#### 4.5.1 现象
 
 > Old 区频繁的做 CMS GC，但是每次耗时不是特别长，整体最大 STW 也在可接受范围内，但由于 GC 太频繁导致吞吐下降比较多。
 
-#### # 4.5.2 原因
+#### 4.5.2 原因
 
 > 这种情况比较常见，基本都是一次 Young GC 完成后，负责处理 CMS GC 的一个后台线程 concurrentMarkSweepThread 会不断地轮询，使用 shouldConcurrentCollect() 方法做一次检测，判断是否达到了回收条件。如果达到条件，使用 collect_in_background() 启动一次 Background 模式 GC。轮询的判断是使用 sleepBeforeNextCycle() 方法，间隔周期为 -XX:CMSWaitDuration 决定，默认为2s。
 
@@ -1364,7 +1364,7 @@ bool CMSCollector::shouldConcurrentCollect() {
 
 > 大家可以看一下源码中的日志打印，通过日志我们就可以比较清楚地知道具体的原因，然后就可以着手分析了。
 
-#### # 4.5.3 策略
+#### 4.5.3 策略
 
 > 我们这里还是拿最常见的达到回收比例这个场景来说，与过早晋升不同的是这些对象确实存活了一段时间，Survival Time 超过了 TP9999 时间，但是又达不到长期存活，如各种数据库、网络链接，带有失效时间的缓存等。
 
@@ -1380,19 +1380,19 @@ bool CMSCollector::shouldConcurrentCollect() {
 
 > ![](images/cms-gc-18.png)
 
-#### # 4.5.4 小结
+#### 4.5.4 小结
 
 > 经过整个流程下来基本就能定位问题了，不过在优化的过程中记得使用`控制变量`的方法来优化，防止一些会加剧问题的改动被掩盖。
 
-### # 4.6 场景六：单次 CMS Old GC 耗时长*
+### 4.6 场景六：单次 CMS Old GC 耗时长*
 
-#### # 4.6.1 现象
+#### 4.6.1 现象
 
 > CMS GC 单次 STW 最大超过 1000ms，不会频繁发生，如下图所示最长达到了 8000ms。某些场景下会引起雪崩效应，这种场景非常危险，我们应该尽量避免出现。
 
 > ![](images/cms-gc-19.png)
 
-#### # 4.6.2 原因
+#### 4.6.2 原因
 
 > CMS 在回收的过程中，STW 的阶段主要是 Init Mark 和 Final Remark 这两个阶段，也是导致 CMS Old GC 最多的原因，另外有些情况就是在 STW 前等待 Mutator 的线程到达 SafePoint 也会导致时间过长，但这种情况较少，我们在此处主要讨论前者。发生收集器退化或者碎片压缩的场景请看场景七。
 
@@ -1656,7 +1656,7 @@ void CMSCollector::checkpointRootsFinalWork() {
 
 > Final Remark 是最终的第二次标记，这种情况只有在 Background GC 执行了 InitialMarking 步骤的情形下才会执行，如果是 Foreground GC 执行的 InitialMarking 步骤则不需要再次执行 FinalRemark。Final Remark 的开始阶段与 Init Mark 处理的流程相同，但是后续多了 Card Table 遍历、Reference 实例的清理并将其加入到 Reference 维护的 pend_list 中，如果要收集元数据信息，还要清理 SystemDictionary、CodeCache、SymbolTable、StringTable 等组件中不再使用的资源。
 
-#### # 4.6.3 策略
+#### 4.6.3 策略
 
 > 知道了两个 STW 过程执行流程，我们分析解决就比较简单了，由于大部分问题都出在 Final Remark 过程，这里我们也拿这个场景来举例，主要步骤：
 
@@ -1732,22 +1732,22 @@ if (should_unload_classes()) {
 
     来避免 MetaSpace 的处理，JDK8 会默认开启 CMSClassUnloadingEnabled，这会使得 CMS 在 CMS-Remark 阶段尝试进行类的卸载。
 
-#### # 4.6.4 小结
+#### 4.6.4 小结
 
 > 正常情况进行的 Background CMS GC，出现问题基本都集中在 Reference 和 Class 等元数据处理上，在 Reference 类的问题处理方面，不管是 FinalReference，还是 SoftReference、WeakReference 核心的手段就是找准时机 dump 快照，然后用内存分析工具来分析。Class 处理方面目前除了关闭类卸载开关，没有太好的方法。
 
 > 在 G1 中同样有 Reference 的问题，可以观察日志中的 Ref Proc，处理方法与 CMS 类似。
 
-### # 4.7 场景七：内存碎片&收集器退化
+### 4.7 场景七：内存碎片&收集器退化
 
-#### # 4.7.1 现象
+#### 4.7.1 现象
 
 > 并发的 CMS GC 算法，退化为 Foreground 单线程串行 GC 模式，STW 时间超长，有时会长达十几秒。其中 CMS 收集器退化后单线程串行 GC 算法有两种：
 
 *   带压缩动作的算法，称为 MSC，上面我们介绍过，使用标记-清理-压缩，单线程全暂停的方式，对整个堆进行垃圾收集，也就是真正意义上的 Full GC，暂停时间要长于普通 CMS。
 *   不带压缩动作的算法，收集 Old 区，和普通的 CMS 算法比较相似，暂停时间相对 MSC 算法短一些。
 
-#### # 4.7.2 原因
+#### 4.7.2 原因
 
 > CMS 发生收集器退化主要有以下几种情况：
 
@@ -1776,7 +1776,7 @@ if (should_unload_classes()) {
 
 > 为什么 CMS GC 正在执行还会导致收集器退化呢？主要是由于 CMS 无法处理浮动垃圾（Floating Garbage）引起的。CMS 的并发清理阶段，Mutator 还在运行，因此不断有新的垃圾产生，而这些垃圾不在这次清理标记的范畴里，无法在本次 GC 被清除掉，这些就是浮动垃圾，除此之外在 Remark 之前那些断开引用脱离了读写屏障控制的对象也算浮动垃圾。所以 Old 区回收的阈值不能太高，否则预留的内存空间很可能不够，从而导致 Concurrent Mode Failure 发生。
 
-#### # 4.7.3 策略
+#### 4.7.3 策略
 
 > 分析到具体原因后，我们就可以针对性解决了，具体思路还是从根因出发，具体解决策略：
 
@@ -1786,19 +1786,19 @@ if (should_unload_classes()) {
 
 *   > `浮动垃圾`： 视情况控制每次晋升对象的大小，或者缩短每次 CMS GC 的时间，必要时可调节 NewRatio 的值。另外就是使用 -XX:+CMSScavengeBeforeRemark 在过程中提前触发一次 Young GC，防止后续晋升过多对象。
 
-#### # 4.7.4 小结
+#### 4.7.4 小结
 
 > 正常情况下触发并发模式的 CMS GC，停顿非常短，对业务影响很小，但 CMS GC 退化后，影响会非常大，建议发现一次后就彻底根治。只要能定位到内存碎片、浮动垃圾、增量收集相关等具体产生原因，还是比较好解决的，关于内存碎片这块，如果 -XX:CMSFullGCsBeforeCompaction 的值不好选取的话，可以使用 -XX:PrintFLSStatistics 来观察内存碎片率情况，然后再设置具体的值。
 
 > 最后就是在编码的时候也要避免需要连续地址空间的大对象的产生，如过长的字符串，用于存放附件、序列化或反序列化的 byte 数组等，还有就是过早晋升问题尽量在爆发问题前就避免掉。
 
-### # 4.8 场景八：堆外内存 OOM
+### 4.8 场景八：堆外内存 OOM
 
-#### # 4.8.1 现象
+#### 4.8.1 现象
 
 > 内存使用率不断上升，甚至开始使用 SWAP 内存，同时可能出现 GC 时间飙升，线程被 Block 等现象，通过 top 命令发现 Java 进程的 RES 甚至超过了 -Xmx 的大小。出现这些现象时，基本可以确定是出现了堆外内存泄漏。
 
-#### # 4.8.2 原因
+#### 4.8.2 原因
 
 > JVM 的堆外内存泄漏，主要有两种的原因：
 
@@ -1811,7 +1811,7 @@ if (should_unload_classes()) {
     主动申请了堆外内存而没有释放，常见于 NIO、Netty 等相关组件。
 *   代码中有通过 JNI 调用 Native Code 申请的内存没有释放。
 
-#### # 4.8.3 策略
+#### 4.8.3 策略
 
 > 哪种原因造成的堆外内存泄漏？
 
@@ -1859,15 +1859,15 @@ if (should_unload_classes()) {
 
 > 除了项目本身的原因，还可能有外部依赖导致的泄漏，如 Netty 和 Spring Boot，详细情况可以学习下这两篇文章，Spring Boot引起的堆外内存泄漏排查及经验总结、Netty堆外内存泄露排查盛宴。
 
-#### # 4.8.4 小结
+#### 4.8.4 小结
 
 > 首先可以使用 NMT + jcmd 分析泄漏的堆外内存是哪里申请，确定原因后，使用不同的手段，进行原因定位。
 
 > ![](https://pdai.tech/images/jvm/cmsgc/cms-gc-26.png)
 
-### # 4.9 场景九：JNI 引发的 GC 问题
+### 4.9 场景九：JNI 引发的 GC 问题
 
-#### # 4.9.1 现象
+#### 4.9.1 现象
 
 > 在 GC 日志中，出现 GC Cause 为 GCLocker Initiated GC。
 
@@ -1876,7 +1876,7 @@ if (should_unload_classes()) {
 2020-09-23T16:49:812+0800: 5044827: [Full GC (GCLocker Initiated GC) 5044827: [CMS: 1341583K->419699K(2097152K), 8482275 secs] 1347626K->419699K(3984640K), [Metaspace: 297780K->297780K(1329152K)], 8490564 secs] [Times: user=62 sys=20, real=85 secs]
 ```
 
-#### # 4.9.2 原因
+#### 4.9.2 原因
 
 > JNI（Java Native Interface）意为 Java 本地调用，它允许 Java 代码和其他语言写的 Native 代码进行交互。
 
@@ -1950,7 +1950,7 @@ JNIEXPORT void JNICALL Java_GCLockerTest_release(JNIEnv* env, jclass klass, jint
 
 *   > 可能触发额外不必要的 Young GC，JDK 有一个 Bug，有一定的几率，本来只该触发一次 GCLocker Initiated GC 的 Young GC，实际发生了一次 Allocation Failure GC 又紧接着一次 GCLocker Initiated GC。是因为 GCLocker Initiated GC 的属性被设为 full，导致两次 GC 不能收敛。
 
-#### # 4.9.3 策略
+#### 4.9.3 策略
 
 *   > 添加 -XX+PrintJNIGCStalls 参数，可以打印出发生 JNI 调用时的线程，进一步分析，找到引发问题的 JNI 调用。
 
@@ -1960,15 +1960,15 @@ JNIEXPORT void JNICALL Java_GCLockerTest_release(JNIEnv* env, jclass klass, jint
 
 > ![](https://pdai.tech/images/jvm/cmsgc/cms-gc-28.png)
 
-#### # 4.9.4 小结
+#### 4.9.4 小结
 
 > JNI 产生的 GC 问题较难排查，需要谨慎使用。
 
-### # 5. 总结
+### 5. 总结
 
 > 在这里，我们把整个文章内容总结一下，方便大家整体地理解回顾。
 
-### # 5.1 处理流程（SOP）
+### 5.1 处理流程（SOP）
 
 > 下图为整体 GC 问题普适的处理流程，重点的地方下面会单独标注，其他的基本都是标准处理流程，此处不再赘述，最后在整个问题都处理完之后有条件的话建议做一下复盘。
 
@@ -1982,13 +1982,13 @@ JNIEXPORT void JNICALL Java_GCLockerTest_release(JNIEnv* env, jclass klass, jint
 
 *   > `根因分析`： 确实是 GC 的问题后，可以借助上文提到的工具并通过 5 why 根因分析法以及跟第三节中的九种常见的场景进行逐一匹配，或者直接参考下文的根因鱼骨图，找出问题发生根因，最后再选择优化手段。
 
-### # 5.2 根因鱼骨图
+### 5.2 根因鱼骨图
 
 > 送上一张问题根因鱼骨图，一般情况下我们在处理一个 GC 问题时，只要能定位到问题的病灶，有的放矢，其实就相当于解决了 80%，如果在某些场景下不太好定位，大家可以借助这种根因分析图通过排除法去定位。
 
 > ![](https://pdai.tech/images/jvm/cmsgc/cms-gc-30.png)
 
-### # 5.3 调优建议
+### 5.3 调优建议
 
 *   > `Trade Off`： 与 CAP 注定要缺一角一样，GC 优化要在延迟（Latency）、吞吐量（Throughput）、容量（Capacity）三者之间进行权衡。
 
@@ -2018,7 +2018,7 @@ JNIEXPORT void JNICALL Java_GCLockerTest_release(JNIEnv* env, jclass klass, jint
 
     *   > `虚拟内存`： 启动初期有些操作系统（例如 Linux）并没有真正分配物理内存给 JVM ，而是在虚拟内存中分配，使用的时候才会在物理内存中分配内存页，这样也会导致 GC 时间较长。这种情况可以添加 -XX:+AlwaysPreTouch 参数，让 VM 在 commit 内存时跑个循环来强制保证申请的内存真的 commit，避免运行时触发缺页异常。在一些大内存的场景下，有时候能将前几次的 GC 时间降一个数量级，但是添加这个参数后，启动的过程可能会变慢。
 
-### # 6. 写在最后
+### 6. 写在最后
 
 > 最后，再说笔者个人的一些小建议，遇到一些 GC 问题，如果有精力，一定要探本穷源，找出最深层次的原因。另外，在这个信息泛滥的时代，有一些被奉为圭臬的经验可能都是错误的，尽量养成看源码的习惯，有一句话说到源码面前，了无秘密，也就意味着遇到搞不懂的问题，我们可以从源码中一窥究竟，某些场景下确有奇效。但也不是只靠读源码来学习，如果硬啃源码但不理会其背后可能蕴含的理论基础，那很容易捡芝麻丢西瓜，只见树木，不见森林，让了无秘密变成了一句空话，我们还是要结合一些实际的业务场景去针对性地学习。
 
@@ -2030,7 +2030,7 @@ JNIEXPORT void JNICALL Java_GCLockerTest_release(JNIEnv* env, jclass klass, jint
 
 > 最后的最后，再多啰嗦一句，目前所有 GC 调优相关的文章，第一句讲的就是不要过早优化，使得很多同学对 GC 优化望而却步。在这里笔者提出不一样的观点，熵增定律（在一个孤立系统里，如果没有外力做功，其总混乱度（即熵）会不断增大）在计算机系统同样适用，如果不主动做功使熵减，系统终究会脱离你的掌控，在我们对业务系统和 GC 原理掌握得足够深的时候，可以放心大胆地做优化，因为我们基本可以预测到每一个操作的结果，放手一搏吧，少年！
 
-### # 7. 参考资料
+### 7. 参考资料
 
 *   [1].《ガベージコレクションのアルゴリズムと実装》中村 成洋 / 相川 光
 *   [2].《The Garbage Collection Handbook》 Richard Jones/ Antony Hosking / Eliot Moss
@@ -2043,7 +2043,7 @@ JNIEXPORT void JNICALL Java_GCLockerTest_release(JNIEnv* env, jclass klass, jint
 *   [9].《Java Memory Management White Paper》
 *   [10].《Stuff Happens：Understanding Causation in Policy and Strategy》AA Hill
 
-### # 8. 作者简介
+### 8. 作者简介
 
 *   新宇：2015 年加入美团，到店住宿门票业务开发工程师。
 *   湘铭：2018 年加入美团，到店客户平台开发工程师。

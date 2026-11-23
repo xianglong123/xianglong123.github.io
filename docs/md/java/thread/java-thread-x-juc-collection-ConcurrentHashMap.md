@@ -36,7 +36,7 @@ JDK1.7之前的ConcurrentHashMap使用分段锁机制实现，JDK1.8则使用数
     *   对比总结
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解
+### 带着BAT大厂的面试问题去理解
 
 > 提示
 
@@ -53,29 +53,29 @@ JDK1.7之前的ConcurrentHashMap使用分段锁机制实现，JDK1.8则使用数
 *   ConcurrentHashMap JDK1.8链表转红黑树的时机是什么? 临界值为什么是8?
 *   ConcurrentHashMap JDK1.8是如何进行数据迁移的? transfer
 
-### # 为什么HashTable慢
+### 为什么HashTable慢
 
 > Hashtable之所以效率低下主要是因为其实现使用了synchronized关键字对put等操作进行加锁，而synchronized关键字加锁是对整个对象进行加锁，也就是说在进行put等修改Hash表的操作时，锁住了整个Hash表，从而使得其表现的效率低下。
 
-### # ConcurrentHashMap - JDK 1.7
+### ConcurrentHashMap - JDK 1.7
 
 > 在JDK1.5~1.7版本，Java使用了分段锁机制实现ConcurrentHashMap.
 
 > 简而言之，ConcurrentHashMap在对象中保存了一个Segment数组，即将整个Hash表划分为多个分段；而每个Segment元素，即每个分段则类似于一个Hashtable；这样，在执行put操作时首先根据hash算法定位到元素属于哪个Segment，然后对该Segment加锁即可。因此，ConcurrentHashMap在多线程并发编程中可是实现多线程put操作。接下来分析JDK1.7版本中ConcurrentHashMap的实现原理。
 
-### # 数据结构
+### 数据结构
 
 > 整个 ConcurrentHashMap 由一个个 Segment 组成，Segment 代表部分或一段的意思，所以很多地方都会将其描述为分段锁。注意，行文中，我很多地方用了槽来代表一个 segment。
 
 > 简单理解就是，ConcurrentHashMap 是一个 Segment 数组，Segment 通过继承 ReentrantLock 来进行加锁，所以每次需要加锁的操作锁住的是一个 segment，这样只要保证每个 Segment 是线程安全的，也就实现了全局的线程安全。
 
-> ![](./JUC集合_ ConcurrentHashMap详解 _ Java 全栈知识体系_files/java-thread-x-concurrent-hashmap-1.png)
+> 
 
 > `concurrencyLevel`: 并行级别、并发数、Segment 数，怎么翻译不重要，理解它。默认是 16，也就是说 ConcurrentHashMap 有 16 个 Segments，所以理论上，这个时候，最多可以同时支持 16 个线程并发写，只要它们的操作分别分布在不同的 Segment 上。这个值可以在初始化的时候设置为其他值，但是一旦初始化以后，它是不可以扩容的。
 
 > 再具体到每个 Segment 内部，其实每个 Segment 很像之前介绍的 HashMap，不过它要保证线程安全，所以处理起来要麻烦些。
 
-### # 初始化
+### 初始化
 
 *   > initialCapacity: 初始容量，这个值指的是整个 ConcurrentHashMap 的初始容量，实际操作的时候需要平均分给每个 Segment。
 
@@ -137,7 +137,7 @@ public ConcurrentHashMap(int initialCapacity,
 *   这里初始化了 segment[0]，其他位置还是 null，至于为什么要初始化 segment[0]，后面的代码会介绍
 *   当前 segmentShift 的值为 32 - 4 = 28，segmentMask 为 16 - 1 = 15，姑且把它们简单翻译为移位数和掩码，这两个值马上就会用到
 
-### # put 过程分析
+### put 过程分析
 
 > 我们先看 put 的主流程，对于其中的一些关键细节操作，后面会进行详细介绍。
 
@@ -232,7 +232,7 @@ final V put(K key, int hash, V value, boolean onlyIfAbsent) {
 
 > 到这里 put 操作就结束了，接下来，我们说一说其中几步关键的操作。
 
-### # 初始化槽: ensureSegment
+### 初始化槽: ensureSegment
 
 > ConcurrentHashMap 初始化的时候会初始化第一个槽 segment[0]，对于其他槽来说，在插入第一个值的时候进行初始化。
 
@@ -272,7 +272,7 @@ private Segment<K,V> ensureSegment(int k) {
 
 > 总的来说，ensureSegment(int k) 比较简单，对于并发操作使用 CAS 进行控制。
 
-### # 获取写入锁: scanAndLockForPut
+### 获取写入锁: scanAndLockForPut
 
 > 前面我们看到，在往某个 segment 中 put 的时候，首先会调用 node = tryLock() ? null : scanAndLockForPut(key, hash, value)，也就是说先进行一次 tryLock() 快速获取该 segment 的独占锁，如果失败，那么进入到 scanAndLockForPut 这个方法来获取锁。
 
@@ -324,7 +324,7 @@ private HashEntry<K,V> scanAndLockForPut(K key, int hash, V value) {
 
 > 这个方法就是看似复杂，但是其实就是做了一件事，那就是获取该 segment 的独占锁，如果需要的话顺便实例化了一下 node。
 
-### # 扩容: rehash
+### 扩容: rehash
 
 > 重复一下，segment 数组不能扩容，扩容是 segment 数组某个位置内部的数组 HashEntry<K,V>[] 进行扩容，扩容后，容量为原来的 2 倍。
 
@@ -401,7 +401,7 @@ private void rehash(HashEntry<K,V> node) {
 
 > 我觉得 Doug Lea 的这个想法也是挺有意思的，不过比较坏的情况就是每次 lastRun 都是链表的最后一个元素或者很靠后的元素，那么这次遍历就有点浪费了。不过 Doug Lea 也说了，根据统计，如果使用默认的阈值，大约只有 1/6 的节点需要克隆。
 
-### # get 过程分析
+### get 过程分析
 
 > 相对于 put 来说，get 就很简单了。
 
@@ -432,7 +432,7 @@ public V get(Object key) {
 }
 ```
 
-### # 并发问题分析
+### 并发问题分析
 
 > 现在我们已经说完了 put 过程和 get 过程，我们可以看到 get 过程中是没有加锁的，那自然我们就需要去考虑并发问题。
 
@@ -448,17 +448,17 @@ public V get(Object key) {
     *   如果 remove 破坏的节点 get 操作已经过去了，那么这里不存在任何问题。
     *   如果 remove 先破坏了一个节点，分两种情况考虑。 1、如果此节点是头节点，那么需要将头节点的 next 设置为数组该位置的元素，table 虽然使用了 volatile 修饰，但是 volatile 并不能提供数组内部操作的可见性保证，所以源码中使用了 UNSAFE 来操作数组，请看方法 setEntryAt。2、如果要删除的节点不是头节点，它会将要删除节点的后继节点接到前驱节点中，这里的并发保证就是 next 属性是 volatile 的。
 
-### # ConcurrentHashMap - JDK 1.8
+### ConcurrentHashMap - JDK 1.8
 
 > 在JDK1.7之前，ConcurrentHashMap是通过分段锁机制来实现的，所以其最大并发度受Segment的个数限制。因此，在JDK1.8中，ConcurrentHashMap的实现原理摒弃了这种设计，而是选择了与HashMap类似的数组+链表+红黑树的方式实现，而加锁则采用CAS和synchronized实现。
 
-### # 数据结构
+### 数据结构
 
-> ![](./JUC集合_ ConcurrentHashMap详解 _ Java 全栈知识体系_files/java-thread-x-concurrent-hashmap-2.png)
+> 
 
 > 结构上和 Java8 的 HashMap 基本上一样，不过它要保证线程安全性，所以在源码上确实要复杂一些。
 
-### # 初始化
+### 初始化
 
 ```
 // 这构造函数里，什么都不干
@@ -478,7 +478,7 @@ public ConcurrentHashMap(int initialCapacity) {
 
 > sizeCtl 这个属性使用的场景很多，不过只要跟着文章的思路来，就不会被它搞晕了。
 
-### # put 过程分析
+### put 过程分析
 
 > 仔细地一行一行代码看下去:
 
@@ -576,7 +576,7 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
 }
 ```
 
-### # 初始化数组: initTable
+### 初始化数组: initTable
 
 > 这个比较简单，主要就是初始化一个合适大小的数组，然后会设置 sizeCtl。
 
@@ -614,7 +614,7 @@ private final Node<K,V>[] initTable() {
 }
 ```
 
-### # 链表转红黑树: treeifyBin
+### 链表转红黑树: treeifyBin
 
 > 前面我们在 put 源码分析也说过，treeifyBin 不一定就会进行红黑树转换，也可能是仅仅做数组扩容。我们还是进行源码分析吧。
 
@@ -654,7 +654,7 @@ private final void treeifyBin(Node<K,V>[] tab, int index) {
 }
 ```
 
-### # 扩容: tryPresize
+### 扩容: tryPresize
 
 > 如果说 Java8 ConcurrentHashMap 的源码不简单，那么说的就是扩容操作和迁移操作。
 
@@ -720,7 +720,7 @@ private final void tryPresize(int size) {
 
 > 所以，可能的操作就是执行 1 次 transfer(tab, null) + 多次 transfer(tab, nt)，这里怎么结束循环的需要看完 transfer 源码才清楚。
 
-### # 数据迁移: transfer
+### 数据迁移: transfer
 
 > 下面这个方法有点长，将原来的 tab 数组的元素迁移到新的 nextTab 数组中。
 
@@ -937,7 +937,7 @@ private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
 
 > 这个时候，再回去仔细看 tryPresize 方法可能就会更加清晰一些了。
 
-### # get 过程分析
+### get 过程分析
 
 > get 方法从来都是最简单的，这里也不例外:
 
@@ -978,7 +978,7 @@ public V get(Object key) {
 
 > 简单说一句，此方法的大部分内容都很简单，只有正好碰到扩容的情况，ForwardingNode.find(int h, Object k) 稍微复杂一些，不过在了解了数据迁移的过程后，这个也就不难了，所以限于篇幅这里也不展开说了。
 
-### # 对比总结
+### 对比总结
 
 *   `HashTable` : 使用了synchronized关键字对put等操作进行加锁;
 *   ```
@@ -992,7 +992,7 @@ public V get(Object key) {
 
     : 则使用数组+链表+红黑树数据结构和CAS原子操作实现;
 
-### # 参考文章
+### 参考文章
 
 *   https://blog.csdn.net/defonds/article/details/44021605#t7
 *   http://tutorials.jenkov.com/java-concurrency/index.html

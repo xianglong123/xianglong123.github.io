@@ -24,7 +24,7 @@ Phaser是JDK 7新增的一个同步辅助类，它可以实现CyclicBarrier和Co
         *   方法 - awaitAdvance(int phase)
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解Phaser工具
+### 带着BAT大厂的面试问题去理解Phaser工具
 
 > 提示
 
@@ -36,7 +36,7 @@ Phaser是JDK 7新增的一个同步辅助类，它可以实现CyclicBarrier和Co
 *   Phaser运行机制是什么样的?
 *   给一个Phaser使用的示例?
 
-### # Phaser运行机制
+### Phaser运行机制
 
 > ![](images/java-thread-x-juc-phaser-1.png)
 
@@ -65,9 +65,9 @@ Phaser是JDK 7新增的一个同步辅助类，它可以实现CyclicBarrier和Co
 
 > 由于同步方法可能只被已注册的parties调用，所以phaser的当前状态也可能被任何调用者监控。在任何时候，可以通过getRegisteredParties获取parties数，其中getArrivedParties方法返回已经到达当前phase的parties数。当剩余的parties(通过方法getUnarrivedParties获取)到达时，phase进入下一代。这些方法返回的值可能只表示短暂的状态，所以一般来说在同步结构里并没有啥卵用。
 
-### # Phaser源码详解
+### Phaser源码详解
 
-### # 核心参数
+### 核心参数
 
 ```
 private volatile long state;
@@ -95,7 +95,7 @@ private final AtomicReference<QNode> oddQ;
 
 > 注意: 子Phaser的phase在没有被真正使用之前，允许滞后于它的root节点。这里在后面源码分析的reconcileState方法里会讲解。 Qnode是Phaser定义的内部等待队列，用于在阻塞时记录等待线程及相关信息。实现了ForkJoinPool的一个内部接口ManagedBlocker，上面已经说过，Phaser也可能被ForkJoinPool中的任务使用，这样在其他任务阻塞等待一个phase时可以保证足够的并行度来执行任务(通过内部实现方法isReleasable和block)。
 
-### # 函数列表
+### 函数列表
 
 ```
 //构造方法
@@ -135,7 +135,7 @@ public int awaitAdvanceInterruptibly(int phase, long timeout, TimeUnit unit)
 public void forceTermination()
 ```
 
-### # 方法 - register()
+### 方法 - register()
 
 ```
 //注册一个新的party
@@ -294,7 +294,7 @@ private int internalAwaitAdvance(int phase, QNode node) {
 *   继续循环，阻塞任务运行成功被释放，跳出循环
 *   最后唤醒当前phase的线程
 
-### # 方法 - arrive()
+### 方法 - arrive()
 
 ```
 //使当前线程到达phaser，不等待其他任务到达。返回arrival phase number
@@ -353,7 +353,7 @@ private int doArrive(int adjust) {
     *   如果当前是root节点，判断是否需要终止phaser，CAS更新phase，最后释放等待的线程；
     *   如果是分层结构，并且已经没有下一代未到达的parties，则交由父节点处理doArrive逻辑，然后更新state为EMPTY。
 
-### # 方法 - arriveAndAwaitAdvance()
+### 方法 - arriveAndAwaitAdvance()
 
 ```
 public int arriveAndAwaitAdvance() {
@@ -400,7 +400,7 @@ public int arriveAndAwaitAdvance() {
 *   如果为分层结构，则交由父节点处理arriveAndAwaitAdvance逻辑
 *   如果未到达数<=1，判断phaser终止状态，CAS更新phase到下一代，最后释放等待当前phase的线程，并返回下一代phase。
 
-### # 方法 - awaitAdvance(int phase)
+### 方法 - awaitAdvance(int phase)
 
 ```
 public int awaitAdvance(int phase) {
@@ -433,6 +433,6 @@ public int awaitAdvanceInterruptibly(int phase)
 
 > 说明: awaitAdvance用于阻塞等待线程到达，直到phase前进到下一代，返回下一代的phase number。方法很简单，不多赘述。awaitAdvanceInterruptibly方法是响应中断版的awaitAdvance，不同之处在于，调用阻塞时会记录线程的中断状态。
 
-### # 参考文章
+### 参考文章
 
 *   本文主要参考自泰迪的bagwell的https://www.jianshu.com/p/e5794645ca8d，在此基础上进行了增改。

@@ -30,7 +30,7 @@ Future 表示了一个任务的生命周期，是一个可取消的异步运算�
         *   FutureTask+Thread例子
     *   参考文章
 
-### # 带着BAT大厂的面试问题去理解FutureTask
+### 带着BAT大厂的面试问题去理解FutureTask
 
 > 提示
 
@@ -43,19 +43,19 @@ Future 表示了一个任务的生命周期，是一个可取消的异步运算�
 *   FutureTask内部运行状态的转变?
 *   FutureTask通常会怎么用? 举例说明。
 
-### # FutureTask简介
+### FutureTask简介
 
 > FutureTask 为 Future 提供了基础实现，如获取任务执行结果(get)和取消任务(cancel)等。如果任务尚未完成，获取任务执行结果时将会阻塞。一旦执行结束，任务就不能被重启或取消(除非使用runAndReset执行计算)。FutureTask 常用来封装 Callable 和 Runnable，也可以作为一个任务提交到线程池中执行。除了作为一个独立的类之外，此类也提供了一些功能性函数供我们创建自定义 task 类使用。FutureTask 的线程安全由CAS来保证。
 
-### # FutureTask类关系
+### FutureTask类关系
 
 > ![](images/java-thread-x-juc-futuretask-1.png)
 
 > 可以看到,FutureTask实现了RunnableFuture接口，则RunnableFuture接口继承了Runnable接口和Future接口，所以FutureTask既能当做一个Runnable直接被Thread执行，也能作为Future用来得到Callable的计算结果。
 
-### # FutureTask源码解析
+### FutureTask源码解析
 
-### # Callable接口
+### Callable接口
 
 > Callable是个泛型接口，泛型V就是要call()方法返回的类型。对比Runnable接口，Runnable不会返回数据也不能抛出异常。
 
@@ -71,7 +71,7 @@ public interface Callable<V> {
 }
 ```
 
-### # Future接口
+### Future接口
 
 
 > Future接口代表异步计算的结果，通过Future接口提供的方法可以查看异步计算是否执行完成，或者等待执行结果并获取执行结果，同时还可以取消执行。Future接口的定义如下:
@@ -186,7 +186,6 @@ private static final int INTERRUPTING = 5;
 private static final int INTERRUPTED  = 6;
 
 
-```
 
 
 
@@ -222,7 +221,7 @@ private static final int INTERRUPTED  = 6;
 
 > ![](images/java-thread-x-juc-futuretask-2.png)
 
-### # 构造函数
+### 构造函数
 
 * FutureTask()
 
@@ -251,7 +250,7 @@ public FutureTask(Callable<V> callable) {
 [//]: # (```)
 
 [//]: # ()
-[//]: # (private Callable<V> callable)
+[//]: # (private Callable&lt;V&gt; callable)
 
 [//]: # ()
 [//]: # (```)
@@ -296,7 +295,7 @@ public FutureTask(Callable<V> callable) {
 [//]: # (```)
 
 [//]: # ()
-[//]: # (public static <T> Callable<T> callable&#40;Runnable task, T result&#41; {)
+[//]: # (public static &lt;T&gt; Callable&lt;T&gt; callable&#40;Runnable task, T result&#41; {)
 
 [//]: # ()
 [//]: # (    if &#40;task == null&#41;)
@@ -305,7 +304,7 @@ public FutureTask(Callable<V> callable) {
 [//]: # (       throw new NullPointerException&#40;&#41;;)
 
 [//]: # ()
-[//]: # (    return new RunnableAdapter<T>&#40;task, result&#41;;)
+[//]: # (    return new RunnableAdapter&lt;T&gt;&#40;task, result&#41;;)
 
 [//]: # ()
 [//]: # (})
@@ -322,7 +321,7 @@ public FutureTask(Callable<V> callable) {
 [//]: # (```)
 
 [//]: # ()
-[//]: # (RunnableAdapter<T>&#40;task, result&#41;)
+[//]: # (RunnableAdapter&lt;T&gt;&#40;task, result&#41;)
 
 [//]: # ()
 [//]: # (```)
@@ -336,7 +335,7 @@ public FutureTask(Callable<V> callable) {
 [//]: # (```)
 
 [//]: # ()
-[//]: # (static final class RunnableAdapter<T> implements Callable<T> {)
+[//]: # (static final class RunnableAdapter&lt;T&gt; implements Callable&lt;T&gt; {)
 
 [//]: # ()
 [//]: # (    final Runnable task;)
@@ -400,7 +399,7 @@ public FutureTask(Callable<V> callable) {
 
 [//]: # (    try {)
 
-[//]: # (        Callable<V> c = callable;)
+[//]: # (        Callable&lt;V&gt; c = callable;)
 
 [//]: # (        if &#40;c != null && state == NEW&#41; {)
 
@@ -832,7 +831,7 @@ public FutureTask(Callable<V> callable) {
 
 [//]: # (          ExecutorService executorService = Executors.newCachedThreadPool&#40;&#41;;)
 
-[//]: # (          Future future = executorService.submit&#40;new Callable<Object>&#40;&#41; {)
+[//]: # (          Future future = executorService.submit&#40;new Callable&lt;Object&gt;&#40;&#41; {)
 
 [//]: # (              @Override)
 
@@ -898,7 +897,7 @@ public FutureTask(Callable<V> callable) {
 
 [//]: # (         * ExecutorService service = Executors.newCachedThreadPool&#40;&#41;;)
 
-[//]: # (         * Future<Integer> future = service.submit&#40;task1&#41;;)
+[//]: # (         * Future&lt;Integer&gt; future = service.submit&#40;task1&#41;;)
 
 [//]: # (         * service.shutdown&#40;&#41;;)
 
@@ -913,7 +912,7 @@ public FutureTask(Callable<V> callable) {
 
 [//]: # (         * Task task = new Task&#40;&#41;;)
 
-[//]: # (         * FutureTask<Integer> futureTask = new FutureTask<Integer>&#40;task&#41;;)
+[//]: # (         * FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;Integer&gt;&#40;task&#41;;)
 
 [//]: # (         * executor.submit&#40;futureTask&#41;;)
 
@@ -931,7 +930,7 @@ public FutureTask(Callable<V> callable) {
 [//]: # ( )
 [//]: # (        //  新建FutureTask,需要一个实现了Callable接口的类的实例作为构造函数参数)
 
-[//]: # (        FutureTask<Integer> futureTask = new FutureTask<Integer>&#40;new Task&#40;&#41;&#41;;)
+[//]: # (        FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;Integer&gt;&#40;new Task&#40;&#41;&#41;;)
 
 [//]: # (        //  新建Thread对象并启动)
 
@@ -997,7 +996,7 @@ public FutureTask(Callable<V> callable) {
 [//]: # ( )
 [//]: # (    //  继承Callable接口,实现call&#40;&#41;方法,泛型参数为要返回的类型)
 
-[//]: # (    static class Task  implements Callable<Integer> {)
+[//]: # (    static class Task  implements Callable&lt;Integer&gt; {)
 
 [//]: # ( )
 [//]: # (        @Override)

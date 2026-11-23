@@ -15,22 +15,8 @@ title: Java 基础 - 面向对象
 2-$1$2$3$4#$2$5
 :::
 
-* [Java 基础 - 面向对象](#java-基础---面向对象)
-  * [三大特性](#三大特性)
-    * [封装](#封装)
-    * [继承](#继承)
-    * [多态](#多态)
-  * [类图](#类图)
-    * [泛化关系(Generalization)](#泛化关系-generalization) 
-    * [实现关系(Realization)](#实现关系-ealization)
-    * [聚合关系(Aggregation)](#聚合关系-aggregation)
-    * [组合关系(Composition)](#组合关系-composition)
-    * [关联关系(Association)](#关联关系-association)
-    * [依赖关系(Dependency)](#依赖关系-dependency)
-    * [参考资料](#参考资料)
-
-### 三大特性
-#### 封装
+## 三大特性
+### 封装
 利用抽象数据类型将数据和基于数据的操作封装在一起，使其构成一个不可分割的独立实体。数据被保护在抽象数据类型的内部，尽可能地隐藏内部的细节，只保留一些对外接口使之与外部发生联系。用户无需知道对象内部的细节，但可以通过对象对外提供的接口来访问该对象。
 
 * 优点:减少耦合: 可以独立地开发、测试、优化、使用、理解和修改
@@ -66,7 +52,7 @@ public class Person {
 }
 ```
 
-#### 继承
+### 继承
 继承实现了 IS-A 关系，例如 Cat 和 Animal 就是一种 IS-A 关系，因此 Cat 可以继承自 Animal，从而获得 Animal 非 private 的属性和方法。
 
 继承应该遵循里氏替换原则，子类对象必须能够替换掉所有父类对象。
@@ -75,7 +61,7 @@ Cat 可以当做 Animal 来使用，也就是说可以使用 Animal 引用 Cat �
 ```java
 Animal animal = new Cat();
 ```
-#### 多态
+### 多态
 多态分为编译时多态和运行时多态:
 * 编译时多态主要指方法的重载
 * 运行时多态指程序中定义的对象引用所指向的具体类型在运行期间才确定
@@ -118,10 +104,10 @@ public class Music {
     }
 }
 ```
-### 类图
+## 类图
 以下类图使用 [PlantUML](https://plantuml.com/) 绘制，更多语法及使用请参考: http://plantuml.com/
 
-#### 泛化关系(Generalization)
+### 泛化关系(Generalization)
 用来描述继承关系，在 Java 中使用 extends 关键字。
 
 ![img.png](images/JyICpuSd5EUsDshW.png)
@@ -141,7 +127,7 @@ Vehical <|-- Truck
 @enduml
 ```
 
-#### 实现关系(Realization)
+### 实现关系(Realization)
 用来实现一个接口，在 Java 中使用 implements 关键字。
 
 ![img.png](images/ZsPot4387icJvMzc.png)
@@ -161,7 +147,7 @@ MoveBehavior <|.. Run
 @enduml
 ```
 
-#### 聚合关系(Aggregation)
+### 聚合关系(Aggregation)
 表示整体由部分组成，但是整体和部分不是强依赖的，整体不存在了部分还是会存在。
 
 ![img.png](images/4mLiKV26PUEszWpz.png)
@@ -183,7 +169,7 @@ Computer o-- Screen
 @enduml
 ```
 
-#### 组合关系(Composition)
+### 组合关系(Composition)
 和聚合不同，组合中整体和部分是强依赖的，整体不存在了部分也不存在了。比如公司和部门，公司没了部门就不存在了。但是公司和员工就属于聚合关系了，因为公司没了员工还在。
 
 ![img.png](images/SggpCeyoPyK3Q08g.png)
@@ -203,7 +189,7 @@ Company *-- DepartmentB
 @enduml
 ```
 
-#### 关联关系(Association)
+### 关联关系(Association)
 表示不同类对象之间有关联，这是一种静态关系，与运行过程的状态无关，在最开始就可以确定。因此也可以用 1 对 1、多对 1、多对多这种关联关系来表示。比如学生和学校就是一种关联关系，一个学校可以有很多学生，但是一个学生只属于一个学校，因此这是一种多对一的关系，在运行开始之前就可以确定。
 
 ![img.png](images/9Z8qEWXKmEZ0LuFw.png)
@@ -220,7 +206,7 @@ School "1" - "n" Student
 
 @enduml
 ```
-#### 依赖关系(Dependency)
+### 依赖关系(Dependency)
 和关联关系不同的是，依赖关系是在运行过程中起作用的。 A 类和 B 类是依赖关系主要有三种形式:
 
 * A 类是 B 类中的(某中方法的)局部变量；
@@ -251,7 +237,7 @@ Vehicle .. N
 @enduml
 ```
 
-### 参考资料
+## 参考资料
 * Java 编程思想
 * 敏捷软件开发: 原则、模式与实践
 * [面向对象设计的 SOLID 原则](https://www.cnblogs.com/shanyou/archive/2009/09/21/1570716.html)
@@ -263,4 +249,3 @@ Vehicle .. N
 * 抽象类与oop三大特征 http://www.cnblogs.com/wujing-hubei/p/6012105.html
 
 
-<Vssue title="java-basic-oop" />

@@ -24,11 +24,11 @@ title: Collection - Stack & Queue 源码解析
         *   peekFirst()
         *   peekLast()
 
-### # Stack & Queue概述
+### Stack & Queue概述
 
 > Java里有一个叫做_Stack_的类，却没有叫做_Queue_的类(它是个接口名字)。当需要使用栈时，Java已不推荐使用_Stack_，而是推荐使用更高效的_ArrayDeque_；既然_Queue_只是一个接口，当需要使用队列时也就首选_ArrayDeque_了(次选是_LinkedList_)。
 
-### # Queue
+### Queue
 
 > _Queue_接口继承自Collection接口，除了最基本的Collection的方法之外，它还支持额外的_insertion_, _extraction_和_inspection_操作。这里有两组格式，共6个方法，一组是抛出异常的实现；另外一组是返回值的实现(没有则返回null)。
 
@@ -38,7 +38,7 @@ title: Collection - Stack & Queue 源码解析
 | Remove | remove() | poll() |
 | Examine | element() | peek() |
 
-### # Deque
+### Deque
 
 > `Deque`是"double ended queue", 表示双向的队列，英文读作"deck". Deque 继承自 Queue接口，除了支持Queue的方法之外，还支持`insert`, `remove`和`examine`操作，由于Deque是双向的，所以可以对队列的头和尾都进行操作，它同时也支持两组格式，一组是抛出异常的实现；另外一组是返回值的实现(没有则返回null)。共12个方法如下:
 
@@ -92,9 +92,9 @@ title: Collection - Stack & Queue 源码解析
 
 > 上图中我们看到，``head`指向首端第一个有效元素，`tail`指向尾端第一个可以插入元素的空位`。因为是循环数组，所以`head`不一定总等于0，`tail`也不一定总是比`head`大。
 
-### # 方法剖析
+### 方法剖析
 
-### # addFirst()
+### addFirst()
 
 > `addFirst(E e)`的作用是在_Deque_的首端插入元素，也就是在`head`的前面插入元素，在空间足够且下标没有越界的情况下，只需要将`elements[--head] = e`即可。
 
@@ -148,7 +148,7 @@ private void doubleCapacity() {
 }
 ```
 
-### # addLast()
+### addLast()
 
 > `addLast(E e)`的作用是在_Deque_的尾端插入元素，也就是在`tail`的位置插入元素，由于`tail`总是指向下一个可以插入的空位，因此只需要`elements[tail] = e;`即可。插入完成后再检查空间，如果空间已经用光，则调用`doubleCapacity()`进行扩容。
 
@@ -166,7 +166,7 @@ public void addLast(E e) {
 
 > 下标越界处理方式`addFirt()`中已经讲过，不再赘述。
 
-### # pollFirst()
+### pollFirst()
 
 > `pollFirst()`的作用是删除并返回_Deque_首端元素，也即是`head`位置处的元素。如果容器不空，只需要直接返回`elements[head]`即可，当然还需要处理下标的问题。由于`ArrayDeque`中不允许放入`null`，当
 
@@ -188,7 +188,7 @@ public E pollFirst() {
 }
 ```
 
-### # pollLast()
+### pollLast()
 
 > `pollLast()`的作用是删除并返回_Deque_尾端元素，也即是`tail`位置前面的那个元素。
 
@@ -204,7 +204,7 @@ public E pollLast() {
 }
 ```
 
-### # peekFirst()
+### peekFirst()
 
 > `peekFirst()`的作用是返回但不删除_Deque_首端元素，也即是`head`位置处的元素，直接返回`elements[head]`即可。
 
@@ -214,7 +214,7 @@ public E peekFirst() {
 }
 ```
 
-### # peekLast()
+### peekLast()
 
 > `peekLast()`的作用是返回但不删除_Deque_尾端元素，也即是`tail`位置前面的那个元素。
 

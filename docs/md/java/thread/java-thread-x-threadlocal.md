@@ -17,7 +17,7 @@ title: Java 并发 - ThreadLocal详解
 *   为什么ThreadLocal会造成内存泄露? 如何解决
 *   还有哪些使用ThreadLocal的应用场景?
 
-### # ThreadLocal简介
+### ThreadLocal简介
 
 > 我们在Java 并发 - 并发理论基础总结过线程安全(是指广义上的共享资源访问安全性，因为线程隔离是通过副本保证本线程访问资源安全性，它不保证线程之间还存在共享关系的狭义上的安全性)的解决思路：
 
@@ -31,7 +31,7 @@ title: Java 并发 - ThreadLocal详解
 
 > 总结而言：ThreadLocal是一个将在多线程中为每一个线程创建单独的变量副本的类; 当使用ThreadLocal来维护变量时, ThreadLocal会为每个线程创建单独的变量副本, 避免因多线程操作共享变量而导致的数据不一致的情况。
 
-### # ThreadLocal理解
+### ThreadLocal理解
 
 > > 提到ThreadLocal被提到应用最多的是session管理和数据库链接管理，这里以数据访问为例帮助你理解ThreadLocal：
 
@@ -131,9 +131,9 @@ public class ConnectionManager {
 
 > > 但是要注意，虽然ThreadLocal能够解决上面说的问题，但是由于在每个线程中都创建了副本，所以要考虑它对资源的消耗，比如内存的占用会比不使用ThreadLocal要大。
 
-### # ThreadLocal原理
+### ThreadLocal原理
 
-### # 如何实现线程隔离
+### 如何实现线程隔离
 
 > 主要是用到了Thread对象中的一个ThreadLocalMap类型的变量threadLocals, 负责存储当前线程的关于Connection的对象, dbConnectionLocal(以上述例子中为例) 这个变量为Key, 以新建的Connection对象为Value; 这样的话, 线程第一次读取的时候如果不存在就会调用ThreadLocal的initialValue方法创建一个Connection对象并且返回;
 
@@ -215,7 +215,7 @@ public Connection getConnection() {
 
 > 现在我们知道了ThreadLocal到底是什么了, 又知道了如何使用ThreadLocal以及其基本实现原理了是不是就可以结束了呢? 其实还有一个问题就是ThreadLocalMap是个什么对象, 为什么要用这个对象呢?
 
-### # ThreadLocalMap对象是什么
+### ThreadLocalMap对象是什么
 
 > 本质上来讲, 它就是一个Map, 但是这个ThreadLocalMap与我们平时见到的Map有点不一样
 
@@ -282,7 +282,7 @@ private Entry getEntry(ThreadLocal<?> key) {
 
 > 先找到ThreadLocal的索引位置, 如果索引位置处的entry不为空并且键与threadLocal是同一个对象, 则直接返回; 否则去后面的索引位置继续查找。
 
-### # ThreadLocal造成内存泄露的问题
+### ThreadLocal造成内存泄露的问题
 
 > 网上有这样一个例子：
 
@@ -357,11 +357,11 @@ private void remove(ThreadLocal<?> key) {
 
 > 找到Key对应的Entry, 并且清除Entry的Key(ThreadLocal)置空, 随后清除过期的Entry即可避免内存泄露。
 
-### # 再看ThreadLocal应用场景
+### 再看ThreadLocal应用场景
 
 > 除了上述的数据库管理类的例子，我们再看看其它一些应用：
 
-### # 每个线程维护了一个“序列号”
+### 每个线程维护了一个“序列号”
 
 > > 再回想上文说的，如果我们希望通过某个类将状态(例如用户ID、事务ID)与线程关联起来，那么通常在这个类中定义private static类型的ThreadLocal 实例。
 
@@ -384,7 +384,7 @@ public class SerialNum {
 }
 ```
 
-### # Session的管理
+### Session的管理
 
 > 经典的另外一个例子：
 
@@ -405,7 +405,7 @@ public static Session getSession() throws InfrastructureException {
 }
 ```
 
-### # 在线程内部创建ThreadLocal
+### 在线程内部创建ThreadLocal
 
 > 还有一种用法是在线程类内部创建ThreadLocal，基本步骤如下：
 
@@ -468,7 +468,7 @@ class Student{
 }
 ```
 
-### # java 开发手册中推荐的 ThreadLocal
+### java 开发手册中推荐的 ThreadLocal
 
 > 看看阿里巴巴 java 开发手册中推荐的 ThreadLocal 的用法:
 
@@ -492,7 +492,7 @@ public class DateUtils {
 DateUtils.df.get().format(new Date());
 ```
 
-### # 参考文章
+### 参考文章
 
 *   https://blog.csdn.net/vking_wang/article/details/14225379
 *   https://mp.weixin.qq.com/s/mo3-y-45_ao54b5T7ez7iA

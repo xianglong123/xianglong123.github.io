@@ -4,7 +4,7 @@ title: ♥Java8特性知识体系详解♥
 
 ---
 
-# ♥Java8特性知识体系详解♥
+# Java8特性知识体系详解
 
 ::: tip 提示
 Java 8 新特性详解汇总。 @123
@@ -31,13 +31,13 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
         *   其它更新
     *   参考文档
 
-### # 知识体系
+### 知识体系
 
 > ![](images/java8-overview.png)
 
-### # 相关文章
+### 相关文章
 
-### # 函数编程
+### 函数编程
 
 > > 面向对象编程是对数据进行抽象；函数式编程是对行为进行抽象。
 
@@ -48,7 +48,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - 函数编程
 
-### # Optional类
+### Optional类
 
 > > 这是一个可以为null的容器对象。如果值存在则isPresent()方法会返回true，调用get()方法会返回该对象。
 
@@ -59,7 +59,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - Optional类
 
-### # default方法
+### default方法
 
 > > 默认方法给予我们修改接口而不破坏原来的实现类的结构提供了便利，目前java 8的集合框架已经大量使用了默认方法来改进了，当我们最终开始使用Java 8的lambdas表达式时，提供给我们一个平滑的过渡体验。
 
@@ -69,7 +69,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - default方法
 
-### # 类型注解
+### 类型注解
 
 > > 那充满争议的类型注解究竟是什么? 复杂还是便捷?
 
@@ -80,14 +80,14 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - 类型注解
 
-### # 重复注解
+### 重复注解
 
 *   Java8之前对重复注解是怎么做的?
 *   Java8对重复注解添加了什么支持?
 
 > 详细分析请参看: Java 8 - 重复注解
 
-### # 类型推断
+### 类型推断
 
 > > 导致类型间互相转换的问题困扰着每个java程序员，通过编译器自动推断类型的东西可以稍微缓解一下类型转换太复杂的问题。
 
@@ -97,7 +97,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - 类型推断优化
 
-### # JRE 精简
+### JRE 精简
 
 > > 模块化特性是javaer所期待的特性, 一个占用资源少的JRE运行环境，紧凑的JRE特性的出现，能带来以后的物联网的发展，甚至还是会有大量的java应用程序出现在物联网上面。
 
@@ -107,7 +107,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - JRE精简
 
-### # LocalDate/LocalDateTime
+### LocalDate/LocalDateTime
 
 > > Date/Calendar槽点, java8对其进行了重写。
 
@@ -118,7 +118,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - LocalDate/LocalDateTime
 
-### # JavaFX
+### JavaFX
 
 > > JavaFX主要致力于富客户端开发，以弥补swing的缺陷，主要提供图形库与media库，支持audio,video,graphics,animation,3D等，同时采用现代化的css方式支持界面设计。同时又采用XUI方式以XML方式设计UI界面，达到显示与逻辑的分离。
 
@@ -127,7 +127,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - JavaFX
 
-### # PermGen移除
+### PermGen移除
 
 > > PermGen space的全称是Permanent Generation space,是指内存的永久保存区域。PermGen space是Oracle-Sun Hotspot才有，JRockit以及J9是没有这个区域。
 
@@ -137,7 +137,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - 移除Permgen
 
-### # StampedLock
+### StampedLock
 
 *   为什么会引入StampedLock
 *   用Lock写悲观锁和乐观锁举例
@@ -146,7 +146,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - StampedLock
 
-### # 其它更新
+### 其它更新
 
 *   Java8 还有哪些其它更新
     *   字符串
@@ -157,7 +157,7 @@ JSR论坛: https://jcp.org/en/jsr/detail?id=335
 
 > 详细分析请参看: Java 8 - 其它更新
 
-### # 参考文档
+### 参考文档
 
 > > 主要参考自以下文档:
 
