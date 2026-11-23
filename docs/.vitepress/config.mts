@@ -7,33 +7,16 @@ const HERE = path.dirname(fileURLToPath(import.meta.url))
 const DOCS = path.resolve(HERE, '..')
 const MD_ROOT = path.join(DOCS, 'md')
 
-/** 分组的中文标题。unspecified 的目录直接用文件夹名。 */
+/** 分组的中文标题。没列的目录直接用文件夹名。 */
 const LABELS: Record<string, string> = {
-  basic: 'Java 基础',
-  collection: '集合框架',
-  io: 'IO / NIO',
-  java8: 'Java 8',
-  java8up: 'Java 8 以后',
-  jvm: 'JVM',
-  thread: '并发与 JUC',
-  advanced: '其他机制',
-  info: '数据库基础',
-  db: 'SQL 体系',
-  mybatis: 'MyBatis',
-  mp: 'MyBatis-Plus',
-  jpa: 'JPA',
-  elk: 'ELK 日志',
-  owner: '踩坑笔记',
-  reward: '关于'
+  'ai-agent': 'AI Agent 与集成',
+  'ai-content': 'AI 内容生产',
+  tools: '工具站开发',
+  devops: '自动化与部署'
 }
 
-/** 组的显示顺序，没列出的排在最后。 */
-const ORDER = [
-  'java/basic', 'java/collection', 'java/io', 'java/java8', 'java/java8up',
-  'java/jvm', 'java/thread', 'java/advanced',
-  'db', 'db/info', 'db/frame/mybatis', 'db/frame/mp', 'db/frame/jpa',
-  'elk', 'owner', 'reward'
-]
+/** 组的显示顺序。 */
+const ORDER = ['ai-agent', 'ai-content', 'tools', 'devops']
 
 function readTitle(file: string): string {
   const txt = fs.readFileSync(file, 'utf-8').slice(0, 4000)
@@ -47,14 +30,19 @@ function readTitle(file: string): string {
     const h1 = txt.match(/^#\s+(.+)$/m)
     title = h1 ? h1[1].trim() : path.basename(file, '.md')
   }
-  // 原标题首尾爱用 ♥ 装饰，去掉
-  return title.replace(/^♥+/, '').replace(/♥+$/, '').trim()
+  return title.trim()
 }
 
+/**
+ * md 路径 → 站点 URL。
+ * 每一段单独 encodeURIComponent，否则文件名里的 & # ? + 会被当成 URL 分隔符，
+ * 生成链接后点击就 404（历史事故：java-map-HashMap&HashSet.html）。
+ */
 function toLink(rel: string): string {
   const clean = rel.replace(/\.md$/, '').replace(/(^|\/)(README|index)$/i, '$1')
-  if (clean.endsWith('/')) return '/' + clean
-  return '/' + clean + '.html'
+  const encoded = clean.split('/').map((s) => encodeURIComponent(s)).join('/')
+  if (encoded.endsWith('/')) return '/' + encoded
+  return '/' + encoded + '.html'
 }
 
 function walk(dir: string, acc: string[] = []): string[] {
@@ -100,7 +88,7 @@ function buildSidebar() {
     const label = LABELS[dirKey.split('/').pop() as string] || dirKey
     ;(sidebar[`/md/${section}/`] ||= []).push({
       text: label,
-      collapsed: items.length > 12 ? true : false,
+      collapsed: items.length > 12,
       items: items.map(({ text, link }) => ({ text, link }))
     })
   }
@@ -110,7 +98,7 @@ function buildSidebar() {
 export default defineConfig({
   lang: 'zh-CN',
   title: '向龙的笔记',
-  description: 'Java 后端与架构笔记：基础、集合、并发、JVM、IO、数据库，以及踩过的坑。',
+  description: 'AI Agent 集成、AI 内容生产、工具站开发与自动化的实践记录。',
   cleanUrls: false,
   srcExclude: ['**/README-DEPLOY.md'],
 
@@ -118,7 +106,14 @@ export default defineConfig({
     ['link', { rel: 'icon', href: '/images/photo.jpg' }],
     ['link', { rel: 'apple-touch-icon', href: '/images/photo.jpg' }],
     ['meta', { name: 'theme-color', content: '#1f6feb' }],
-    ['meta', { property: 'og:type', content: 'website' }]
+    ['meta', { property: 'og:type', content: 'website' }],
+    [
+      'meta',
+      {
+        name: 'description',
+        content: 'AI Agent 集成、AI 内容生产、工具站开发与自动化的实践记录。'
+      }
+    ]
   ],
 
   markdown: {
@@ -134,29 +129,10 @@ export default defineConfig({
 
     nav: [
       { text: '首页', link: '/' },
-      {
-        text: 'Java',
-        items: [
-          { text: '基础', link: '/md/java/basic/' },
-          { text: '集合框架', link: '/md/java/collection/java-collection-all.html' },
-          { text: '并发与 JUC', link: '/md/java/thread/java-thread-x-overview.html' },
-          { text: 'JVM', link: '/md/java/jvm/java-jvm-x-overview.html' },
-          { text: 'IO / NIO', link: '/md/java/io/java-io-overview.html' },
-          { text: 'Java 8', link: '/md/java/java8/java8.html' }
-        ]
-      },
-      {
-        text: '数据库',
-        items: [
-          { text: 'SQL 体系', link: '/md/db/alg-basic-overview.html' },
-          { text: 'MySQL', link: '/md/db/info/mysql.html' },
-          { text: 'MyBatis', link: '/md/db/frame/mybatis/mybatis-base-overview.html' },
-          { text: 'MyBatis-Plus', link: '/md/db/frame/mp/mp-base-overview.html' },
-          { text: 'JPA', link: '/md/db/frame/jpa/jpa-base-overview.html' }
-        ]
-      },
-      { text: '踩坑笔记', link: '/md/owner/owner-base-overview.html' },
-      { text: '关于', link: '/md/reward/reward-me.html' }
+      { text: 'AI Agent', link: '/md/ai-agent/' },
+      { text: '内容生产', link: '/md/ai-content/' },
+      { text: '工具站', link: '/md/tools/' },
+      { text: '自动化', link: '/md/devops/' }
     ],
 
     sidebar: buildSidebar(),
@@ -172,7 +148,7 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/xianglong123' }],
 
     footer: {
-      message: '以笔记为索引，不追求面面俱到。',
+      message: '写下来的是判断，不是教程。',
       copyright: 'Copyright © 2018-2026 向龙'
     }
   }
