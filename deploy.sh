@@ -1,27 +1,27 @@
 #!/usr/bin/env sh
+# 源码在本仓库的 source 分支；构建产物推到 master，GitHub Pages 从 master 读取。
+#
+# 千万不要在产物里写 CNAME：www.xianglong.vip 已经指向自己的服务器，
+# 一旦 GitHub Pages 声明这个域名，github.io 主域会被 301 到它，站点反而打不开。
 
-export NODE_OPTIONS=--openssl-legacy-provider
-
-# 确保脚本抛出遇到的错误
 set -e
 
-# 生成静态文件 npm run build
-#pnpm run build
+# VuePress 1.x 里的 md4 在 Node 17+ 会报 ERR_OSSL_EVP_UNSUPPORTED，需要 legacy provider
+export NODE_OPTIONS=--openssl-legacy-provider
 
-# 进入生成的文件夹
+# 首次构建时安装依赖；已装可跳过
+if [ ! -d node_modules ]; then
+  npm ci
+fi
+
+npx vuepress build docs
+
 cd docs/.vuepress/dist
 
-# 如果是发布到自定义域名
-echo 'www.xianglong.vip' > CNAME
-
-git init
+git init -b master
 git add -A
-git commit -m 'deploy'
-
-# 如果你想要部署到 https://USERNAME.github.io
+git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')"
 git push -f git@github.com:xianglong123/xianglong123.github.io.git master
 
-# 如果发布到 https://USERNAME.github.io/<REPO>  REPO=github上的项目
-#git push -f git@github.com:xianglong123/cas-blog.git master
-
 cd -
+echo "已部署：https://xianglong123.github.io/"
