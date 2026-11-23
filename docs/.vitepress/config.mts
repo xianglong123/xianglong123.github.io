@@ -35,14 +35,15 @@ function readTitle(file: string): string {
 
 /**
  * md 路径 → 站点 URL。
+ * rel 是相对 docs/md 的路径，站点上的实际位置都在 /md/ 下，必须补前缀。
  * 每一段单独 encodeURIComponent，否则文件名里的 & # ? + 会被当成 URL 分隔符，
  * 生成链接后点击就 404（历史事故：java-map-HashMap&HashSet.html）。
  */
 function toLink(rel: string): string {
   const clean = rel.replace(/\.md$/, '').replace(/(^|\/)(README|index)$/i, '$1')
   const encoded = clean.split('/').map((s) => encodeURIComponent(s)).join('/')
-  if (encoded.endsWith('/')) return '/' + encoded
-  return '/' + encoded + '.html'
+  if (encoded.endsWith('/')) return '/md/' + encoded
+  return '/md/' + encoded + '.html'
 }
 
 function walk(dir: string, acc: string[] = []): string[] {
