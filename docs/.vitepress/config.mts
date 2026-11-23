@@ -127,13 +127,8 @@ export default defineConfig({
     logo: '/images/photo.jpg',
     siteTitle: '向龙的笔记',
 
-    nav: [
-      { text: '首页', link: '/' },
-      { text: 'AI Agent', link: '/md/ai-agent/' },
-      { text: '内容生产', link: '/md/ai-content/' },
-      { text: '工具站', link: '/md/tools/' },
-      { text: '自动化', link: '/md/devops/' }
-    ],
+    // 顶部导航已去掉：和左侧分组重复，点左上角站名即可回首页
+    nav: [],
 
     sidebar: buildSidebar(),
 
