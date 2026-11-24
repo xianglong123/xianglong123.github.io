@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>同一个脚本换一个引擎：用 HyperFrames 重做那条 Remotion 视频 | 123的个人主页</title>
+<meta name="description" content="同一份文案、同一段配音，用 HyperFrames 重做一条 41.5 秒竖屏视频：单文件 HTML、GSAP 时间轴、check 报出其发现的 26 个缺陷、字体是唯一硬门槛，以及 4 倍的渲染速度差。">
+<style>
+:root{
+  --ink:#2c3e50; --muted:#7f8c8d; --accent:#4b7bff; --line:#ebedf0;
+  --code-bg:#282c34; --code-bg2:#21252b; --tip:#e7f1ff;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:#fff; color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  font-size:16px; line-height:1.85;
+}
+.wrap{max-width:780px;margin:0 auto;padding:38px 22px 90px}
+.back{display:inline-block;margin-bottom:26px;color:var(--accent);text-decoration:none;font-size:14px}
+.back:hover{text-decoration:underline}
+h1{font-size:31px;line-height:1.4;margin:0 0 12px;letter-spacing:-.2px}
+.meta{color:var(--muted);font-size:13.5px;margin-bottom:30px}
+h2{font-size:21px;margin:44px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+h3{font-size:17px;margin:28px 0 10px;color:#34495e}
+p{margin:14px 0}
+ul,ol{margin:14px 0;padding-left:22px}
+li{margin:7px 0}
+.video-box{display:flex;justify-content:center;margin:26px 0 10px}
+.video-box video{
+  width:100%;max-width:348px;aspect-ratio:9/16;background:#08080c;
+  border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.22);display:block;
+}
+.caption{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
+.figure{margin:26px 0 8px}
+.figure img{width:100%;border-radius:10px;border:1px solid var(--line);display:block}
+pre{
+  background:var(--code-bg);color:#abb2bf;padding:16px 18px;border-radius:8px;
+  overflow-x:auto;font-size:13.5px;line-height:1.72;margin:16px 0;
+  font-family:"SF Mono",Menlo,Consolas,monospace;
+}
+pre .c{color:#5c6370;font-style:italic}
+pre .s{color:#98c379}
+pre .k{color:#c678dd}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+th{background:#fafbfc;font-weight:600}
+.tip{background:var(--tip);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+.warn{background:#fff8e6;border-left:3px solid #e0a800;padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+a{color:var(--accent)}
+@media (max-width:520px){
+  h1{font-size:25px}
+  h2{font-size:19px}
+  .wrap{padding:26px 16px 70px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="/">← 返回首页</a>
+
+<h1>同一个脚本换一个引擎：用 HyperFrames 重做那条 Remotion 视频</h1>
+<p class="meta">2026-11-24 · AI 内容实验 · 1080×1920 / 41.5 秒 / 4.9MB · 渲染 49.5 秒</p>
+
+<div class="video-box">
+  <video controls playsinline preload="metadata">
+    <source src="hyperframes-topic.mp4" type="video/mp4">
+    你的浏览器不支持视频播放。
+  </video>
+</div>
+<p class="caption">成片：同一份文案、同一段配音，HyperFrames 渲染版</p>
+
+<h2>为什么要做这个对照实验</h2>
+
+<p>上一篇的成片是 Remotion 做的，渲染用了 219 秒。真正让我在意的是另一个问题：<strong>Remotion 不是开源软件</strong>，它是 source-available 许可，批量出片当服务卖要按次付费。如果视频生产最后要做成流水线，这个费用迟早会变成设计约束。</p>
+
+<p><a href="https://github.com/heygen-com/hyperframes" target="_blank" rel="noopener">HyperFrames</a> 是 HeyGen 开源的同类工具，Apache-2.0，自称「Write HTML. Render video. Built for agents」。它的写法跟 Remotion 有一处根本分歧：</p>
+
+<table>
+  <tr><th></th><th>Remotion</th><th>HyperFrames</th></tr>
+  <tr><td>写法</td><td>React 组件（JSX）</td><td>纯 HTML + CSS + 可 seek 的动画</td></tr>
+  <tr><td>构建</td><td>必须打包</td><td>无构建，<code>index.html</code> 直接预览</td></tr>
+  <tr><td>动画</td><td>React 里的插值函数</td><td>GSAP 时间轴挂到 <code>window.__timelines</code></td></tr>
+  <tr><td>许可</td><td>source-available，商业渲染按次计费</td><td>Apache-2.0，无按次费用</td></tr>
+</table>
+
+<p>这两条路渲染时都走 headless Chrome + FFmpeg，所以画质理论上没有量差。真正要比的是<strong>改起来有多快</strong>、<strong>出错时有没有东西替你检查</strong>。</p>
+
+<h2>一、从零到能跑：三条命令</h2>
+
+<p>不需要 <code>npm install</code>，CLI 走 npx 即可，只要求 Node 22+ 和 FFmpeg 在 PATH 里：</p>
+
+<pre>npx hyperframes init hf-topic --non-interactive --resolution=portrait
+cd hf-topic
+npx hyperframes check          <span class="c"># 校验</span>
+npx hyperframes render -o renders/out.mp4 -q looks</pre>
+
+<p>生成的项目结构极简：<code>index.html</code> 就是整条片子，没有 src 目录、没有打包配置。根节点用 data 属性描述画布：</p>
+
+<pre>&lt;div id=<span class="s">"root"</span> data-composition-id=<span class="s">"main"</span>
+     data-start=<span class="s">"0"</span> data-duration=<span class="s">"41.5"</span>
+     data-width=<span class="s">"1080"</span> data-height=<span class="s">"1920"</span>&gt;</pre>
+
+<p>时间控制全部走两个属性：<code>data-start</code> 标记它从第几秒开始存在，<code>data-duration</code> 决定它存在多久。渲染器按秒 seek，所以画面必须是<strong>时间的纯函数</strong>——不能有 <code>Date.now()</code>、不能有 <code>Math.random()</code>、不能有网络请求。</p>
+
+<p>8 段结构、1245 帧、41.5 秒，全部对齐上一篇的时间轴，所以这条片子是一比一重做，不是新创作。改的只有实现方式。</p>
+
+<h2>二、它替我抓出了 26 个错误</h2>
+
+<p>这是整件事里最有价值的部分。写完第一版，我跑了 <code>check</code>，它返回 <strong>26 个 error、18 个 warning</strong>。没有一个是误报，全部是真实的版式缺陷：</p>
+
+<h3>1. 字幕容器把整屏文字遮住了</h3>
+
+<p><code>text_occluded</code>，报了十几条，每条都定位到具体元素，并给出覆盖比例：</p>
+
+<pre>selector: #s1a
+containerSelector: #c1 &gt; span:nth-of-type(1)
+coveredFraction: 1
+message: Text is hidden beneath an opaque element.</pre>
+
+<p>原因是我给字幕容器复用了 <code>.clip</code> 这个「全帧盒子」样式，它带 <code>top:0</code>，于是字幕条实际从 y=0 一直铺到 y=1770，把整屏文字压在不透明的背景下面。<strong>渲染出来会是「字全没了」</strong>，而 Remotion 那边没有任何东西会提示我这件事，只能靠截图肉眼找。</p>
+
+<h3>2. 三张卡片总宽 1338px，超出 1080 画布</h3>
+
+<p><code>canvas_overflow</code> 直接给了数：三张 430px 卡片 + 两个 24px 间距 = 1338px，超出左侧 94px。修法是缩卡片或改纵向排布。</p>
+
+<h3>3. 长字幕单行溢出 51px</h3>
+
+<p><code>text_box_overflow</code> 连容器该多宽都算好了（「widen the container to at least ~1131px」）。中文长句在竖屏里手动断行是必要的，靠自动换行会断在很难看的位置。</p>
+
+<div class="tip">这套检查分七组：lint（契约）、runtime（运行时 JS 错误、缺失资源）、layout（版式、遮挡、安全区）、motion（运动）、contrast（对比度，这次 25/25 通过 WCAG AA）、craft（工艺，比如字号下限 28px、每行字停留时间够不够读）、audio。改完再跑一次才 <code>Check passed</code>。</div>
+
+<p>对比一下：Remotion 那版我改了多少轮？至少四轮，全靠截图看。这不是能力差距，是<strong>有没有把验收做成工具</strong>的差距——正好对上我一直在说的那个问题：AI 写完代码，谁来证明它是对的。</p>
+
+<h2>三、字体是唯一的硬门槛</h2>
+
+<p>第一版我用 <code>PingFang SC</code>，macOS 自带、浏览器里也正常。但渲染器直接判违规：</p>
+
+<pre>[StaticGuard] Invalid HyperFrame contract: Font family used without
+@font-face declaration: pingfang sc. These are not in the auto-resolved
+font list, so the renderer cannot supply them automatically.
+Text will fall back to a generic font.</pre>
+
+<p>原因是渲染机用一套确定性字体注入机制，只认映射表里的族（Inter、JetBrains Mono、Noto 系列等），系统字体不在其中。<strong>中文会静默回退</strong>，不报错，只是字变难看。</p>
+
+<p>解法是自己带字体文件。我下的是 Noto Sans SC 的简体子集 woff2，5 个字重各 1.1MB，本地声明：</p>
+
+<pre>@font-face {
+  font-family: <span class="s">"NSC"</span>; font-weight: 800; font-display: block;
+  src: url(<span class="s">"assets/nsc-800.woff2"</span>) format(<span class="s">"woff2"</span>);
+}</pre>
+
+<p>代价也在这里：成片的中文字形明显比原片<strong>细</strong>。原片用的是 PingFang 的厚重字重，Noto 的 800 顶不上去。这一点骗不了人，两条片子放在一起看，字体质感是唯一肉眼可辨的差异。</p>
+
+<h2>四、两条成片的对照</h2>
+
+<div class="figure">
+  <img src="hyperframes-compare.png" alt="左：Remotion 版（15 秒处）；右：HyperFrames 版（16 秒处）">
+</div>
+<p class="caption">左：Remotion 版 · 右：HyperFrames 版（同一时间点）</p>
+
+<p>差异只有两处：一是字体厚度，二是 HyperFrames 版把字幕抬到了 <code>bottom: 232px</code>（检查器提示底部 200px 会被抖音 UI 压住）；此外左边这张是 15 秒的截图，第三条还没出现，右边是 16 秒，三条已经到齐。</p>
+
+<p>配色、卡片结构、编号方块、进度条、动效节奏全部一致——因为都是照着同一个设计稿做的。<strong>同一个设计稿，两条工具链的产出不该有差别，有差别才是问题。</strong></p>
+
+<h2>五、实测数据</h2>
+
+<table>
+  <tr><th>指标</th><th>HyperFrames</th><th>Remotion</th></tr>
+  <tr><td>成片规格</td><td colspan="2">1080×1920 / 30fps / 41.5 秒 / 1245 帧</td></tr>
+  <tr><td>渲染墙钟</td><td><strong>49.5 秒</strong>（首次 64.6 秒）</td><td>219 秒</td></tr>
+  <tr><td>产物大小</td><td>4.9 MB</td><td>5.2 MB</td></tr>
+  <tr><td>视频码率</td><td>804 kbps</td><td>992 kbps</td></tr>
+  <tr><td>耗时构成</td><td>截图捕获 41.9s · 音频 43.4s · 编译 6.2s</td><td>打包 29s + 逐帧渲染</td></tr>
+  <tr><td>校验</td><td>内置 7 组自动检查</td><td>无</td></tr>
+</table>
+
+<p>快约 4 倍，省在两处：没有打包步骤；音频预处理走独立通道。但要注意——<strong>音频处理 43.4 秒已经比截图捕获还长</strong>，是全流程的真正瓶颈。真做批量的话，优化点不在渲染器，在音频那一段。</p>
+
+<div class="warn">HyperFrames 现在是 0.9.x，一天发好几个 patch release，API 还会变。自用和小批量够用，别当关键基础设施押上去。Remotion 的 Lambda 分布式渲染更成熟，HyperFrames 也有，但生态积累差一截。</div>
+
+<h2>六、结论</h2>
+
+<p>做完这一轮，有三个判断可以落下来：</p>
+
+<ol>
+  <li><strong>视频工具不构成任何差异。</strong>同一个设计稿，两个库都能渲染出几乎一样的片子。所以选择依据不是画面，是授权、返工成本、有没有校验。</li>
+  <li><strong>对「AI 写代码」这件事，HyperFrames 更友好。</strong>产出是纯 HTML，没有打包、没有 JSX 语法雷区（上一篇那条 Fragment 报错在这里根本不会发生），agent 写完就能 <code>check</code>，错了有定位。</li>
+  <li><strong>必须自带字体。</strong>这是 0.9.x 阶段最实际的一条：中文内容想上生产，先准备好自己的字体资产，否则成片质感会莫名其妙地差一档。</li>
+</ol>
+
+<p>回到最初那个问题——AI 做出来的东西有没有护城河。这条片子的答案是：工具没有，模板和选题有，但模板也会被复刻。真正稀缺的还是那句老话：<strong>知道该做什么，比知道怎么做值钱</strong>。</p>
+
+<p class="foot">本文记录于 2026-11-24 · 工程在本地 hf-topic 项目，<code>index.html</code> 约 200 行包含全部代码与时间轴</p>
+
+</div>
+</body>
+</html>
