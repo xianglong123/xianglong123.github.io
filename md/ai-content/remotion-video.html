@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>用 Remotion 做一条抖音视频：从文案到渲染的完整过程 | 123的个人主页</title>
+<meta name="description" content="用 Remotion 以代码方式生产竖屏短视频：文案、TTS 配音、停顿对齐、组件化模板与实测渲染数据。">
+<style>
+:root{
+  --ink:#2c3e50; --muted:#7f8c8d; --accent:#4b7bff; --line:#ebedf0;
+  --code-bg:#282c34; --code-bg2:#21252b; --tip:#e7f1ff;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:#fff; color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  font-size:16px; line-height:1.85;
+}
+.wrap{max-width:780px;margin:0 auto;padding:38px 22px 90px}
+.back{display:inline-block;margin-bottom:26px;color:var(--accent);text-decoration:none;font-size:14px}
+.back:hover{text-decoration:underline}
+h1{font-size:31px;line-height:1.4;margin:0 0 12px;letter-spacing:-.2px}
+.meta{color:var(--muted);font-size:13.5px;margin-bottom:30px}
+h2{font-size:21px;margin:44px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+h3{font-size:17px;margin:28px 0 10px;color:#34495e}
+p{margin:14px 0}
+ul,ol{margin:14px 0;padding-left:22px}
+li{margin:7px 0}
+.video-box{display:flex;justify-content:center;margin:26px 0 10px}
+.video-box video{
+  width:100%;max-width:348px;aspect-ratio:9/16;background:#08080c;
+  border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.22);display:block;
+}
+.caption{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
+pre{
+  background:var(--code-bg);color:#abb2bf;padding:16px 18px;border-radius:8px;
+  overflow-x:auto;font-size:13.5px;line-height:1.72;margin:16px 0;
+  font-family:"SF Mono",Menlo,Consolas,monospace;
+}
+pre .c{color:#5c6370;font-style:italic}
+pre .s{color:#98c379}
+pre .k{color:#c678dd}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+th{background:#fafbfc;font-weight:600}
+.tip{background:var(--tip);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+.warn{background:#fff8e6;border-left:3px solid #e0a800;padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+a{color:var(--accent)}
+@media (max-width:520px){
+  h1{font-size:25px}
+  h2{font-size:19px}
+  .wrap{padding:26px 16px 70px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="/">← 返回首页</a>
+
+<h1>用 Remotion 做一条抖音视频：从文案到渲染的完整过程</h1>
+<p class="meta">2026-11-24 · AI 内容实验 · 1080×1920 / 41.5 秒 / 5.2MB</p>
+
+<div class="video-box">
+  <video controls playsinline preload="metadata">
+    <source src="remotion-topic.mp4" type="video/mp4">
+    你的浏览器不支持视频播放。
+  </video>
+</div>
+<p class="caption">成片：Remotion 开源项目介绍（竖屏）</p>
+
+<h2>为什么用代码做视频</h2>
+
+<p>剪一条 30 秒的竖屏视频，手工流程大概是：找素材、排版、配字幕、调时间轴、导出。改一个数字就得重来一遍。如果要做系列内容，一天一条，这些动作会重复到让人放弃。</p>
+
+<p><a href="https://github.com/remotion-dev/remotion" target="_blank" rel="noopener">Remotion</a> 换了个思路：把每一帧当成一个 React 组件，用代码描述画面，渲染器负责把组件树变成 mp4。好处是具体可感的：</p>
+
+<ul>
+  <li>改数字 = 改画面，不用打开剪辑软件</li>
+  <li>一套组件可以重复用，风格不会跑偏</li>
+  <li>渲染可以跑在脚本里，不需要人守着进度条</li>
+</ul>
+
+<p>这条片子就是全代码生成的：画面、字幕、动效、配音全部由脚本产出，没有任何手工剪辑环节。</p>
+
+<h2>一、先定结构，再写文案</h2>
+
+<p>竖屏短视频的死穴是前 3 秒。所以结构不按「项目介绍」的常规顺序（先讲这是什么），而是先抛一个和观众有关的痛点，再进项目。整条固定成 8 段，长度 41 秒：</p>
+
+<table>
+  <tr><th>时间</th><th>段落</th><th>作用</th></tr>
+  <tr><td>0–4s</td><td>痛点钩子</td><td>留人，不给结论</td></tr>
+  <tr><td>4–7s</td><td>项目卡</td><td>仓库名 / star / 语言</td></tr>
+  <tr><td>7–11s</td><td>核心机制</td><td>一句话讲清它是什么</td></tr>
+  <tr><td>11–20s</td><td>三个卖点</td><td>我实际用上的地方</td></tr>
+  <tr><td>20–26s</td><td>真实界面</td><td>证明东西是真的</td></tr>
+  <tr><td>26–32s</td><td>一个坑</td><td>讲清许可，建立信任</td></tr>
+  <tr><td>32–36s</td><td>适合谁</td><td>让目标观众对号入座</td></tr>
+  <tr><td>36–41s</td><td>追更钩子</td><td>预告下一条，换关注</td></tr>
+</table>
+
+<div class="tip">这个结构可以复制到任何「工具/项目介绍」的选题上：换掉事实，骨架不动。这是能把成本压下来的前提。</div>
+
+<p>完整旁白文案（约 215 字，念完 40 秒）：</p>
+
+<pre><span class="c">// caption.md</span>
+你剪一条三十秒的视频要多久？我用代码，两分半就渲染完一条。
+这个项目叫 Remotion，七万五千星，用 React 写视频。
+它干的事很直接：一段 mp4，就是一段代码，每一帧都是一个 React 组件。
+三个我真正用上的地方。不用打开剪辑软件，改个数字就能重出一版。
+同一套模板，换掉文案，就是一条新的。渲染全自动，晚上跑，白天发。
+看这个界面，左边是文件列表，中间是画面，底下是时间轴。
+它本质上是能写代码的剪辑软件。
+但有个坑得先说清楚：它不是开源软件。自己用来做视频免费，
+批量出片当服务卖，要按次付费。
+适合谁？做矩阵号的，要批量做数据视频的，不想学 AE 的程序员。
+下期我拆一个更狠的：同样这套东西，做一条六十秒的讲解片。</pre>
+
+<h2>二、配音：TTS + 停顿检测</h2>
+
+<p>配音走的是文本转语音，一次生成整段 wav（40kHz / 双声道），大约 9MB。拿到音频后要做的事是<strong>把画面时间轴对齐到语音</strong>。做法是先测静音段：</p>
+
+<pre>ffmpeg -i voice.wav -af silencedetect=noise=-36dB:d=0.18 -f null -</pre>
+
+<p>上一次做黎曼猜想那条时，这个方法很好用：句与句之间有 0.5–1.8 秒的自然停顿，直接拿停顿点当镜头切点，画面和语音几乎严丝合缝。</p>
+
+<div class="warn">这次翻了车。因为提示词里写了「语速快」，成片 40 秒读完 215 字，句子之间的间隙全部小于 0.3 秒，用 0.4 秒阈值做包络检测，一个句界都没抓到。最后只能按字数比例分配时间轴，实际偏差在 0.5 秒以内，能看，但不精确。</div>
+
+<p>结论是：<strong>要逐句对齐，就在提示词里明确要求「每个句号后停顿半秒以上」</strong>；要快节奏，就得接受按比例估算。这两个目标在 TTS 上是矛盾的，得先选一个。</p>
+
+<h2>三、画面：组件 + 时间轴常量</h2>
+
+<p>8 段各写成一个组件，用 <code>&lt;Sequence&gt;</code> 按帧区间挂上去。所有时间点集中在一个常量里，改节奏只改这一处：</p>
+
+<pre><span class="k">const</span> T = {
+  hook:     [0, 116],      <span class="c">// 0–3.9s</span>
+  repo:     [116, 207],    <span class="c">// 项目卡</span>
+  mech:     [207, 339],    <span class="c">// 机制</span>
+  points:   [339, 612],    <span class="c">// 三个卖点</span>
+  shot:     [612, 777],    <span class="c">// 真实截图</span>
+  caveat:   [777, 966],    <span class="c">// 许可坑</span>
+  audience: [966, 1077],   <span class="c">// 适合谁</span>
+  outro:    [1077, 1245],  <span class="c">// 追更</span>
+};</pre>
+
+<p>几个关键实现：</p>
+
+<ul>
+  <li><strong>痛点那 4 秒</strong>：计时器从 <code>0:00</code> 滚到 <code>2:25</code>，数字来自实测渲染耗时 145 秒，不是编的。</li>
+  <li><strong>机制那 4 秒</strong>：左边一段 JSX 代码块，右边四个渐变帧块，中间一个箭头。「一段 mp4 就是一段代码」用画面讲，不靠字。</li>
+  <li><strong>截图那 6 秒</strong>：真实 Studio 界面截图放进圆角框，<code>scale 1.0 → 1.13</code> 做缓慢推镜，下面三个 chip 标注「左 / 中 / 底」。</li>
+  <li><strong>许可那 6 秒</strong>：两张对比卡，左「免费」白字，右「$0.01/次」红字，视觉上直接分出性质。</li>
+</ul>
+
+<p>渲染命令：</p>
+
+<pre>npx remotion render src/index.jsx RemotionTopic out.mp4 --codec=h264 --crf=20</pre>
+
+<h2>四、模板化：数据驱动，而不是复制代码</h2>
+
+<p>这条片子真正的产出不是 mp4，是模板。所有会变的内容抽到一个数据文件里，下次换项目只改这里：</p>
+
+<pre><span class="k">export const</span> remotionTopicData = {
+  voice: <span class="s">'remotion-topic.wav'</span>,
+  hook: [<span class="s">'你剪一条 30 秒的视频，要多久？'</span>, <span class="s">'我用代码，只花'</span>, ...],
+  repo: <span class="s">'remotion-dev/remotion'</span>,
+  oneLiner: <span class="s">'用 React 写视频'</span>,
+  lang: <span class="s">'TypeScript'</span>,
+  points: [
+    { title: <span class="s">'改个数字，重出一版'</span>, desc: <span class="s">'不用打开剪辑软件，参数全在代码里'</span> },
+    { title: <span class="s">'一套模板，换文案就是新片'</span>, desc: <span class="s">'组件复用，风格永远不会跑偏'</span> },
+    { title: <span class="s">'渲染全自动'</span>, desc: <span class="s">'晚上跑，白天发，不用守着进度条'</span> },
+  ],
+  audience: [<span class="s">'做矩阵号的'</span>, <span class="s">'要批量做数据视频的'</span>, <span class="s">'不想学 AE 的程序员'</span>],
+};</pre>
+
+<p>下次要出片，只剩三步：换 data 文件里的字段、换一张真实截图、重跑一次 TTS。人工时间从「剪一条视频」降到「审一段文案」。</p>
+
+<h2>五、实测数据</h2>
+
+<table>
+  <tr><th>指标</th><th>数值</th></tr>
+  <tr><td>成片</td><td>1080×1920 / 30fps / 41.5 秒 / 1245 帧</td></tr>
+  <tr><td>渲染墙钟</td><td>219.28 秒（约 5.3 倍实时）</td></tr>
+  <tr><td>CPU 累计</td><td>user 851.97s + sys 205.38s（并行度约 4.8 核）</td></tr>
+  <tr><td>产物大小</td><td>5.2 MB（h264 / CRF 20 / AAC 48kHz）</td></tr>
+  <tr><td>人工耗时</td><td>选项目 + 审文案，约 10 分钟</td></tr>
+</table>
+
+<p>算下来一条 40 秒的视频占机器 3.6 分钟。一天 10 条也只要 36 分钟机时，完全可以在夜间批量跑。</p>
+
+<div class="tip">Remotion 不是 OSI 开源软件，是 source-available 许可：个人或 3 人以下小团队自己做视频免费；自动化批量出片作为服务对外售卖，官方口径是每次渲染 $0.01、月最低 $100，5.0 起还会强制上报 licenseKey。自用没问题，做成产品卖之前先读许可。</div>
+
+<h2>六、踩过的坑</h2>
+
+<ol>
+  <li><strong><code>Root.jsx</code> 返回多个 <code>&lt;Composition&gt;</code> 必须包 Fragment</strong>。直接并列两个会被 esbuild 判定为语法错误，报 <code>Expected ")" but found "id"</code>，而且报错位置在 Root.jsx 而不在出错的那一行。</li>
+  <li><strong>淡出不要用「透明度归零」</strong>。第一版把已经过去的格子渐隐到透明，结果画面上半部分整片空白，看起来像渲染失败。正确做法是给每格留一个深色底，只让上层色块淡出，矩阵结构始终在。</li>
+  <li><strong>中文大标题要手动断行</strong>。竖屏宽度下，靠自动换行会把句子断成「你剪一条 30 秒的视频，要 / 多久？」。要么给 <code>white-space: pre-line</code> 手动插换行，要么收窄字号。</li>
+  <li><strong>别在竖屏底部放内容</b>。抖音的文案区和按钮会压住下面 200px，字幕固定在 <code>bottom: 168px</code> 比较安全。</li>
+</ol>
+
+<h2>下一步</h2>
+
+<p>模板已经能用了，但还有三件事值得做：</p>
+
+<ul>
+  <li>接 GitHub API 自动拉 star / 语言 / 更新时间，省掉手填</li>
+  <li>让模型从 README 提炼三个卖点，输出 JSON 直接喂模板</li>
+  <li>把 TTS → 停顿检测 → 时间轴计算这段串起来，一条命令出片</li>
+</ul>
+
+<p>这套东西跑通之后，内容生产的瓶颈就从「会不会剪」变成「选题够不够」，这才是把 AI 用在生产上的意义。</p>
+
+<p class="foot">本文记录于 2026-11-24 · 源码与成片均已归档在本地 remotion-demo 项目</p>
+
+</div>
+</body>
+</html>
