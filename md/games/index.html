@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小游戏 · 原型 | 123的个人主页</title>
+<meta name="description" content="用最短路径验证「爽感」的小游戏原型：手写 Canvas、零依赖、单文件 HTML，打开即玩。">
+<style>
+:root{ --ink:#2c3e50; --muted:#7f8c8d; --accent:#4b7bff; --line:#ebedf0; --tip:#e7f1ff; }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  font-size:16px;line-height:1.85}
+.wrap{max-width:780px;margin:0 auto;padding:38px 22px 90px}
+.back{display:inline-block;margin-bottom:26px;color:var(--accent);text-decoration:none;font-size:14px}
+.back:hover{text-decoration:underline}
+h1{font-size:31px;line-height:1.4;margin:0 0 12px;letter-spacing:-.2px}
+.meta{color:var(--muted);font-size:13.5px;margin-bottom:30px}
+h2{font-size:21px;margin:44px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+p{margin:14px 0}
+ul,ol{margin:14px 0;padding-left:22px}
+li{margin:7px 0}
+.card{display:flex;gap:22px;align-items:flex-start;padding:22px;margin:26px 0;
+  border:1px solid var(--line);border-radius:12px;text-decoration:none;color:inherit;
+  transition:border-color .2s,box-shadow .2s,transform .2s}
+.card:hover{border-color:#c9d8ff;box-shadow:0 12px 30px rgba(75,123,255,.14);transform:translateY(-2px)}
+.card img{width:150px;border-radius:9px;display:block;box-shadow:0 8px 22px rgba(0,0,0,.14)}
+.card .body{flex:1;min-width:0}
+.card .name{font-size:19px;font-weight:700;margin:0 0 8px}
+.card .desc{color:#5d6b7a;font-size:14.5px;margin:0 0 12px}
+.card .go{display:inline-block;color:var(--accent);font-size:14px}
+.tag{display:inline-block;background:#f2f5fb;color:#5a6d8c;border-radius:6px;
+  padding:3px 9px;font-size:12.5px;margin:0 6px 6px 0}
+.tip{background:var(--tip);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+th{background:#fafbfc;font-weight:600}
+.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+a{color:var(--accent)}
+@media (max-width:520px){
+  h1{font-size:25px}
+  .wrap{padding:26px 16px 70px}
+  .card{flex-direction:column;gap:14px}
+  .card img{width:100%;max-width:230px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="/">← 返回首页</a>
+
+<h1>小游戏 · 原型</h1>
+<p class="meta">2026-11-24 · 独立开发 · 纯前端 / 单文件 / 零依赖</p>
+
+<p>做应用做久了，会想回到最原始的那种反馈：点一下，屏幕立刻亮起来。<br>
+这一栏放的是小游戏原型——不求完整、不求长线留存，只验证一件事：<strong>玩法本身有没有爽感</strong>。</p>
+
+<a class="card" href="./lianbao.html" target="_blank" rel="noopener">
+  <img src="lianbao-chain.png" alt="连爆 连锁爆炸瞬间">
+  <div class="body">
+    <p class="name">连爆 · LianBao</p>
+    <p class="desc">点两个以上相邻的同色方块就能炸开，之后连锁自己跑：倍率翻倍、跳字、冲击环。<br>60 秒一局，只点了 4 下，屏幕上替你演了 8 秒的爆炸。</p>
+    <p><span class="tag">Canvas 2D</span><span class="tag">WebAudio 合成音</span><span class="tag">手机竖屏 1080×1920</span></p>
+    <span class="go">开始玩 →</span>
+  </div>
+</a>
+
+<h2>为什么是「零依赖单文件」</h2>
+
+<p>这类小游戏的生死不在玩法复杂度，在<strong>第一次点击的转化</strong>。任何一步安装、任何一个加载白屏，都会把好奇心磨掉一半。</p>
+
+<p>所以它被压成了一个 HTML 文件，约 400 行：</p>
+
+<ul>
+<li><strong>没有引擎</strong>：Canvas 2D 直接画圆角方块 + 顶部高光条，棋盘逻辑是一个二维数组</li>
+<li><strong>没有素材</strong>：没有一个图片、没有一个音频文件，所有音效用 WebAudio 现场合成，频率随连锁层数升高</li>
+<li><strong>没有服务端</strong>：放在 GitHub Pages 上就是一个静态文件，双击本地文件也能玩</li>
+</ul>
+
+<div class="tip">
+这类页面不走 VitePress 路由，是独立的自包含 HTML —— 静态托管下打开就是游戏，不需要任何构建步骤。
+</div>
+
+<h2>手感的几个关键取舍</h2>
+
+<table>
+<tr><th>取舍</th><th>值</th><th>为什么</th></tr>
+<tr><td>爆炸门槛</td><td>两个同色即爆</td><td>常规三消要三个，玩家会犹豫、会点错。压到两个，随便点都不亏</td></tr>
+<tr><td>连锁上限</td><td>12 层</td><td>不设上限分数直接失控，设太高又变成看戏。12 层刚好是一个「哇」的长度</td></tr>
+<tr><td>倍率</td><td>每层 +0.35</td><td>增长太快会让一局的前 10 秒就决定胜负，留一点悬念</td></tr>
+<tr><td>死局处理</td><td>自动造一对同色</td><td>棋盘真没得点时悄悄救场，玩家永远不会卡住——卡住是这个类型最大的流失点</td></tr>
+<tr><td>一局时长</td><td>60 秒</td><td>抖音的注意力单位和一局时长最好是同一个量级</td></tr>
+</table>
+
+<h2>已验证的部分</h2>
+
+<p>下面这些不是估算，是在浏览器里真点出来的：</p>
+
+<ul>
+<li>点 1 下 → 触发 7 连锁，860 分</li>
+<li>点 3 下 → 1915 分，最高连锁 12</li>
+<li>点 4 下 → 4367 分，棋盘几乎被炸空后重新填满</li>
+<li>结算面板、再来一局、最高连锁回填均正常，控制台无报错</li>
+</ul>
+
+<img src="lianbao-settle.png" alt="连爆 结算页" style="width:100%;max-width:300px;display:block;margin:22px auto;border-radius:10px;box-shadow:0 14px 34px rgba(0,0,0,.16)">
+
+<h2>还没验证的部分</h2>
+
+<p>诚实一点：</p>
+
+<ul>
+<li><strong>音效没听过</strong>——无头浏览器没有声音输出，音调曲线是按参数推的，实际听感需要人耳确认</li>
+<li><strong>真机帧率未知</strong>——只在 499×688 的小窗口跑过，全宽竖屏下粒子多的时候会不会掉帧还没测</li>
+<li><strong>留存没测过</strong>——爽感是第一次点击的事，愿意玩第二局是另一回事</li>
+</ul>
+
+<div class="foot">
+写下来的是判断，不是教程。
+</div>
+
+</div>
+</body>
+</html>

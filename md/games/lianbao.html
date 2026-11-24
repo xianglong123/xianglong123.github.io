@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>连爆 · LianBao｜点爆同色方块的小游戏 | 123的个人主页</title>
+<meta name="description" content="连爆：点两个以上相邻同色方块即可炸开，自动连锁、倍率翻倍，60 秒一局。纯前端单文件 Canvas 小游戏，零依赖，打开即玩。">
+<meta name="theme-color" content="#0a0b12">
+<style>
+  :root{ --bg:#0a0b12; }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;background:var(--bg);overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",system-ui,sans-serif}
+  #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #wrap{position:relative;width:100%;height:100%;max-width:540px;max-height:960px;
+    background:radial-gradient(120% 90% at 50% 0%,#141a2e 0%,#0a0b12 60%);overflow:hidden}
+  canvas{display:block;width:100%;height:100%;touch-action:none}
+  #back{position:absolute;left:0;right:0;bottom:12px;text-align:center;color:#46506a;
+    font-size:12.5px;letter-spacing:.06em;text-decoration:none;transition:color .2s}
+  #back:hover{color:#8fa4cc}
+  #hint{position:absolute;left:0;right:0;bottom:44px;text-align:center;color:#5c6683;
+    font-size:15px;letter-spacing:.16em;pointer-events:none;transition:opacity .4s;
+    text-shadow:0 1px 12px #000}
+  #over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(6,7,12,.86);backdrop-filter:blur(6px);color:#eef1f8}
+  #over.show{display:flex}
+  #over .t{font-size:15px;letter-spacing:.3em;color:#6b7796;margin-bottom:18px}
+  #over .s{font-size:76px;font-weight:800;letter-spacing:-.02em;line-height:1;
+    background:linear-gradient(180deg,#8fb4ff,#4b7bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  #over .u{font-size:13px;color:#6b7796;letter-spacing:.24em;margin-top:10px}
+  #over .r{margin-top:34px;font-size:16px;color:#aab4cd}
+  #over .r b{color:#ffd34d;font-size:26px;margin:0 6px}
+  #btn{margin-top:44px;padding:16px 52px;border-radius:999px;border:1px solid #2c3550;
+    background:linear-gradient(180deg,#1b2438,#131a2b);color:#dfe6f5;font-size:17px;letter-spacing:.1em;cursor:pointer}
+  #btn:active{transform:scale(.97)}
+</style>
+</head>
+<body>
+<div id="stage"><div id="wrap">
+  <canvas id="cv"></canvas>
+  <div id="hint">点任意两个以上同色方块</div>
+  <div id="over">
+    <div class="t">TIME UP</div>
+    <div class="s" id="ovScore">0</div>
+    <div class="u">SCORE</div>
+    <div class="r">最高连锁 <b id="ovChain">0</b> 连</div>
+    <div id="btn">再来一局</div>
+  </div>
+  <a id="back" href="/">← 返回首页</a>
+</div></div>
+
+<script>
+(() => {
+  // ---------- 画布：逻辑分辨率固定 1080x1920，等比缩放 ----------
+  const W = 1080, H = 1920;
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d', { alpha: false });
+  function fit() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const box = document.getElementById('wrap').getBoundingClientRect();
+    cv.width = Math.round(box.width * dpr);
+    cv.height = Math.round(box.height * dpr);
+    cv.style.width = box.width + 'px';
+    cv.style.height = box.height + 'px';
+    const s = Math.min(cv.width / W, cv.height / H);
+    ctx.setTransform(s, 0, 0, s, (cv.width - W * s) / 2, (cv.height - H * s) / 2);
+  }
+  addEventListener('resize', fit);
+
+  // ---------- 参数 ----------
+  const COLS = 7, ROWS = 10;
+  const PAD = 26, TOP = 262;                 // 顶部 HUD 区
+  const CELL = (W - PAD * 2) / COLS;         // 每格宽
+  const GAP = 8;
+  const R = CELL / 2 - GAP;
+  const BOARD_H = ROWS * CELL;
+  const START_MS = 60000;                    // 60 秒
+  const MIN_GROUP = 2;                       // 2 个同色即可引爆（无脑爽）
+  const COLORS = ['#ff5d73', '#4b7bff', '#37d67a', '#ffd34d', '#a06bff'];
+  const GLOW   = ['#ff8a9c', '#7ba0ff', '#6be79b', '#ffe480', '#c1a0ff'];
+
+  const colX = c => PAD + c * CELL + CELL / 2;
+  const rowY = r => TOP + r * CELL + CELL / 2;
+
+  // ---------- 状态 ----------
+  let grid, score, chainBest, t0, over, shake, flash, particles, floats, rings, hintFaded;
+
+  function randColor(exclude = -99) {
+    let c;
+    do { c = Math.floor(Math.random() * COLORS.length); } while (c === exclude && Math.random() < .55);
+    return c;
+  }
+
+  function reset() {
+    grid = [];
+    for (let r = 0; r < ROWS; r++) {
+      grid[r] = [];
+      for (let c = 0; c < COLS; c++) grid[r][c] = { c: randColor(), off: 0 };
+    }
+    // 保证开局就有大量可炸的块：每列塞一段同色
+    for (let c = 0; c < COLS; c++) {
+      const col = randColor();
+      const start = Math.floor(Math.random() * (ROWS - 3));
+      for (let k = 0; k < 3; k++) grid[start + k][c] = { c: col, off: 0 };
+    }
+    for (let c = 0; c < COLS; c++) {           // 空位补满（防漏洞）
+      for (let r = 0; r < ROWS; r++) if (!grid[r][c]) grid[r][c] = { c: randColor(), off: 0 };
+    }
+    score = 0; chainBest = 0; t0 = performance.now(); over = false;
+    shake = 0; flash = 0; particles = []; floats = []; rings = [];
+    document.getElementById('over').classList.remove('show');
+    document.getElementById('hint').style.opacity = 1;
+    hintFaded = false;
+  }
+
+  // ---------- 连通块 ----------
+  function group(r0, c0) {
+    const color = grid[r0][c0].c;
+    const seen = new Set([r0 + ',' + c0]);
+    const stack = [[r0, c0]], out = [];
+    while (stack.length) {
+      const [r, c] = stack.pop();
+      out.push([r, c]);
+      for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+        const nr = r + dr, nc = c + dc;
+        if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) continue;
+        const k = nr + ',' + nc;
+        if (seen.has(k)) continue;
+        if (grid[nr][nc].c === color) { seen.add(k); stack.push([nr, nc]); }
+      }
+    }
+    return out;
+  }
+
+  // ---------- 坍塌 + 补充 ----------
+  function collapse() {
+    for (let c = 0; c < COLS; c++) {
+      const keep = [];
+      for (let r = ROWS - 1; r >= 0; r--) if (grid[r][c]) keep.push({ ...grid[r][c], from: r });
+      for (let r = ROWS - 1, i = 0; r >= 0; r--, i++) {
+        if (i < keep.length) {
+          const b = keep[i];
+          grid[r][c] = { c: b.c, off: (b.from - r) * CELL };
+        } else {
+          grid[r][c] = { c: randColor(), off: -((i - keep.length + 1) * CELL) };
+        }
+      }
+    }
+  }
+
+  // ---------- 引爆 ----------
+  function blow(cells, mult, chain) {
+    let gained = 0;
+    let cx = 0, cy = 0;
+    for (const [r, c] of cells) {
+      const b = grid[r][c];
+      cx += colX(c); cy += rowY(r) + b.off;
+      const col = COLORS[b.c], glow = GLOW[b.c];
+      if (particles.length < 520) for (let i = 0; i < 6; i++) {
+        const a = Math.random() * Math.PI * 2, sp = 4 + Math.random() * 10;
+        particles.push({ x: colX(c), y: rowY(r) + b.off, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 5,
+          life: 1, size: 3 + Math.random() * 7, col: Math.random() < .5 ? col : glow });
+      }
+      grid[r][c] = null;
+    }
+    const base = cells.length * 10;
+    gained = Math.round(base * mult);
+    score += gained;
+
+    const px = cx / cells.length, py = cy / cells.length;
+    floats.push({ x: px, y: py, text: '+' + gained, sub: chain > 1 ? 'x' + mult.toFixed(1) : '',
+      life: 1, up: 26 + cells.length * 3 });
+    if (chain > 1) chainBest = Math.max(chainBest, chain);
+
+    shake = Math.min(9, 7 * mult * .6);
+    flash = Math.min(.42, .05 + cells.length * .009 + chain * .012);
+    rings.push({ x: px, y: py, r: 26, max: 190 + cells.length * 12, life: 1 });
+    beep(cells.length, chain);
+    collapse();
+  }
+
+  // ---------- 交互 ----------
+  function hit(x, y) {
+    if (over) return;
+    const c = Math.floor((x - PAD) / CELL), r = Math.floor((y - TOP) / CELL);
+    if (c < 0 || c >= COLS || r < 0 || r >= ROWS) return;
+    if (!grid[r][c]) return;
+    const g = group(r, c);
+    if (g.length < MIN_GROUP) {        // 不合格：轻抖一下给反馈
+      shake = 2.5; miss();
+      return;
+    }
+    if (!hintFaded) { hintFaded = true; document.getElementById('hint').style.opacity = 0; }
+    blow(g, 1, 1);
+    setTimeout(() => chainSweep(2), 130);
+  }
+
+  function hasPair() {
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const b = grid[r][c]; if (!b) continue;
+      if (c + 1 < COLS && grid[r][c + 1] && grid[r][c + 1].c === b.c) return true;
+      if (r + 1 < ROWS && grid[r + 1][c] && grid[r + 1][c].c === b.c) return true;
+    }
+    return false;
+  }
+
+  function ensurePlayable() {
+    if (hasPair()) return;
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (!grid[r][c]) return;
+    let guard = 0;
+    while (guard++ < 200) {
+      const r = Math.floor(Math.random() * (ROWS - 1)), c = Math.floor(Math.random() * (COLS - 1));
+      if (grid[r][c] && grid[r][c + 1]) { grid[r][c + 1].c = grid[r][c].c; return; }
+    }
+  }
+
+  function chainSweep(chain) {
+    if (over || chain > 12) return;
+    // 找最大的一个可爆组
+    let best = null;
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      if (!grid[r][c]) continue;
+      const g = group(r, c);
+      if (g.length >= MIN_GROUP && (!best || g.length > best.length)) best = g;
+    }
+    if (!best) { ensurePlayable(); return; }
+    blow(best, 1 + (chain - 1) * 0.35, chain);
+    setTimeout(() => chainSweep(chain + 1), 90 + chain * 14);
+  }
+
+  const toLocal = e => {
+    const box = cv.getBoundingClientRect();
+    const dpr = cv.width / box.width;
+    const x = (e.clientX - box.left) * dpr, y = (e.clientY - box.top) * dpr;
+    const s = Math.min(cv.width / W, cv.height / H);
+    return { x: (x - (cv.width - W * s) / 2) / s, y: (y - (cv.height - H * s) / 2) / s };
+  };
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); const p = toLocal(e); hit(p.x, p.y); });
+
+  // ---------- 音效（WebAudio 合成，无外部文件） ----------
+  let ac = null;
+  function audio() {
+    if (!ac) { try { ac = new (AudioContext || webkitAudioContext)(); } catch (e) {} }
+    if (ac && ac.state === 'suspended') ac.resume();
+    return ac;
+  }
+  function blip(freq, dur, type = 'sine', gain = .35) {
+    const a = audio(); if (!a) return;
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(gain, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, a.currentTime + dur);
+    o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + dur);
+  }
+  function beep(n, chain) {
+    const f = 320 + Math.min(chain, 12) * 46 + Math.min(n, 20) * 9;
+    blip(f, .22, 'triangle', .3);
+    blip(f * 1.9, .12, 'sine', .16);
+    if (chain === 1) blip(120, .26, 'square', .10);
+  }
+  function miss() { blip(180, .1, 'sawtooth', .10); }
+
+  // ---------- 绘制 ----------
+  function drawBlock(x, y, ci, alpha = 1, scale = 1) {
+    const r = R * scale;
+    ctx.globalAlpha = alpha;
+    const g = ctx.createLinearGradient(x, y - r, x, y + r);
+    g.addColorStop(0, GLOW[ci]); g.addColorStop(1, COLORS[ci]);
+    ctx.beginPath(); ctx.roundRect(x - r, y - r, r * 2, r * 2, r * .38);
+    ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); ctx.roundRect(x - r * .62, y - r * .78, r * 1.24, r * .38, r * .2);
+    ctx.fillStyle = 'rgba(255,255,255,.34)'; ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  function drawHUD(now) {
+    const left = Math.max(0, START_MS - (now - t0)) / START_MS;
+    // 分数
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = '#6b7796'; ctx.font = '600 26px -apple-system,PingFang SC';
+    ctx.fillText('SCORE', PAD, 96);
+    ctx.fillStyle = '#eef1f8'; ctx.font = '800 76px -apple-system,PingFang SC';
+    ctx.fillText(String(score), PAD, 176);
+    // 连锁
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#6b7796'; ctx.font = '600 26px -apple-system,PingFang SC';
+    ctx.fillText('BEST CHAIN', W - PAD, 96);
+    ctx.fillStyle = '#ffd34d'; ctx.font = '800 76px -apple-system,PingFang SC';
+    ctx.fillText(String(chainBest), W - PAD, 176);
+    // 时间条
+    ctx.fillStyle = '#1a2136';
+    ctx.beginPath(); ctx.roundRect(PAD, 214, W - PAD * 2, 10, 5); ctx.fill();
+    const w = (W - PAD * 2) * left;
+    const g = ctx.createLinearGradient(PAD, 0, PAD + (W - PAD * 2), 0);
+    g.addColorStop(0, left < .25 ? '#ff5d73' : '#4b7bff');
+    g.addColorStop(1, left < .25 ? '#ff8a4a' : '#7ba0ff');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.roundRect(PAD, 214, Math.max(0, w), 10, 5); ctx.fill();
+  }
+
+  let last = 0;
+  function loop(now) {
+    if (!last) last = now;
+    const dt = Math.min(48, now - last); last = now;
+
+    // 进度衰减
+    for (let c = 0; c < COLS; c++) for (let r = 0; r < ROWS; r++) {
+      const b = grid[r][c];
+      if (b && Math.abs(b.off) > .5) b.off *= Math.pow(.002, dt / 1000); else if (b) b.off = 0;
+    }
+    shake *= Math.pow(.86, dt / 16); flash *= Math.pow(.90, dt / 16);
+
+    ctx.setTransform(Math.min(cv.width / W, cv.height / H), 0, 0,
+      Math.min(cv.width / W, cv.height / H),
+      (cv.width - W * Math.min(cv.width / W, cv.height / H)) / 2,
+      (cv.height - H * Math.min(cv.width / W, cv.height / H)) / 2);
+
+    ctx.fillStyle = '#0a0b12'; ctx.fillRect(0, 0, W, H);
+    const bg = ctx.createRadialGradient(W / 2, 0, 0, W / 2, 0, H * .9);
+    bg.addColorStop(0, 'rgba(30,42,80,.55)'); bg.addColorStop(1, 'rgba(10,11,18,0)');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    ctx.save();
+    if (shake > .3) ctx.translate((Math.random() - .5) * shake, (Math.random() - .5) * shake);
+
+    // 棋盘底
+    ctx.fillStyle = 'rgba(255,255,255,.02)';
+    ctx.beginPath(); ctx.roundRect(PAD - 8, TOP - 8, CELL * COLS + 16, CELL * ROWS + 16, 28); ctx.fill();
+
+    ctx.save();
+    ctx.beginPath(); ctx.roundRect(PAD - 10, TOP - 10, CELL * COLS + 20, CELL * ROWS + 20, 30); ctx.clip();
+    for (let r = ROWS - 1; r >= 0; r--) for (let c = 0; c < COLS; c++) {
+      const b = grid[r][c];
+      if (!b) continue;
+      drawBlock(colX(c), rowY(r) + b.off, b.c, b.off === 0 ? 1 : .95);
+    }
+    ctx.restore();
+
+    // 冲击环
+    ctx.save();
+    for (const g of rings) {
+      g.r += (g.max - g.r) * (dt / 220); g.life -= dt / 420;
+      if (g.life > 0) {
+        ctx.globalAlpha = Math.max(0, g.life) * .55;
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6 * g.life;
+        ctx.beginPath(); ctx.arc(g.x, g.y, g.r, 0, Math.PI * 2); ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1; ctx.restore();
+    rings = rings.filter(g => g.life > 0);
+
+    // 粒子
+    for (const p of particles) {
+      p.x += p.vx * dt / 16; p.y += p.vy * dt / 16; p.vy += .55 * dt / 16;
+      p.life -= dt / 520;
+      if (p.life > 0) {
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.col;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    particles = particles.filter(p => p.life > 0);
+
+    // 跳字
+    for (const f of floats) {
+      f.life -= dt / 900; f.y -= f.up * dt / 1000;
+      if (f.life > 0) {
+        ctx.globalAlpha = Math.min(1, f.life * 1.4);
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 64px -apple-system,PingFang SC';
+        ctx.fillText(f.text, f.x, f.y);
+        if (f.sub) {
+          ctx.fillStyle = '#ffd34d'; ctx.font = '800 40px -apple-system,PingFang SC';
+          ctx.fillText(f.sub, f.x, f.y + 46);
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+    floats = floats.filter(f => f.life > 0);
+
+    ctx.restore();
+    drawHUD(now);
+
+    if (flash > .02) { ctx.fillStyle = 'rgba(255,255,255,' + flash + ')'; ctx.fillRect(0, 0, W, H); }
+
+    if (!over && now - t0 >= START_MS) {
+      over = true;
+      document.getElementById('ovScore').textContent = score;
+      document.getElementById('ovChain').textContent = chainBest;
+      document.getElementById('over').classList.add('show');
+      blip(220, .5, 'sine', .3); setTimeout(() => blip(160, .6, 'sine', .25), 120);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  document.getElementById('btn').addEventListener('pointerdown', () => { audio(); reset(); });
+  document.getElementById('wrap').addEventListener('pointerdown', () => audio(), { once: true });
+
+  fit(); reset(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

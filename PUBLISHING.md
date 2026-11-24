@@ -49,6 +49,19 @@ grep -rl 'md/ai-content/remotion-video.html' --include='*.html' .
 `index.html` 的 `<h2>最近更新</h2>` 下的 `<ul>`，新条目放**第一条**，
 只保留最近 3–5 条，旧的不用删（板块页里都在）。
 
+## 如果这次是新增板块（不只是新增文章）
+
+页面、素材、侧边栏、主页之外，还要多做三件事，否则新板块内容是「孤儿页」：
+
+1. 建板块总览页 `md/<板块>/index.html`（自包含 HTML，风格抄 `md/ai-content/remotion-video.html` 的 head/style）
+2. **所有带侧边栏的页面**（`grep -rl VPSidebarItem --include='*.html' .`，当前 15 个）都要加分组，两处同时改：
+   - 静态 HTML：在最后一个 `</section></div>` 后、`<!--]--><!--[--><!--]--></nav>` 前插入一个 `no-transition group` 块
+   - 客户端 JSON：在 `VP_SITE_DATA__` 里最后一个分组对象后追加 `{"text":"...","collapsed":false,"items":[...]}`
+3. 主页 `index.html` 三处都要动：`.VPFeatures` 里加一张 `grid-4 item` 卡、正文「内容集中在 N 类」改数字并加 `<li>`、最近更新加第一条
+
+改完务必用 `python3 -m json.tool` 思路校验 `VP_SITE_DATA__` 能解析（解码方式：`json.loads(json.loads('"'+raw+'"'))`），
+JSON 坏掉会让全站客户端路由失效，比侧边栏多一条严重得多。
+
 ## 硬约束
 
 - **不要重跑 `vitepress build`**。以上全是改构建产物，重新构建会把手改全部覆盖，
@@ -74,3 +87,4 @@ curl -s https://www.xianglong.vip/md/<板块>/index.html | grep -c '<slug>'
 |---|---|---|---|
 | 2026-11-24 | ai-content | `remotion-video.html` | `remotion-topic.mp4` |
 | 2026-11-24 | ai-content | `hyperframes-video.html` | `hyperframes-topic.mp4`、`hyperframes-compare.png` |
+| 2026-11-24 | games | `index.html`（新板块）+ `lianbao.html` | `lianbao-chain.png`、`lianbao-settle.png` |
