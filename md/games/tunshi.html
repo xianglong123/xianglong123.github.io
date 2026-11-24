@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>吞噬 · Tunshi｜拖动黑洞吞掉整座城市 | 123的个人主页</title>
+<meta name="description" content="吞噬：按住拖动一个黑洞在城市里穿行，只吃比自己小的东西，越吞越大、视野越拉越远。纯前端单文件 Canvas，5760×9280 的大地图、四类街区、沿路车流，打开即玩。">
+<meta name="theme-color" content="#0b0e14">
+<style>
+  :root{ --bg:#0b0e14; }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;background:var(--bg);overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",system-ui,sans-serif}
+  #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #wrap{position:relative;width:100%;height:100%;max-width:540px;max-height:960px;
+    background:#0b0e14;overflow:hidden}
+  canvas{display:block;width:100%;height:100%;touch-action:none}
+  #back{position:absolute;left:0;right:0;bottom:12px;text-align:center;color:#46506a;
+    font-size:12.5px;letter-spacing:.06em;text-decoration:none;transition:color .2s}
+  #back:hover{color:#8fa4cc}
+  #hint{position:absolute;left:0;right:0;bottom:44px;text-align:center;color:#5c6683;
+    font-size:15px;letter-spacing:.16em;pointer-events:none;transition:opacity .5s;
+    text-shadow:0 1px 12px #000}
+  #over{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(5,7,11,.9);backdrop-filter:blur(8px);color:#eef1f8}
+  #over.show{display:flex}
+  #over .t{font-size:15px;letter-spacing:.3em;color:#6b7796;margin-bottom:18px}
+  #over .s{font-size:72px;font-weight:800;letter-spacing:-.02em;line-height:1;
+    background:linear-gradient(180deg,#b8a6ff,#7b5bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  #over .u{font-size:13px;color:#6b7796;letter-spacing:.24em;margin-top:10px}
+  #over .r{margin-top:30px;font-size:15px;color:#aab4cd;line-height:2}
+  #over .r b{color:#ffd34d;font-size:24px;margin:0 6px}
+  #btn{margin-top:40px;padding:16px 52px;border-radius:999px;border:1px solid #2c3550;
+    background:linear-gradient(180deg,#1b2438,#131a2b);color:#dfe6f5;font-size:17px;letter-spacing:.1em;cursor:pointer}
+  #btn:active{transform:scale(.97)}
+</style>
+</head>
+<body>
+<div id="stage"><div id="wrap">
+  <canvas id="cv"></canvas>
+  <div id="hint">按住拖动，吞掉比你小的东西</div>
+  <a id="back" href="/">← 返回首页</a>
+  <div id="over">
+    <div class="t">TIME UP</div>
+    <div class="s" id="ovScore">0</div>
+    <div class="u">吞噬体量</div>
+    <div class="r">吞掉 <b id="ovCount">0</b> 件<br>最大半径 <b id="ovR">0</b></div>
+    <div id="btn">再来一局</div>
+  </div>
+</div></div>
+
+<script>
+(() => {
+  const W = 1080, H = 1920;
+  if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+      r = Math.min(r, w / 2, h / 2);
+      this.moveTo(x + r, y); this.arcTo(x + w, y, x + w, y + h, r);
+      this.arcTo(x + w, y + h, x, y + h, r); this.arcTo(x, y + h, x, y, r);
+      this.arcTo(x, y, x + w, y, r); this.closePath();
+    };
+  }
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  let S = 1, DPR = Math.min(2, window.devicePixelRatio || 1);
+
+  const WORLD = { w: 5760, h: 9280 };
+  const BLOCK = 280, ROAD = 18, BUCKET = 420;
+  const BASE_R = 34;
+  const DURATION = 75000;
+
+  const GROUND = {
+    residential: 'rgba(33,39,51,.66)',
+    commercial:  'rgba(37,41,54,.62)',
+    downtown:    'rgba(42,46,62,.60)',
+    park:        'rgba(25,47,35,.62)'
+  };
+  const RECIPE = {
+    residential: { box: [5, 8], trash: [2, 4], tree: [2, 4], house: [0, 1], tower: [0, 0] },
+    commercial:  { box: [4, 6], trash: [1, 3], house: [1, 2], tower: [0, 1] },
+    downtown:    { box: [3, 5], trash: [1, 2], house: [2, 3], tower: [1, 2] },
+    park:        { box: [1, 3], trash: [1, 2], tree: [6, 9], house: [0, 0], tower: [0, 0] }
+  };
+
+  const TYPES = {
+    box:   { r: 15,  color: '#b8793f', score: 12,  n: 200 },
+    trash: { r: 19,  color: '#5b6b80', score: 20,  n: 145 },
+    tree:  { r: 26,  color: '#2a7746', score: 38,  n: 92 },
+    car:   { r: 34,  color: '#d9546b', score: 70,  n: 95  },
+    house: { r: 54,  color: '#7b8699', score: 170, n: 72  },
+    tower: { r: 76,  color: '#59637a', score: 420, n: 38  }
+  };
+
+  let objects = [], buckets = new Map(), blocks = [], eaten = [], floats = [], parts = [];
+  function bucketKey(x, y) { return Math.floor(x / BUCKET) + '_' + Math.floor(y / BUCKET); }
+  let hole, cam, score, count, maxR, t0, over, dragging, aim, hintFaded, combo, comboT, shake, lastDir, blocked;
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+
+  function fit() {
+    const wrap = document.getElementById('wrap');
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+    S = Math.min(cv.width / W, cv.height / H);
+  }
+
+  // ---------- 音效 ----------
+  let ac = null;
+  function audio() {
+    if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    if (ac && ac.state === 'suspended') ac.resume();
+  }
+  function gulp(size, rising) {
+    if (!ac) return;
+    const t = ac.currentTime;
+    const base = 150 + Math.min(120, size * 2.2) + (rising || 0);
+    const osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(base * 1.8, t);
+    osc.frequency.exponentialRampToValueAtTime(base * 0.55, t + 0.13);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.12 + Math.min(0.12, size / 900), t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(t); osc.stop(t + 0.2);
+  }
+  function blip(f, dur, type, vol) {
+    if (!ac) return;
+    const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+    o.type = type || 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(vol || .2, t);
+    g.gain.exponentialRampToValueAtTime(.0001, t + (dur || .3));
+    o.connect(g); g.connect(ac.destination);
+    o.start(t); o.stop(t + (dur || .3));
+  }
+
+  // ---------- 世界生成 ----------
+  function blockTypeFor(cx, cy, wx, wy, r) {
+    const d = Math.hypot(wx - cx, wy - cy);
+    if (d < 340) return 'residential';
+    if (d < 1500) return r < .55 ? 'commercial' : 'downtown';
+    if (d < 3400) return r < .34 ? 'park' : 'commercial';
+    return r < .42 ? 'park' : 'residential';
+  }
+
+  function pushObj(x, y, key, rot, scale) {
+    const T = TYPES[key];
+    const rr = T.r * (scale || 1);
+    const o = { x, y, r: rr, type: key, color: T.color, score: T.score,
+      rot: rot === undefined ? Math.random() * Math.PI : rot, hue: Math.random() * 360, eaten: false,
+      scale: scale || 1 };
+    objects.push(o);
+    const k = bucketKey(x, y);
+    let arr = buckets.get(k);
+    if (!arr) { arr = []; buckets.set(k, arr); }
+    arr.push(o);
+  }
+
+  function occupied(nx, ny, r) {
+    const b0x = Math.floor((nx - r * 2) / BUCKET), b1x = Math.floor((nx + r * 2) / BUCKET);
+    const b0y = Math.floor((ny - r * 2) / BUCKET), b1y = Math.floor((ny + r * 2) / BUCKET);
+    for (let bx = b0x; bx <= b1x; bx++) for (let by = b0y; by <= b1y; by++) {
+      const arr = buckets.get(bx + '_' + by);
+      if (!arr) continue;
+      for (const o of arr) if (!o.eaten && Math.hypot(o.x - nx, o.y - ny) < o.r + r + 7) return true;
+    }
+    return false;
+  }
+
+  function spawnWorld() {
+    objects = []; buckets = new Map(); blocks = [];
+    const cx = WORLD.w / 2, cy = WORLD.h / 2;
+    const cols = Math.floor(WORLD.w / BLOCK), rows = Math.floor(WORLD.h / BLOCK);
+    const inner = BLOCK - ROAD, half = inner / 2;
+
+    for (let gy = 0; gy < rows; gy++) {
+      blocks[gy] = [];
+      for (let gx = 0; gx < cols; gx++) {
+        const bx = gx * BLOCK + BLOCK / 2, by = gy * BLOCK + BLOCK / 2;
+        const type = blockTypeFor(cx, cy, bx, by, Math.random());
+        blocks[gy][gx] = type;
+
+        for (const key in RECIPE[type]) {
+          const lo = RECIPE[type][key][0], hi = RECIPE[type][key][1];
+          if (hi <= 0) continue;
+          const n = lo + Math.floor(Math.random() * (hi - lo + 1));
+          const T = TYPES[key];
+
+          if (key === 'house') {
+            const lim = Math.max(0, half - T.r * .95);
+            for (let i = 0; i < n; i++) {
+              for (let t = 0; t < 16; t++) {
+                const sc = .82 + Math.random() * .42;
+                const nx = bx + rnd(-lim, lim), ny = by + rnd(-lim, lim);
+                if (!occupied(nx, ny, T.r * sc)) { pushObj(nx, ny, key, Math.random() * 6.3, sc); break; }
+              }
+            }
+          } else if (key === 'tower') {
+            const spots = [[0, 0], [-half * .58, 0], [half * .58, 0], [0, -half * .58]];
+            for (let i = 0; i < Math.min(n, spots.length); i++) {
+              const nx = bx + spots[i][0], ny = by + spots[i][1];
+              if (!occupied(nx, ny, T.r)) pushObj(nx, ny, key);
+            }
+          } else {
+            const lim = Math.max(0, half - T.r * .92);
+            for (let i = 0; i < n; i++) {
+              for (let t = 0; t < 14; t++) {
+                let nx, ny;
+                if (t < 9) {
+                  const ang = Math.random() * Math.PI * 2;
+                  const ring = half * (.56 + Math.random() * .3);
+                  nx = bx + Math.cos(ang) * ring; ny = by + Math.sin(ang) * ring;
+                } else {
+                  nx = bx + rnd(-lim, lim); ny = by + rnd(-lim, lim);
+                }
+                if (!occupied(nx, ny, T.r)) { pushObj(nx, ny, key); break; }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 车流：沿道路两侧排布，黑洞在街上跑就是一路吃车
+    for (let gy = 0; gy <= rows; gy++) {
+      const y = gy * BLOCK;
+      if (y < 30 || y > WORLD.h - 30) continue;
+      let x = 140;
+      while (x < WORLD.w - 140) {
+        if (Math.random() < .62) {
+          const cy2 = y + rnd(-ROAD * .2, ROAD * .2);
+          if (!occupied(x, cy2, TYPES.car.r)) pushObj(x, cy2, 'car', Math.random() < .5 ? 0 : Math.PI);
+        }
+        x += rnd(380, 720);
+      }
+    }
+    for (let gx = 0; gx <= cols; gx++) {
+      const x = gx * BLOCK;
+      if (x < 30 || x > WORLD.w - 30) continue;
+      let y = 140;
+      while (y < WORLD.h - 140) {
+        if (Math.random() < .5) {
+          const cx2 = x + rnd(-ROAD * .2, ROAD * .2);
+          if (!occupied(cx2, y, TYPES.car.r)) pushObj(cx2, y, 'car', Math.PI / 2);
+        }
+        y += rnd(420, 780);
+      }
+    }
+  }
+
+  function reset() {
+    spawnWorld();
+    const cx = WORLD.w / 2, cy = WORLD.h / 2;
+    hole = { x: cx, y: cy, r: BASE_R, vx: 0, vy: 0 };
+    cam = { x: cx, y: cy };
+    score = 0; count = 0; maxR = BASE_R; over = false; dragging = false; aim = null; blocked = 0;
+    t0 = performance.now(); combo = 0; comboT = 0; shake = 0;
+    lastDir = { x: 0, y: -1 };
+    eaten = []; floats = []; parts = [];
+    document.getElementById('over').classList.remove('show');
+  }
+
+  // ---------- 输入 ----------
+  function toWorld(ev) {
+    const rect = cv.getBoundingClientRect();
+    const px = (ev.clientX - rect.left) * (cv.width / rect.width);
+    const py = (ev.clientY - rect.top) * (cv.height / rect.height);
+    return {
+      x: cam.x + (px / S - W / 2) / zoom(),
+      y: cam.y + (py / S - H / 2) / zoom()
+    };
+  }
+  function zoom() {
+    return Math.max(0.32, Math.min(1.40, 15.6 / Math.pow(hole.r, 0.72)));
+  }
+
+  function down(ev) { audio(); dragging = true; aim = toWorld(ev); hideHint(); ev.preventDefault(); }
+  function move(ev) { if (dragging) { aim = toWorld(ev); ev.preventDefault(); } }
+  function up() { dragging = false; aim = null; }
+  function hideHint() {
+    if (hintFaded) return;
+    hintFaded = true;
+    document.getElementById('hint').style.opacity = '0';
+  }
+
+  cv.addEventListener('pointerdown', down);
+  cv.addEventListener('pointermove', move);
+  cv.addEventListener('pointerup', up);
+  cv.addEventListener('pointercancel', up);
+
+  // ---------- 逻辑 ----------
+  function eat(obj) {
+    obj.eaten = true;
+    eaten.push({ x: obj.x, y: obj.y, r: obj.r, type: obj.type, color: obj.color, hue: obj.hue, t: 0, rot: obj.rot });
+    const ratio = Math.min(1, obj.r / (hole.r * 0.75));
+    const gain = obj.r * obj.r * 0.52 * ratio * ratio;
+    hole.r = Math.min(190, Math.sqrt(hole.r * hole.r + gain));
+    maxR = Math.max(maxR, hole.r);
+    score += obj.score;
+    count++;
+
+    // combo
+    const now = performance.now();
+    combo = (now - comboT < 700) ? combo + 1 : 1;
+    comboT = now;
+
+    floats.push({ x: obj.x, y: obj.y, t: 0, r: obj.r, v: obj.score, combo });
+    if (combo >= 3) floats.push({ x: hole.x, y: hole.y - hole.r * 1.5, t: 0, big: true, text: '×' + combo });
+
+    shake = Math.min(14, shake + obj.r * 0.12);
+    gulp(obj.r, combo * 6);
+
+    for (let i = 0; i < Math.min(14, 3 + obj.r / 5); i++) {
+      const a = Math.random() * Math.PI * 2, sp = 240 + Math.random() * 640;
+      parts.push({ x: obj.x, y: obj.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+        life: 1, size: 2 + Math.random() * 5, color: obj.color });
+    }
+  }
+
+  function update(dt) {
+    if (over) return;
+
+    // 移动
+    if (aim) {
+      const dx = aim.x - hole.x, dy = aim.y - hole.y;
+      const d = Math.hypot(dx, dy);
+      const tau = Math.max(34, 105 - hole.r * 0.28);
+      const k = 1 - Math.exp(-dt / tau);
+      hole.x += dx * k;
+      hole.y += dy * k;
+      if (d > 1) lastDir = { x: dx / d, y: dy / d };
+    }
+    hole.x = Math.max(hole.r, Math.min(WORLD.w - hole.r, hole.x));
+    hole.y = Math.max(hole.r, Math.min(WORLD.h - hole.r, hole.y));
+
+    // 相机缓动 + 边界收拢
+    cam.x += (hole.x - cam.x) * Math.min(1, dt * 0.012);
+    cam.y += (hole.y - cam.y) * Math.min(1, dt * 0.012);
+    const zz = zoom();
+    const vw = W / zz, vh = H / zz;
+    cam.x = vw >= WORLD.w ? WORLD.w / 2 : Math.max(vw / 2, Math.min(WORLD.w - vw / 2, cam.x));
+    cam.y = vh >= WORLD.h ? WORLD.h / 2 : Math.max(vh / 2, Math.min(WORLD.h - vh / 2, cam.y));
+
+    // 吸附与吞噬（只遍历黑洞附近的桶）
+    const z = zoom();
+    const REACH = hole.r * 2.2;
+    const qx0 = Math.floor((hole.x - REACH) / BUCKET), qx1 = Math.floor((hole.x + REACH) / BUCKET);
+    const qy0 = Math.floor((hole.y - REACH) / BUCKET), qy1 = Math.floor((hole.y + REACH) / BUCKET);
+    for (let qx = qx0; qx <= qx1; qx++) for (let qy = qy0; qy <= qy1; qy++) {
+      const bucket = buckets.get(qx + '_' + qy);
+      if (!bucket) continue;
+      for (const o of bucket) {
+      if (o.eaten) continue;
+      const dx = hole.x - o.x, dy = hole.y - o.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > hole.r * 2.2 + o.r) continue;
+      // 能吞？
+      if (hole.r >= o.r * 1.32 && dist < hole.r * 0.92 + o.r * 0.35) { eat(o); continue; }
+      // 顶到了吃不动的东西：给个回弹提示
+      if (hole.r < o.r * 1.32 && dist < hole.r + o.r * 1.05) {
+        blocked = 1;
+        const push = (hole.r + o.r - dist) * 0.5;
+        if (push > 0 && (hole.r < 60)) {
+          hole.x -= (o.x - hole.x) / (dist || 1) * push * 0.12;
+          hole.y -= (o.y - hole.y) / (dist || 1) * push * 0.12;
+        }
+      }
+      // 吸附（能吞的才被吸，吞不动的推不动）
+      if (hole.r >= o.r * 1.32 && dist < hole.r * 2.0) {
+        const speed = 340 * (1 - dist / (hole.r * 2.0));
+        const pull = speed * dt / 1000;
+        o.x += dx / (dist || 1) * pull;
+        o.y += dy / (dist || 1) * pull;
+      }
+      }
+    }
+
+    // 吞噬动画
+    eaten = eaten.filter(e => {
+      e.t += dt / 260;
+      return e.t < 1;
+    });
+    floats = floats.filter(f => { f.t += dt / 900; return f.t < 1; });
+    parts = parts.filter(p => {
+      p.x += p.vx * dt / 1000; p.y += p.vy * dt / 1000;
+      const decay = Math.pow(0.06, dt / 1000);
+      p.vx *= decay; p.vy *= decay; p.life -= dt / 420;
+      return p.life > 0;
+    });
+
+    shake *= Math.pow(0.0025, dt / 1000);
+    blocked = Math.max(0, blocked - dt / 260);
+
+    // combo 超时清零
+    if (performance.now() - comboT > 900) combo = 0;
+
+    if (performance.now() - t0 >= DURATION) end();
+  }
+
+  function end() {
+    over = true;
+    document.getElementById('ovScore').textContent = Math.round(score);
+    document.getElementById('ovCount').textContent = count;
+    document.getElementById('ovR').textContent = Math.round(hole.r);
+    document.getElementById('over').classList.add('show');
+    blip(180, .6, 'sine', .3); setTimeout(() => blip(120, .7, 'sine', .28), 140);
+  }
+
+  // ---------- 绘制 ----------
+  function drawStreet(x, y, w, h, a) {
+    ctx.fillStyle = 'rgba(30,38,52,' + a + ')';
+    ctx.fillRect(x, y, w, h);
+  }
+
+  function drawObject(o, z) {
+    const r0 = o.r;
+    if (r0 * z < 6.5) {
+      ctx.fillStyle = o.color;
+      ctx.beginPath(); ctx.arc(o.x, o.y, r0, 0, 6.3); ctx.fill();
+      return;
+    }
+    ctx.save();
+    ctx.translate(o.x, o.y);
+    const r = o.r;
+    ctx.fillStyle = 'rgba(0,0,0,.32)';
+    ctx.beginPath(); ctx.ellipse(r * .12, r * .16, r * 1.02, r * .86, 0, 0, 6.3); ctx.fill();
+    if (o.type === 'box') {
+      ctx.rotate(o.rot);
+      ctx.fillStyle = o.color;
+      ctx.beginPath(); ctx.roundRect(-r * .9, -r * .8, r * 1.8, r * 1.6, r * .18); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,.13)';
+      ctx.fillRect(-r * .9, -r * .8, r * 1.8, r * .3);
+    } else if (o.type === 'trash') {
+      ctx.fillStyle = o.color;
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.3); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,.16)'; ctx.lineWidth = r * .22;
+      ctx.beginPath(); ctx.arc(0, 0, r * .6, 0, 6.3); ctx.stroke();
+    } else if (o.type === 'tree') {
+      ctx.fillStyle = 'rgba(0,0,0,.35)';
+      ctx.beginPath(); ctx.ellipse(r * .25, r * .35, r * .8, r * .55, 0, 0, 6.3); ctx.fill();
+      ctx.fillStyle = o.color;
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.3); ctx.fill();
+      ctx.fillStyle = '#45b06a';
+      ctx.beginPath(); ctx.arc(-r * .18, -r * .2, r * .55, 0, 6.3); ctx.fill();
+    } else if (o.type === 'car') {
+      ctx.rotate(o.rot);
+      ctx.fillStyle = o.color;
+      ctx.beginPath(); ctx.roundRect(-r * 1.15, -r * .6, r * 2.3, r * 1.2, r * .3); ctx.fill();
+      ctx.fillStyle = 'rgba(220,235,255,.75)';
+      ctx.beginPath(); ctx.roundRect(-r * .25, -r * .42, r * .9, r * .84, r * .2); ctx.fill();
+    } else if (o.type === 'house') {
+      ctx.fillStyle = 'rgba(0,0,0,.42)';
+      ctx.beginPath(); ctx.roundRect(-r * .92 + r * .18, -r * .72 + r * .18, r * 1.84, r * 1.5, r * .1); ctx.fill();
+      ctx.fillStyle = o.color;
+      ctx.beginPath(); ctx.roundRect(-r * .92, -r * .72, r * 1.84, r * 1.5, r * .1); ctx.fill();
+      // 屋顶
+      ctx.fillStyle = 'rgba(255,255,255,.16)';
+      ctx.beginPath();
+      ctx.moveTo(-r * .98, -r * .72); ctx.lineTo(0, -r * 1.06); ctx.lineTo(r * .98, -r * .72);
+      ctx.closePath(); ctx.fill();
+      // 窗与门
+      ctx.fillStyle = 'rgba(255,214,120,.55)';
+      ctx.fillRect(-r * .55, -r * .34, r * .34, r * .34);
+      ctx.fillRect(r * .2, -r * .34, r * .34, r * .34);
+      ctx.fillStyle = 'rgba(20,26,36,.75)';
+      ctx.fillRect(-r * .13, r * .18, r * .26, r * .58);
+    } else {
+      // tower
+      const hh = r * 1.9, ww = r * 1.35;
+      ctx.fillStyle = 'rgba(0,0,0,.45)';
+      ctx.beginPath(); ctx.roundRect(-ww / 2 + r * .25, -hh / 2 + r * .25, ww, hh, r * .08); ctx.fill();
+      ctx.fillStyle = o.color;
+      ctx.beginPath(); ctx.roundRect(-ww / 2, -hh / 2, ww, hh, r * .08); ctx.fill();
+      ctx.fillStyle = 'rgba(190,210,255,.22)';
+      ctx.fillRect(-ww / 2, -hh / 2, ww, hh * .1);
+      ctx.fillStyle = 'rgba(255,222,150,.55)';
+      for (let i = 0; i < 6; i++) for (let j = 0; j < 4; j++) {
+        if (Math.random() < .12) continue;
+        const wx = -ww / 2 + ww * (.14 + i * .14), wy = -hh / 2 + hh * (.1 + j * .14);
+        ctx.fillRect(wx, wy, ww * .07, hh * .06);
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawHole() {
+    const r = hole.r;
+    ctx.save();
+    ctx.translate(hole.x, hole.y);
+
+    // 外圈吸积辉光
+    const g = ctx.createRadialGradient(0, 0, r * .9, 0, 0, r * 1.5);
+    g.addColorStop(0, 'rgba(120,90,255,.28)');
+    g.addColorStop(1, 'rgba(120,90,255,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0, 0, r * 1.5, 0, 6.3); ctx.fill();
+
+    // 洞
+    const core = ctx.createRadialGradient(0, 0, r * .1, 0, 0, r);
+    core.addColorStop(0, '#000000');
+    core.addColorStop(.75, '#05060a');
+    core.addColorStop(1, '#141a2b');
+    ctx.fillStyle = core;
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.3); ctx.fill();
+
+    // 边缘环 + 旋转吸积弧
+    ctx.strokeStyle = 'rgba(160,140,255,.55)'; ctx.lineWidth = Math.max(1.5, r * .04);
+    ctx.beginPath(); ctx.arc(0, 0, r * .99, 0, 6.3); ctx.stroke();
+
+    const spin = performance.now() * .0009;
+    ctx.strokeStyle = 'rgba(190,170,255,.5)'; ctx.lineWidth = Math.max(1.2, r * .025);
+    for (let i = 0; i < 3; i++) {
+      const a0 = spin + i * 2.1;
+      ctx.beginPath(); ctx.arc(0, 0, r * 1.18, a0, a0 + .85); ctx.stroke();
+    }
+
+    // 吃不动时的红环
+    if (blocked > 0) {
+      ctx.strokeStyle = 'rgba(255,93,115,' + (blocked * .55) + ')';
+      ctx.lineWidth = Math.max(1.5, r * .05);
+      ctx.beginPath(); ctx.arc(0, 0, r * 1.06, 0, 6.3); ctx.stroke();
+    }
+
+    // 眼睛（会跟着移动方向看）
+    const ex = lastDir.x * r * .22, ey = lastDir.y * r * .22 - r * .18;
+    const er = Math.max(r * .13, 5), pr = er * .42;
+    for (const s of [-1, 1]) {
+      ctx.beginPath(); ctx.arc(ex + s * er * 1.05, ey, er, 0, 6.3);
+      ctx.fillStyle = '#f3f5ff'; ctx.fill();
+    }
+    for (const s of [-1, 1]) {
+      ctx.beginPath();
+      ctx.arc(ex + s * er * 1.05 + lastDir.x * er * .26, ey + lastDir.y * er * .26, pr, 0, 6.3);
+      ctx.fillStyle = '#151a28'; ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function render(dt) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = '#0b0e14';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    const z = zoom();
+    const sx = (Math.random() - .5) * shake, sy = (Math.random() - .5) * shake;
+    ctx.setTransform(S * z, 0, 0, S * z, S * (W / 2 - cam.x * z + sx), S * (H / 2 - cam.y * z + sy));
+
+    // 城市：路面铺底 + 街区地面
+    const viewW = W / z, viewH = H / z;
+    const L = cam.x - viewW / 2, T = cam.y - viewH / 2;
+    ctx.fillStyle = '#0e121a';
+    ctx.fillRect(L - 60, T - 60, viewW + 120, viewH + 120);
+
+    const g0x = Math.floor(L / BLOCK) - 1, g1x = Math.floor((L + viewW) / BLOCK) + 1;
+    const g0y = Math.floor(T / BLOCK) - 1, g1y = Math.floor((T + viewH) / BLOCK) + 1;
+    const side = BLOCK - ROAD;
+    for (let gy = g0y; gy <= g1y; gy++) {
+      for (let gx = g0x; gx <= g1x; gx++) {
+        const row = blocks[gy];
+        const type = (row && row[gx]) || 'residential';
+        const x = gx * BLOCK + ROAD / 2, y = gy * BLOCK + ROAD / 2;
+
+        ctx.fillStyle = GROUND[type];
+        ctx.beginPath(); ctx.roundRect(x, y, side, side, 2); ctx.fill();
+        ctx.strokeStyle = 'rgba(150,170,215,.13)'; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.roundRect(x + 1, y + 1, side - 2, side - 2, 2); ctx.stroke();
+
+        if (type === 'park') {
+          ctx.fillStyle = 'rgba(86,190,120,.12)';
+          ctx.beginPath(); ctx.arc(x + side * .5, y + side * .5, side * .32, 0, 6.3); ctx.fill();
+        } else if (type === 'downtown') {
+          ctx.strokeStyle = 'rgba(130,150,200,.10)'; ctx.lineWidth = 1.6;
+          ctx.beginPath(); ctx.roundRect(x + 12, y + 12, side - 24, side - 24, 3); ctx.stroke();
+        } else if (type === 'commercial') {
+          ctx.fillStyle = 'rgba(255,255,255,.03)';
+          ctx.fillRect(x + 10, y + side - 24, side - 20, 9);
+        }
+      }
+    }
+
+    // 物体（只画视野内桶里的东西）
+    const dbx0 = Math.floor((L - 140) / BUCKET), dbx1 = Math.floor((L + viewW + 140) / BUCKET);
+    const dby0 = Math.floor((T - 140) / BUCKET), dby1 = Math.floor((T + viewH + 140) / BUCKET);
+    for (let bx = dbx0; bx <= dbx1; bx++) for (let by = dby0; by <= dby1; by++) {
+      const bucket = buckets.get(bx + '_' + by);
+      if (!bucket) continue;
+      for (const o of bucket) {
+        if (o.eaten) continue;
+        if (o.x < L - 160 || o.x > L + viewW + 160 || o.y < T - 160 || o.y > T + viewH + 160) continue;
+        drawObject(o, z);
+      }
+    }
+
+    // 被吞动画：向中心收拢 + 缩小
+    for (const e of eaten) {
+      const k = e.t;
+      const nx = hole.x + (e.x - hole.x) * (1 - k * .92);
+      const ny = hole.y + (e.y - hole.y) * (1 - k * .92);
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - k * k);
+      ctx.translate(nx, ny);
+      ctx.rotate(e.rot + k * 2.2);
+      const s = Math.max(0, 1 - k * .85);
+      ctx.scale(s, s);
+      ctx.fillStyle = e.color;
+      ctx.beginPath(); ctx.arc(0, 0, e.r, 0, 6.3); ctx.fill();
+      ctx.restore();
+    }
+
+    drawHole();
+
+    // 碎片
+    for (const p of parts) {
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size * p.life, 0, 6.3); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // 飘字
+    for (const f of floats) {
+      const k = f.t;
+      ctx.globalAlpha = Math.max(0, 1 - k);
+      if (f.big) {
+        ctx.font = '800 ' + Math.round(52 + 20 * (1 - k)) + 'px system-ui';
+        ctx.fillStyle = '#ffd34d';
+        ctx.textAlign = 'center';
+        ctx.fillText(f.text, f.x, f.y - k * 90);
+      } else {
+        ctx.font = '700 ' + Math.round(26 + f.r * .18) + 'px system-ui';
+        ctx.fillStyle = f.combo >= 5 ? '#ffd34d' : 'rgba(210,220,255,.9)';
+        ctx.textAlign = 'center';
+        ctx.fillText('+' + f.v, f.x, f.y - k * 70);
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    // ---- HUD（屏幕坐标）----
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const cw = cv.width / DPR, ch = cv.height / DPR;
+    const pad = 18;
+
+    // 剩余时间条
+    const gTop = ctx.createLinearGradient(0, 0, 0, 132);
+    gTop.addColorStop(0, 'rgba(8,10,16,.92)');
+    gTop.addColorStop(.72, 'rgba(8,10,16,.55)');
+    gTop.addColorStop(1, 'rgba(8,10,16,0)');
+    ctx.fillStyle = gTop;
+    ctx.fillRect(0, 0, cw, 132);
+
+    const left = Math.max(0, 1 - (performance.now() - t0) / DURATION);
+    const barY = 18, barH = 5;
+    ctx.fillStyle = 'rgba(255,255,255,.10)';
+    ctx.beginPath(); ctx.roundRect(pad, barY, cw - pad * 2, barH, barH); ctx.fill();
+    ctx.fillStyle = left > .3 ? '#7b5bff' : '#ff5d73';
+    ctx.beginPath(); ctx.roundRect(pad, barY, Math.max(barH, (cw - pad * 2) * left), barH, barH); ctx.fill();
+
+    // 体量 / 件数
+    const hudTop = barY + barH + 28;
+    ctx.textAlign = 'left';
+    ctx.font = '600 13px system-ui';
+    ctx.fillStyle = '#5c6683';
+    ctx.fillText('吞噬体量', pad, hudTop);
+    ctx.font = '800 34px system-ui';
+    ctx.fillStyle = '#eef1f8';
+    ctx.fillText(String(Math.round(score)), pad, hudTop + 32);
+
+    ctx.textAlign = 'right';
+    ctx.font = '600 13px system-ui';
+    ctx.fillStyle = '#5c6683';
+    ctx.fillText('已吞件数', cw - pad, hudTop);
+    ctx.font = '800 34px system-ui';
+    ctx.fillStyle = '#b8a6ff';
+    ctx.fillText(String(count), cw - pad, hudTop + 32);
+
+    // 当前能吞多大
+    ctx.textAlign = 'center';
+    ctx.font = '600 12px system-ui';
+    ctx.fillStyle = '#495470';
+    ctx.fillText('半径 ' + Math.round(hole.r) + ' · 能吞 ' + Math.round(hole.r / 1.32), cw / 2, hudTop + 74);
+  }
+
+  // ---------- 主循环 ----------
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(48, now - last);
+    last = now;
+    update(dt);
+    render(dt);
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', () => { fit(); });
+  document.getElementById('btn').addEventListener('pointerdown', () => { audio(); hintFaded = false; document.getElementById('hint').style.opacity = '1'; reset(); });
+
+  fit(); reset(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

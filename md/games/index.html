@@ -52,7 +52,7 @@ a{color:var(--accent)}
 <a class="back" href="/">← 返回首页</a>
 
 <h1>小游戏 · 原型</h1>
-<p class="meta">2026-11-24 · 独立开发 · 纯前端 / 单文件 / 零依赖</p>
+<p class="meta">2026-11-24 · 独立开发 · 纯前端 / 单文件 / 零依赖 · 2 个原型</p>
 
 <p>做应用做久了，会想回到最原始的那种反馈：点一下，屏幕立刻亮起来。<br>
 这一栏放的是小游戏原型——不求完整、不求长线留存，只验证一件事：<strong>玩法本身有没有爽感</strong>。</p>
@@ -63,6 +63,16 @@ a{color:var(--accent)}
     <p class="name">连爆 · LianBao</p>
     <p class="desc">点两个以上相邻的同色方块就能炸开，之后连锁自己跑：倍率翻倍、跳字、冲击环。<br>60 秒一局，只点了 4 下，屏幕上替你演了 8 秒的爆炸。</p>
     <p><span class="tag">Canvas 2D</span><span class="tag">WebAudio 合成音</span><span class="tag">手机竖屏 1080×1920</span></p>
+    <span class="go">开始玩 →</span>
+  </div>
+</a>
+
+<a class="card" href="./tunshi.html" target="_blank" rel="noopener">
+  <img src="tunshi-city.png" alt="吞噬 街区俯瞰">
+  <div class="body">
+    <p class="name">吞噬 · Tunshi</p>
+    <p class="desc">按住拖动一个黑洞在城市里穿行，只吃比自己小的东西：箱子、垃圾桶、树、车、房子、高楼。<br>越吞越大，镜头越拉越远，从一条街看到一片城区。</p>
+    <p><span class="tag">大世界 5760×9280</span><span class="tag">空间桶索引</span><span class="tag">75 秒一局</span></p>
     <span class="go">开始玩 →</span>
   </div>
 </a>
@@ -94,15 +104,39 @@ a{color:var(--accent)}
 <tr><td>一局时长</td><td>60 秒</td><td>抖音的注意力单位和一局时长最好是同一个量级</td></tr>
 </table>
 
+<h2>吞噬：把地图做大之后发生了什么</h2>
+
+<p>第一版是「撒了一地的豆子」：随机物件铺在空地上，洞在中间吃。能吃、能长大，但没有地点感——你不知道自己在哪、吃的是什么。</p>
+
+<p>第二版把城市做真了：街区网格、街道、四类街区按距市中心自动分层，房子有屋顶和窗，车沿道路排成车流。<strong>地图同时铺到 5760×9280</strong>，走完一圈要几十秒。</p>
+
+<table>
+<tr><th>改动</th><th>值</th><th>代价 / 换来了什么</th></tr>
+<tr><td>世界尺寸</td><td>5760 × 9280</td><td>视野不再一眼看到边，但物件被摊薄，密度必须跟着补</td></tr>
+<tr><td>街区 / 街道</td><td>280 / 18</td><td>街道收窄到 18 之后街区连成片；早期用 36 时像「九宫格托盘」</td></tr>
+<tr><td>物件密度</td><td>箱子每街区 5–8 个</td><td>密度是爽感的命门：地图放大后不补密度，成长曲线立刻塌</td></tr>
+<tr><td>收益递减</td><td>r² × 0.64 × ratio²</td><td>吃远小于自己的东西只算塞牙缝，逼着玩家去找更大的目标</td></tr>
+<tr><td>镜头</td><td>zoom = 15.6 / r<sup>0.72</sup></td><td>洞子屏幕占比从 8% 涨到 13%，同时视野扩 3 倍——「变强」要看得见</td></tr>
+<tr><td>阻挡反馈</td><td>红环 + 回弹</td><td>吃不动时必须立刻告诉玩家「这个还不行」，否则会以为卡了</td></tr>
+</table>
+
 <h2>已验证的部分</h2>
 
 <p>下面这些不是估算，是在浏览器里真点出来的：</p>
 
+<p><strong>连爆</strong></p>
 <ul>
 <li>点 1 下 → 触发 7 连锁，860 分</li>
 <li>点 3 下 → 1915 分，最高连锁 12</li>
 <li>点 4 下 → 4367 分，棋盘几乎被炸空后重新填满</li>
 <li>结算面板、再来一局、最高连锁回填均正常，控制台无报错</li>
+</ul>
+
+<p><strong>吞噬</strong></p>
+<ul>
+<li>连续拖 12 次 → 体量 82 → 416 → 536，触发一次 ×14 连锁，吞掉 26 件</li>
+<li>街区网格、沿路车流、公园区块、房屋门窗与高楼顶部亮带均正常渲染</li>
+<li>拖动吞噬、阻挡红环、镜头自动拉远、HUD 与结算面板均正常，控制台无报错</li>
 </ul>
 
 <img src="lianbao-settle.png" alt="连爆 结算页" style="width:100%;max-width:300px;display:block;margin:22px auto;border-radius:10px;box-shadow:0 14px 34px rgba(0,0,0,.16)">
@@ -114,6 +148,7 @@ a{color:var(--accent)}
 <ul>
 <li><strong>音效没听过</strong>——无头浏览器没有声音输出，音调曲线是按参数推的，实际听感需要人耳确认</li>
 <li><strong>真机帧率未知</strong>——只在 499×688 的小窗口跑过，全宽竖屏下粒子多的时候会不会掉帧还没测</li>
+<li><strong>吞噬的 75 秒没跑满</strong>——只验证到中前期，吃到大楼之后会不会失控（几秒吞掉半座城）还没测</li>
 <li><strong>留存没测过</strong>——爽感是第一次点击的事，愿意玩第二局是另一回事</li>
 </ul>
 
