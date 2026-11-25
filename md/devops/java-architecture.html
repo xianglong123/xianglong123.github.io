@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>两套 Java 大项目架构：电商交易中台与 SaaS 多租户 | 123的个人主页</title>
+<meta name="description" content="同一套分层思路的两种落地：一套电商交易中台（出入网关、核心交易域、营销域、中间件与数据存储），一套 SaaS 多租户平台（租户识别、隔离策略、订阅计费），附共同的架构判断。">
+<style>
+:root{
+  --ink:#2c3e50; --muted:#7f8c8d; --accent:#4b7bff; --line:#ebedf0;
+  --code-bg:#282c34; --tip:#e7f1ff; --warn:#fff8e6;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:#fff; color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  font-size:16px; line-height:1.85;
+}
+.wrap{max-width:780px;margin:0 auto;padding:38px 22px 90px}
+.back{display:inline-block;margin-bottom:26px;color:var(--accent);text-decoration:none;font-size:14px}
+.back:hover{text-decoration:underline}
+h1{font-size:30px;line-height:1.4;margin:0 0 12px;letter-spacing:-.2px}
+.meta{color:var(--muted);font-size:13.5px;margin-bottom:30px}
+h2{font-size:21px;margin:44px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+h3{font-size:17px;margin:28px 0 10px;color:#34495e}
+p{margin:14px 0}
+ul,ol{margin:14px 0;padding-left:22px}
+li{margin:7px 0}
+.fig{margin:26px 0 10px}
+.fig img{width:100%;border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.16);display:block}
+.caption{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+th{background:#fafbfc;font-weight:600}
+.tip{background:var(--tip);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+.warn{background:var(--warn);border-left:3px solid #e0a800;padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+code{background:#f1f5f9;border-radius:5px;padding:1px 5px;font-size:13px}
+.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+a{color:var(--accent)}
+@media (max-width:520px){
+  h1{font-size:24px}
+  h2{font-size:19px}
+  .wrap{padding:26px 16px 70px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="/">← 返回首页</a>
+
+<h1>两套 Java 大项目架构：电商交易中台与 SaaS 多租户</h1>
+<p class="meta">2026-11-25 · 后端架构 · 两套分层架构图（1280 宽）</p>
+
+<p>整理大项目架构时，先把分层定下来：流量从哪进、外部依赖从哪出、核心业务域怎么切、共享能力下沉到哪一层。下面两套是同一套分层思路的两种落地——一套面向电商交易，一套面向 SaaS 多租户。图里的模块是候选边界，不是一开始就要全部拆成独立服务。</p>
+
+<h2>一、电商交易中台</h2>
+
+<div class="fig">
+  <img src="arch-ecommerce.png" alt="Java 电商交易中台整体架构图">
+</div>
+<p class="caption">图 1：电商交易中台分层架构（接入 / 网关 / 核心交易域 / 营销域 / 中间件 / 数据 / 基础设施）</p>
+
+<p>这套按交易链路组织，从上到下七层：</p>
+
+<ul>
+  <li><strong>接入层</strong>：C 端 App/H5/小程序/Web、B 端运营与商家后台、开放平台、异步回调。</li>
+  <li><strong>网关层</strong>：入网关统一收口路由、鉴权、限流熔断、灰度与防刷；出网关作为防腐层，封装支付、短信、物流、地图等外部渠道，统一做签名、超时重试、熔断降级与调用审计。</li>
+  <li><strong>核心交易域</strong>：用户、商品、库存、订单、支付、履约物流、结算账务，各自围绕自己的业务闭环。</li>
+  <li><strong>营销域</strong>：活动中心、优惠券、秒杀抢购、拼团分销、积分，独立成域，可单独扩缩容与灰度。</li>
+  <li><strong>中间件中台</strong>：注册配置、消息队列、分布式缓存、检索、分库分表、对象存储、定时任务、分布式事务、链路追踪、日志与监控。</li>
+  <li><strong>数据存储</strong>：MySQL 分库主从、Redis、ES、OSS、离线数仓 BI。</li>
+  <li><strong>基础设施</strong>：容器编排、CI/CD、多环境隔离、安全防护。</li>
+</ul>
+
+<div class="tip">两条域间约定：营销域不直接写交易库，通过订单事件加营销核销接口交互；外部渠道全部经出网关防腐层接入，业务服务不直连第三方。</div>
+
+<h2>二、SaaS 多租户平台</h2>
+
+<div class="fig">
+  <img src="arch-saas.png" alt="Java SaaS 多租户平台整体架构图">
+</div>
+<p class="caption">图 2：SaaS 多租户分层架构（平台核心域 / 计费订阅域 / 多租户隔离 / 中间件 / 数据 / 基础设施）</p>
+
+<p>这套的重心不在交易履约，而在<strong>租户隔离与订阅计费</strong>：</p>
+
+<ul>
+  <li><strong>租户识别在网关完成</strong>：按子域名、Header、路径或 Token 解析出租户，租户 ID 全链路透传，再按租户映射到对应库或实例。</li>
+  <li><strong>平台核心域</strong>：租户中心（开通/冻结/注销、套餐绑定、配额）、账号权限（平台与租户双角色分权）、组织架构、可插拔工作台、消息通知、文件附件。</li>
+  <li><strong>计费订阅域</strong>：套餐商品、订阅订单、支付账单、用量计量、发票合同，与核心域通过事件解耦。</li>
+  <li><strong>多租户隔离</strong>：贯穿网关、服务、持久层与缓存，保证租户数据互不可见、配置互不影响。</li>
+</ul>
+
+<p>数据隔离一般分三档，按租户规模和合规要求选：</p>
+
+<table>
+  <tr><th>隔离策略</th><th>做法</th><th>适用</th></tr>
+  <tr><td>共享库 + 行级隔离</td><td>所有租户同库同表，靠 <code>tenant_id</code> 过滤</td><td>中小租户，成本最低</td></tr>
+  <tr><td>共享库 + 独立 Schema</td><td>同库不同 Schema，表结构各自独立</td><td>中型租户，需要一定结构隔离</td></tr>
+  <tr><td>独立库 / 独立实例</td><td>大客户专属库甚至专属部署</td><td>合规要求高、体量大的租户</td></tr>
+</table>
+
+<p>缓存 key 带租户前缀、ES 按 <code>tenant_id</code> 索引隔离、对象存储按租户目录隔离、定时任务按租户分片——隔离不是只在数据库做一层，而是每一层都要带上租户维度。</p>
+
+<h2>三、两套图的共同判断</h2>
+
+<p>这两张图都按微服务范式组织，但<strong>图上画了多少模块，不等于就已经是微服务</strong>。判断是不是真微服务，看四条硬标准：</p>
+
+<ol>
+  <li><strong>独立部署与扩缩容</strong>：每个服务能单独发版、单独扩容，不绑死在一个进程里。</li>
+  <li><strong>数据自治</strong>：服务独占自己的库，跨域只走接口或事件，禁止跨库 join、直连别人的表。</li>
+  <li><strong>进程间通信</strong>：同步 RPC、异步 MQ，而不是同进程内直接调方法。</li>
+  <li><strong>故障隔离</strong>：一个服务挂了不拖垮整条链路，有熔断、降级、舱壁。</li>
+</ol>
+
+<p>落地时不必一步拆成图上那么多服务。起步更适合先做<strong>模块化单体</strong>：代码按域划包、边界清晰、库表按域归属，等某个域确实有独立扩容或独立发版诉求时，再沿着这些边界拆。图里的域划分，正好就是未来拆分的候选边界。</p>
+
+<div class="warn">微服务真正的成本不在画图，而在分布式那摊事：分布式事务、跨域查询、分布式锁、链路追踪、配置与灰度一致性。图里中间件层标了对应组件，但选型和补偿方案才是难点。</div>
+
+<p class="foot">本文记录于 2026-11-25 · 两套架构图源文件为可交互 HTML，已归档在本地仓库</p>
+
+</div>
+</body>
+</html>

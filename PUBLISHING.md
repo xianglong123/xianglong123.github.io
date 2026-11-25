@@ -89,3 +89,4 @@ curl -s https://www.xianglong.vip/md/<板块>/index.html | grep -c '<slug>'
 | 2026-11-24 | ai-content | `hyperframes-video.html` | `hyperframes-topic.mp4`、`hyperframes-compare.png` |
 | 2026-11-24 | games | `index.html`（新板块）+ `lianbao.html` | `lianbao-chain.png`、`lianbao-settle.png` |
 | 2026-11-24 | games | `tunshi.html` | `tunshi-city.png`、`tunshi-chain.png`、`tunshi-park.png` |
+| 2026-11-25 | devops | `java-architecture.html` | `arch-ecommerce.png`、`arch-saas.png` |
