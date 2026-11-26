@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>用代码画一张水彩：15 秒样片，三次失败之后 | 123的个人主页</title>
+<meta name="description" content="不做矢量动效，改用可变宽度色带 + 飞白笔刷在浏览器里画一张水彩：三次失败的原因（串珠笔触、硬边色块、山体盖住江面）、为什么最后必须复用风格自带的笔刷引擎，以及这版仍然没解决的问题。">
+<style>
+:root{
+  --ink:#2c3e50; --muted:#7f8c8d; --accent:#4b7bff; --line:#ebedf0;
+  --code-bg:#282c34; --code-bg2:#21252b; --tip:#e7f1ff;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:#fff; color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  font-size:16px; line-height:1.85;
+}
+.wrap{max-width:780px;margin:0 auto;padding:38px 22px 90px}
+.back{display:inline-block;margin-bottom:26px;color:var(--accent);text-decoration:none;font-size:14px}
+.back:hover{text-decoration:underline}
+h1{font-size:31px;line-height:1.4;margin:0 0 12px;letter-spacing:-.2px}
+.meta{color:var(--muted);font-size:13.5px;margin-bottom:30px}
+h2{font-size:21px;margin:44px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+h3{font-size:17px;margin:28px 0 10px;color:#34495e}
+p{margin:14px 0}
+ul,ol{margin:14px 0;padding-left:22px}
+li{margin:7px 0}
+.video-box{display:flex;justify-content:center;margin:26px 0 10px}
+.video-box video{
+  width:100%;background:#08080c;aspect-ratio:16/9;
+  border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.22);display:block;
+}
+.caption{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
+.figure{margin:26px 0 8px}
+.figure img{width:100%;border-radius:10px;border:1px solid var(--line);display:block}
+pre{
+  background:var(--code-bg);color:#abb2bf;padding:16px 18px;border-radius:8px;
+  overflow-x:auto;font-size:13.5px;line-height:1.72;margin:16px 0;
+  font-family:"SF Mono",Menlo,Consolas,monospace;
+}
+pre .c{color:#5c6370;font-style:italic}
+pre .s{color:#98c379}
+pre .k{color:#c678dd}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+th{background:#fafbfc;font-weight:600}
+.tip{background:var(--tip);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+.warn{background:#fff8e6;border-left:3px solid #e0a800;padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+a{color:var(--accent)}
+@media (max-width:520px){
+  h1{font-size:25px}
+  h2{font-size:19px}
+  .wrap{padding:26px 16px 70px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="/">← 返回首页</a>
+
+<h1>用代码画一张水彩：15 秒样片，三次失败之后</h1>
+<p class="meta">2026-11-26 · AI 内容实验 · 1920×1080 / 15 秒 / 无水音 / 3.3MB</p>
+
+<div class="video-box">
+  <video controls playsinline preload="metadata">
+    <source src="watercolor-sample.mp4" type="video/mp4">
+    你的浏览器不支持视频播放。
+  </video>
+</div>
+<p class="caption">成片：重庆江边的雾 · 全部由 Canvas 笔刷逐笔画出，没有一张预先合成的图</p>
+
+<h2>为什么换这条线</h2>
+
+<p>前面几条片子走的都是矢量动效：卡片、进度条、逐字弹出。这套东西好复刻，也好看，但它有个问题——<strong>换个人照着截图就能做出来</strong>，画面里没有手的痕迹。做内容的人最后都要面对一件事：观众记得住的不是排版，是质感。</p>
+
+<p>所以我换了目标：不做动效，做<strong>一张会动的画</strong>。水彩是最难糊弄的一种，笔画是湿的、边缘会渗、颜色是叠出来的，任何「用渐变模拟」的做法一眼就假。</p>
+
+<h2>一、前两版为什么废掉</h2>
+
+<p>第一版我自己写笔刷：沿路径逐段 <code>lineWidth</code> + <code>lineCap='round'</code> 描边。渲染出来是这样——</p>
+
+<div class="figure">
+  <img src="watercolor-fail-1.jpg" alt="第一版：串珠状的山脊线与横向色带">
+</div>
+<p class="caption">第一版：山脊像一串珠子，山体是横向硬边色带，山脚一直铺到画布底，把江面直接盖死</p>
+
+<p>三个毛病，每一个都是原理级的：</p>
+
+<ul>
+  <li><strong>串珠。</strong>逐段描边时每段都重新设宽度、都带一个圆头端点，段与段之间就鼓出圆点，远看像一条珠子项链。</li>
+  <li><strong>硬边。</strong>山体用矩形填充，边缘是一条数学上的直线，没有湿边、没有渗色，跟水彩无关。</li>
+  <li><strong>盖死。</strong>山体 wash 铺到画布底部，它压在江面上——层次顺序错了，底下什么都没了。</li>
+</ul>
+
+<p>第二版改了两件事：笔触改成<strong>多边形 ribbon 填充</strong>（沿路径算出左右偏移，一次 fill 出来，不再是逐段描边），颜色用径向渐变 dab 做湿边。串珠没了，但出现了新问题——</p>
+
+<div class="figure">
+  <img src="watercolor-fail-2.jpg" alt="第二版：天空中可见圆形气泡，山体像半透明板岩">
+</div>
+<p class="caption">第二版：天空里有明显的圆形气泡，山体像一块半透明板岩，桥的拉索细得像蜘蛛腿，下半幅发空</p>
+
+<p>气泡的来源很具体：radial gradient 的色标从 0 到 0.62 都是实色，于是每一笔都留下一个可辨认的圆盘。<strong>参数错了，不是思路错了。</strong>但这版让我意识到一个更严重的事实：我在重造一个水彩引擎，每修一个缺陷都要花一轮渲染去验证，而无底洞是没有底的。</p>
+
+<h2>二、转机：不要重造笔刷，复用别人的</h2>
+
+<p>我用的素材库里有一套水彩风格，它自带一个 142 行的笔刷引擎。核心就三样东西：</p>
+
+<pre><span class="c">// 每一笔是一组点，每个点带宽度 w、法线 nx/ny、以及一道随机飞白 br</span>
+pts = [{ x, y, w, nx, ny, br }, ...]
+
+<span class="c">// 沿路径铺一条可变宽度的色带，一次 fill</span>
+drawS(ctx, path, color, amount)
+
+<span class="c">// 按顺序把一组笔触逐笔「画上去」，这就是 painting-in</span>
+drawList(ctx, list, progress)</pre>
+
+<p>它比我自己那版多了两件我根本没想到的事：<strong>飞白</strong>（每笔随机留 6 道不上色的缺口，像干笔扫过纸面）和<strong>可变法线</strong>（笔触宽度沿路径变化）。水彩之所以像水彩，靠的就是这两样，不是颜色。</p>
+
+<p>于是第三版全部改成「先建笔触列表，再逐笔画出」。结构上变成了纯数据：</p>
+
+<pre><span class="c">// 山脊线：噪波给起伏，脊线往下落宽笔触当山体</span>
+<span class="k">for</span> (x = -140; x &lt;= W + 140; x += 34) {
+  y = yBase - (fbm(x * 0.0022 + seed) * amp + ...);
+  list.push(mk([[x, y + 4], [x + rnd(-10, 10), y + rnd(40, 78)]],
+               rnd(44, 86), col, { prof: <span class="s">'even'</span>, a: 0.07 });  <span class="c">// 山体</span>
+  list.push(mk([[x, y], [x2, y2]], rnd(4, 8), ink, { prof: <span class="s">'brush'</span> });   <span class="c">// 脊线</span>
+}</pre>
+
+<p>每一层山是一个独立的笔触列表，画的时候传一个 0→1 的进度，自动就是「一层层画上去」的节奏。<strong>代码里没有一行动画逻辑，动画是「画到第几笔」这件事本身。</strong></p>
+
+<h2>三、这版里解决掉的四个真问题</h2>
+
+<h3>1. 山没有轮廓，只有纹理</h3>
+
+<p>一开始我只画纹理笔触，结果是一片「绒毛」，没有山的形。做法改成两步：先铺一层带轮廓的<strong>湿涂</strong>，用垂直渐变从山色过渡到透明（底边自然消失，不留硬缝），再把纹理笔触画在上面。轮廓给形，纹理给质。</p>
+
+<h3>2. 画笔前沿有一条竖直硬缝</h3>
+
+<p>「画上去」如果用矩形裁剪控制进度，前沿就会留下一条竖线——这是裁剪，不是笔。解法是把湿涂画到离屏画布，再用一个 190px 的渐变做 <code>destination-in</code> 蒙版，前沿变成从 1 到 0 的软化过渡。这条软边，才是笔走过去的样子。</p>
+
+<h3>3. 山脚和江面接不上</h3>
+
+<p>山体底边渐隐、江面又从更低处开始，中间留了一条空的纸色带。补的是<strong>湿边</strong>：水线下面压 7 条极淡的灰蓝横笔，笔画越靠下越浓。水彩里这一条叫 wet edge，是纸湿的时候颜料积在边界上的结果，缺了它，两层永远像贴上去的。</p>
+
+<h3>4. 开场 1.5 秒是一张白纸</h3>
+
+<p>标题用逐字扫入（clip 的宽度随时间增长），再配山水的逐层画入，前 1.5 秒几乎是空白。不是错，是节奏不对：观众在第一秒没看到任何东西，就会以为视频卡住了。改法是标题改成<strong>淡入 + 轻微上浮 16px</strong>，同时把江面的大 wash 提到 0.9 秒就开始铺——先湿纸，再画山。有东西在动，人就不会走。</p>
+
+<h2>四、现在这版还有什么不好</h2>
+
+<p>我自己看片能指出两处：</p>
+
+<ul>
+  <li><strong>前景滩涂靠下缘有点脏。</strong>为了压住画面的下三分之一，我铺了 9 条很宽的褐色 wash 再叠 44 笔草痕，叠多了就变成泥。该减笔数、加留白。</li>
+  <li><strong>桥索还是偏「矢量」。</strong>拉索是直线扇形，即使加了随机弯曲和粗细变化，它的秩序感还是太强，跟周围手绘的松散不搭。真实的手绘会把拉索画得粗细不一、有几根干脆断掉。</li>
+</ul>
+
+<div class="tip">判断一张水彩像不像，主要看四件事：笔触有没有干湿变化（飞白）、颜色是不是透明叠出来的（不是不透明度堆出来的）、湿边有没有积色、留白够不够。这四条里我做到前两条，第三条勉强，第四条最弱——这也是它现在更像插画、而不像画的原因。</div>
+
+<h2>五、实测</h2>
+
+<table>
+  <tr><th>指标</th><th>数值</th></tr>
+  <tr><td>成片规格</td><td>1920×1080 / 25fps / 15 秒 / 376 帧</td></tr>
+  <tr><td>单帧渲染</td><td>约 0.15–0.25 秒（headless Chrome 截图，含纸纹生成）</td></tr>
+  <tr><td>全片渲染</td><td>约 70 秒（376 帧）</td></tr>
+  <tr><td>编码</td><td>ffmpeg / libx264 / crf 19 / 3.3MB</td></tr>
+  <tr><td>素材</td><td>零。没有图片、没有视频、没有音频</td></tr>
+  <tr><td>代码</td><td>单文件 <code>index.html</code>，约 320 行</td></tr>
+</table>
+
+<p>这套流程最实用的地方是<strong>改一个参数只花一次渲染</strong>。想看某一帧长什么样，给个时间点就出图，150 毫秒；想看成片，70 秒。对比剪映里拖时间线，这个反馈环快到可以拿来做设计——我一共废掉两版、重写三次，靠的就是这个速度。</p>
+
+<div class="warn">它不能干什么：没有手绘的「意外」。所有笔触都是确定性的，种子一固定，同一时刻永远出同一张图。这既是优点（可复现、可批量）也是缺点——真画是会出错的，而这里不会。想更「有人味」，只能靠更狠的随机和更差的控制。</div>
+
+<h2>六、结论</h2>
+
+<ol>
+  <li><strong>质感不是靠滤镜，是靠笔刷的物理。</strong>飞白、可变宽度、透明叠色，三样缺一样就变插画。想清楚这个，比调色调重要。</li>
+  <li><strong>别自己造笔刷。</strong>一个 142 行的引擎比我自己折腾两版强得多。有轮子就用，把时间花在构图和节奏上。</li>
+  <li><strong>「画上去」本身就是最好的动画。</strong>不需要缓动曲线、不需要转场，进度从 0 到 1，画面自己就活了。</li>
+  <li><strong>代码做片的优势是反馈速度，不是画质。</strong>150 毫秒看一帧，才敢连续废掉三版。这个循环一旦成立，创作方式就变了。</li>
+</ol>
+
+<p>至于值不值得投入——我的判断是：这条路能做出「不像 AI 做的」东西，但它对审美要求极高，参数差一点就是廉价手绘风。它适合做片头、封面、氛围段，不适合承载信息。</p>
+
+<p class="foot">本文记录于 2026-11-26 · 工程在本地 watercolor-film 项目，笔刷引擎来自 lemo-opuscar 的 watercolor 风格，渲染用 headless Chrome 截帧 + ffmpeg 编码</p>
+
+</div>
+</body>
+</html>
