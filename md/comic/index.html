@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>漫画与分镜 | 123的个人主页</title>
+<meta name="description" content="角色设定 → 分镜稿 → 逐格出图 → 拼页导出：把漫画生产拆成能自动化的部分和必须人判断的部分，附一个自己写的单文件拼页工具。">
+<style>
+:root{
+  --ink:#2c3e50; --muted:#7f8c8d; --accent:#4b7bff; --line:#ebedf0;
+  --code-bg:#282c34; --tip:#e7f1ff;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:#fff; color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  font-size:16px; line-height:1.85;
+}
+.wrap{max-width:780px;margin:0 auto;padding:38px 22px 90px}
+.back{display:inline-block;margin-bottom:26px;color:var(--accent);text-decoration:none;font-size:14px}
+.back:hover{text-decoration:underline}
+h1{font-size:31px;line-height:1.4;margin:0 0 12px;letter-spacing:-.2px}
+.meta{color:var(--muted);font-size:13.5px;margin-bottom:30px}
+h2{font-size:21px;margin:44px 0 14px;padding-left:12px;border-left:3px solid var(--accent)}
+p{margin:14px 0}
+ul,ol{margin:14px 0;padding-left:22px}
+li{margin:8px 0}
+.figure{margin:26px 0 8px}
+.figure img{width:100%;border-radius:10px;border:1px solid var(--line);display:block}
+.caption{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
+.tip{background:var(--tip);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14.5px}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+th{background:#fafbfc;font-weight:600}
+.entry{display:block;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0;text-decoration:none;color:inherit;transition:.16s}
+.entry:hover{border-color:#c9d5f5;box-shadow:0 6px 18px rgba(75,123,255,.10)}
+.entry b{display:block;font-size:16.5px;margin-bottom:4px}
+.entry span{color:var(--muted);font-size:14px;line-height:1.7}
+a{color:var(--accent)}
+.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media (max-width:520px){h1{font-size:25px}h2{font-size:19px}.wrap{padding:26px 16px 70px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="/">← 返回首页</a>
+
+<h1>漫画与分镜</h1>
+<p class="meta">2026-11-26 · 板块总览 · 1 个工具 / 1 条管线</p>
+
+<p>这个板块只关心一件事：<strong>能不能用 AI 稳定地画出同一个人，并把画好的分镜拼成一页漫画。</strong></p>
+
+<p>单张好看不难，难的是同一个角色在十几个角度、十几种表情下都不走形——那是连载的门槛，也是这套东西真正值钱的地方。</p>
+
+<a class="entry" href="./comic-studio.html" target="_blank" rel="noopener">
+  <b>分镜工坊：AI 出原画，你拼漫画 →</b>
+  <span>单文件网页。左边画布分格、拖图进格、双击改台词、五种气泡（对话/喊叫/思考/旁白/拟声）、多页、导出 2x PNG；右侧「原画提示词」按格生成，角色设定和画风常驻。不需要联网，双击就能用。</span>
+</a>
+
+<h2>为什么把「出图」和「排版」拆开</h2>
+
+<p>一开始我让模型直接出整页——一格一格的画面连同气泡文字一起画。结论是：<strong>这条路走不通</strong>。图里的中文字十次有八次是错的，气泡位置也没法挪；想把一句台词改两个字，只能整页重画，画好的分镜全废。</p>
+
+<p>拆开之后两件事都变简单了：</p>
+
+<ul>
+<li><strong>出图</strong>：一格只画一个画面，不带任何文字、不带气泡、不带分格线。指令干净，模型专注在画面本身。</li>
+<li><strong>排版</strong>：气泡和台词是代码贴上去的，改一句话只改一行，重截一次图。</li>
+</ul>
+
+<p>上面那个工具就是把「排版」这半边的活，从脚本变成了点上就能用。</p>
+
+<h2>角色怎么锁住</h2>
+
+<p>做法不新鲜，但顺序要对：先出一张<strong>三视图 + 表情 + 手部</strong>的角色设定表，白底、无字；之后每一格都拿这张表当参考图去生成，而不是拿上一格当参考。拿上一格做参考会一路漂移，几格之后就不是同一个人了。</p>
+
+<div class="figure">
+  <img src="comic-studio-page.jpg" alt="分镜工坊导出的一页示例">
+</div>
+<p class="caption">用工具拼出来的示例页：四格、两处旁白、一句对话、一个拟声字，导出 2x PNG（2160×3072）</p>
+
+<h2>能自动化的和不能自动化的</h2>
+
+<table>
+<tr><th>环节</th><th>现在能到什么程度</th><th>还得人做</th></tr>
+<tr><td>角色设计</td><td>设定表一次出齐，脸和服装能保持一致</td><td>决定这个人是谁</td></tr>
+<tr><td>逐格出图</td><td>给定景别和情绪，画面稳定</td><td>分镜节奏、哪一格该空</td></tr>
+<tr><td>气泡与台词</td><td>完全可控（工具里改）</td><td>写台词</td></tr>
+<tr><td>导出</td><td>2x PNG，可打印尺寸</td><td>—</td></tr>
+</table>
+
+<div class="tip">瓶颈不在画质，在「锁角色」的成本。一张脸在十几个角度里不崩，需要的参考锚比想象中重——这也是设定表必须先做、而且必须干净的原因。</div>
+
+<h2>已知的限制</h2>
+
+<ul>
+<li>工具是单页排版器，不是排版软件：气泡不能任意旋转，也不能导入外部字体。</li>
+<li>导出走 Canvas 手绘合成，和屏幕上的效果基本一致，但极小的字号会有亚像素差。</li>
+<li>图片全部在浏览器里处理，不上传、不落盘；工程存在本地 localStorage，换机器要手动「存工程」带走。</li>
+</ul>
+
+<p class="foot">写下来的是判断，不是教程。</p>
+
+</div>
+</body>
+</html>

@@ -83,6 +83,8 @@ curl -s https://www.xianglong.vip/md/<板块>/index.html | grep -c '<slug>'
 
 ## 已发布清单
 
+现有一级板块（侧边栏 7 组）：ai-code、ai-agent、ai-content、tools、devops、games、comic（漫画与分镜）。
+
 | 日期 | 板块 | 页面 | 素材 |
 |---|---|---|---|
 | 2026-11-24 | ai-content | `remotion-video.html` | `remotion-topic.mp4` |
@@ -91,3 +93,4 @@ curl -s https://www.xianglong.vip/md/<板块>/index.html | grep -c '<slug>'
 | 2026-11-24 | games | `tunshi.html` | `tunshi-city.png`、`tunshi-chain.png`、`tunshi-park.png` |
 | 2026-11-25 | devops | `java-architecture.html` | `arch-ecommerce.png`、`arch-saas.png` |
 | 2026-11-26 | ai-content | `watercolor-film.html` | `watercolor-sample.mp4`、`watercolor-final.jpg`、`watercolor-fail-1.jpg`、`watercolor-fail-2.jpg` |
+| 2026-11-26 | comic | `index.html`（新板块）+ `comic-studio.html` | `comic-studio-page.jpg` |
