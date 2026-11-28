@@ -94,3 +94,4 @@ curl -s https://www.xianglong.vip/md/<板块>/index.html | grep -c '<slug>'
 | 2026-11-25 | devops | `java-architecture.html` | `arch-ecommerce.png`、`arch-saas.png` |
 | 2026-11-26 | ai-content | `watercolor-film.html` | `watercolor-sample.mp4`、`watercolor-final.jpg`、`watercolor-fail-1.jpg`、`watercolor-fail-2.jpg` |
 | 2026-11-26 | comic | `index.html`（新板块）+ `comic-studio.html` | `comic-studio-page.jpg` |
+| 2026-11-28 | ai-content | `douyin-content-map.html` | `douyin-content-tree.png`、`douyin-metric-matrix.png` |
